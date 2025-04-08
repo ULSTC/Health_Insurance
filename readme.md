@@ -42,8 +42,8 @@ A modern web application for health insurance management with features for quote
 
 - [x] Project Setup
 - [ ] Authentication
-- [ ] Dashboard
-- [ ] Quick Quote
+- [x] Dashboard
+- [x] Quick Quote
 - [ ] Application Form
 - [ ] Document Upload
 - [ ] Backend Integration 
