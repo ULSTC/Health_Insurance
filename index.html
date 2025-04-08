@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Insurance Portal</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Authentication Section -->
+        <div id="auth-section" class="section">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="signup">Sign Up</button>
+                </div>
+                
+                <div id="login-form" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <form id="login">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-user-type">User Type</label>
+                            <select id="login-user-type" required>
+                                <option value="">Select User Type</option>
+                                <option value="normal">Normal User</option>
+                                <option value="intermediary">Intermediary</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Login</button>
+                    </form>
+                </div>
+
+                <div id="signup-form" class="auth-form">
+                    <h2>Create Account</h2>
+                    <form id="signup">
+                        <div class="form-group">
+                            <label for="signup-name">Full Name</label>
+                            <input type="text" id="signup-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">Email</label>
+                            <input type="email" id="signup-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">Password</label>
+                            <input type="password" id="signup-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-confirm-password">Confirm Password</label>
+                            <input type="password" id="signup-confirm-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-user-type">User Type</label>
+                            <select id="signup-user-type" required>
+                                <option value="">Select User Type</option>
+                                <option value="normal">Normal User</option>
+                                <option value="intermediary">Intermediary</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section (Hidden by default) -->
+        <div id="dashboard-section" class="section hidden">
+            <nav class="dashboard-nav">
+                <div class="logo">HealthInsure</div>
+                <div class="nav-links">
+                    <a href="#" class="active" data-section="quick-quote">Quick Quote</a>
+                    <a href="#" data-section="applications">Applications</a>
+                    <a href="#" data-section="documents">Documents</a>
+                </div>
+                <div class="user-menu">
+                    <span class="user-name">John Doe</span>
+                    <button id="logout-btn" class="btn-secondary">Logout</button>
+                </div>
+            </nav>
+
+            <main class="dashboard-content">
+                <!-- Quick Quote Section -->
+                <section id="quick-quote" class="dashboard-section active">
+                    <h2>Get a Quick Quote</h2>
+                    <form id="quote-form">
+                        <!-- Personal Information -->
+                        <div class="form-section">
+                            <h3>Personal Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dateOfBirth">Date of Birth</label>
+                                    <input type="date" id="dateOfBirth" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">Age</label>
+                                    <input type="number" id="age" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="gender">Gender</label>
+                                    <select id="gender" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="relationship">Relationship</label>
+                                    <select id="relationship">
+                                        <option value="">Select Relationship</option>
+                                        <option value="self">Self</option>
+                                        <option value="spouse">Spouse</option>
+                                        <option value="child">Child</option>
+                                        <option value="parent">Parent</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Information -->
+                        <div class="form-section">
+                            <h3>Health Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="height">Height (cm)</label>
+                                    <input type="number" id="height" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="weight">Weight (kg)</label>
+                                    <input type="number" id="weight" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bmi">BMI</label>
+                                    <input type="text" id="bmi" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bloodGroup">Blood Group</label>
+                                    <select id="bloodGroup" required>
+                                        <option value="">Select Blood Group</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Pre-existing Conditions</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="conditions" value="diabetes">
+                                        Diabetes
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="conditions" value="hypertension">
+                                        Hypertension
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="conditions" value="heart-disease">
+                                        Heart Disease
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="conditions" value="asthma">
+                                        Asthma
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="conditions" value="other">
+                                        Other
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Lifestyle Choices</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="lifestyle" value="smoking">
+                                        Smoking
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="lifestyle" value="alcohol">
+                                        Alcohol Consumption
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="lifestyle" value="exercise">
+                                        Regular Exercise
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="form-section">
+                            <h3>Contact Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Get Quote</button>
+                    </form>
+                </section>
+
+                <!-- Applications Section -->
+                <section id="applications" class="dashboard-section">
+                    <h2>Applications</h2>
+                    <div class="application-container">
+                        <!-- Side Navigation -->
+                        <div class="application-nav">
+                            <div class="nav-item active" data-section="basic-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Basic Info</span>
+                            </div>
+                            <div class="nav-item" data-section="member-details">
+                                <i class="fas fa-users"></i>
+                                <span>Member Details</span>
+                            </div>
+                            <div class="nav-item" data-section="questionnaire">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Questionnaire</span>
+                            </div>
+                        </div>
+
+                        <!-- Application Forms -->
+                        <div class="application-content">
+                            <!-- Basic Info Form -->
+                            <div id="basic-info-form" class="application-form active">
+                                <h3>Basic Information</h3>
+                                <form>
+                                    <div class="form-section">
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="policy-type">Policy Type</label>
+                                                <select id="policy-type" required>
+                                                    <option value="">Select Policy Type</option>
+                                                    <option value="individual">Individual</option>
+                                                    <option value="family-floater">Family Floater</option>
+                                                    <option value="group">Group</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="sum-insured">Sum Insured</label>
+                                                <select id="sum-insured" required>
+                                                    <option value="">Select Sum Insured</option>
+                                                    <option value="500000">5 Lakhs</option>
+                                                    <option value="1000000">10 Lakhs</option>
+                                                    <option value="1500000">15 Lakhs</option>
+                                                    <option value="2000000">20 Lakhs</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn-primary">Save & Continue</button>
+                                </form>
+                            </div>
+
+                            <!-- Member Details Form -->
+                            <div id="member-details-form" class="application-form">
+                                <h3>Member Details</h3>
+                                <form>
+                                    <div class="form-section">
+                                        <div class="member-list" id="member-list">
+                                            <!-- Member cards will be added here dynamically -->
+                                        </div>
+                                        <button type="button" class="btn-secondary" id="add-member">
+                                            <i class="fas fa-plus"></i> Add Member
+                                        </button>
+                                    </div>
+                                    <button type="submit" class="btn-primary">Save & Continue</button>
+                                </form>
+                            </div>
+
+                            <!-- Questionnaire Form -->
+                            <div id="questionnaire-form" class="application-form">
+                                <h3>Health Questionnaire</h3>
+                                <form>
+                                    <div class="form-section">
+                                        <div class="form-group">
+                                            <label>Have you or any family members had any of the following conditions?</label>
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="health-conditions" value="heart">
+                                                    Heart Disease
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="health-conditions" value="diabetes">
+                                                    Diabetes
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="health-conditions" value="cancer">
+                                                    Cancer
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="health-conditions" value="respiratory">
+                                                    Respiratory Conditions
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="medical-history">Please provide details of any medical conditions:</label>
+                                            <textarea id="medical-history" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn-primary">Save & Continue</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Documents Section -->
+                <section id="documents" class="dashboard-section">
+                    <h2>Documents</h2>
+                    <div class="documents-container">
+                        <!-- Document upload and management interface -->
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/dashboard.js"></script>
+    <script src="scripts/forms.js"></script>
+</body>
+</html> 
