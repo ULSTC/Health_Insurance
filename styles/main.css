@@ -209,18 +209,18 @@ input:focus, select:focus {
 
 /* Form Section Styles */
 .form-section {
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    background: white;
+    border-radius: 0.5rem;
     padding: 1.5rem;
-    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .form-section h3 {
     color: var(--primary-color);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     font-size: 1.25rem;
-    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
 }
 
 /* Enhanced Checkbox Styles */
@@ -590,4 +590,133 @@ textarea:focus {
 
 .section.hidden {
     display: none;
+}
+
+/* Document Upload Styles */
+.documents-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.document-upload-section {
+    margin-bottom: 1.5rem;
+}
+
+.document-list {
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-height: 100px;
+    background-color: var(--light-gray);
+}
+
+.document-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: white;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.document-item:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.document-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.document-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.document-name {
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.document-size {
+    font-size: 0.875rem;
+    color: var(--text-color-light);
+}
+
+.document-type {
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    background-color: rgba(37, 99, 235, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    display: inline-block;
+    width: fit-content;
+}
+
+.document-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.document-upload {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.document-upload input[type="file"] {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background-color: white;
+    cursor: pointer;
+}
+
+.document-upload input[type="file"]:hover {
+    border-color: var(--primary-color);
+}
+
+.download-btn, .delete-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.download-btn {
+    background-color: var(--light-gray);
+    color: var(--primary-color);
+}
+
+.download-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.delete-btn {
+    background-color: var(--light-gray);
+    color: var(--error-color);
+}
+
+.delete-btn:hover {
+    background-color: var(--error-color);
+    color: white;
 }

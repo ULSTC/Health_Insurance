@@ -157,7 +157,7 @@
 
                         <!-- Application Forms -->
                         <div class="application-content">
-                            <form id="quote-form">
+                    <form id="quote-form">
                                 <!-- Business information-->
                                 <div id="business-info-form" class="application-form">
                                     <h3>Business Information</h3>
@@ -328,17 +328,17 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-row">
-                                        <div class="form-group">
+                        <div class="form-row">
+                            <div class="form-group">
                                             <label for="gender">Gender</label>
                                             <select id="gender" required>
                                                 <option value="">Select Gender</option>
                                                 <option value="male">Male</option>
                                                 <option value="female">Female</option>
                                                 <option value="other">Other</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
+                                </select>
+                            </div>
+                            <div class="form-group">
                                             <label for="relationship">Relationship</label>
                                             <select id="relationship">
                                                 <option value="">Select Relationship</option>
@@ -346,30 +346,30 @@
                                                 <option value="spouse">Spouse</option>
                                                 <option value="child">Child</option>
                                                 <option value="parent">Parent</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                </select>
+                            </div>
+                        </div>
 
                                 <!-- Health Information -->
                                 <div id="health-info-form" class="application-form">
                                     <h3>Health Information</h3>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="height">Height (cm)</label>
-                                        <input type="number" id="height" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="weight">Weight (kg)</label>
-                                        <input type="number" id="weight" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="bmi">BMI</label>
-                                        <input type="text" id="bmi" readonly>
-                                    </div>
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="height">Height (cm)</label>
+                                <input type="number" id="height" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bmi">BMI</label>
+                                <input type="text" id="bmi" readonly>
+                            </div>
+                        </div>
 
                                     <div class="form-row">
-                                        <div class="form-group">
+                        <div class="form-group">
                                             <label for="bloodGroup">Blood Group</label>
                                             <select id="bloodGroup" required>
                                                 <option value="">Select Blood Group</option>
@@ -383,12 +383,12 @@
                                                 <option value="AB-">AB-</option>
                                             </select>
                                     </div>
-                                </div>
+                        </div>
 
-                                <div class="form-group">
+                        <div class="form-group">
                                         <label>Pre-existing Conditions</label>
-                                        <div class="checkbox-group">
-                                            <label class="checkbox-label">
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
                                                 <input type="checkbox" name="conditions" value="diabetes">
                                                 Diabetes
                                             </label>
@@ -399,17 +399,17 @@
                                             <label class="checkbox-label">
                                                 <input type="checkbox" name="conditions" value="heart-disease">
                                                 Heart Disease
-                                            </label>
-                                            <label class="checkbox-label">
+                                </label>
+                                <label class="checkbox-label">
                                                 <input type="checkbox" name="conditions" value="asthma">
                                                 Asthma
-                                            </label>
+                                </label>
                                 <label class="checkbox-label">
                                             <input type="checkbox" name="conditions" value="other">
                                             Other
                                 </label>
-                                    </div>
-                                </div>
+                            </div>
+                        </div>
 
                                 <!-- Contact Information -->
                                 <div class="application-form">
@@ -430,12 +430,12 @@
                                     <button type="reset" class="btn-secondary">Reset</button>
                                     <button type="button" class="btn-primary save-continue">Save & Continue</button>
                                 </div>
-                            </form>
-                        </section>
+                    </form>
+                </section>
 
-                        <!-- Applications Section -->
-                        <section id="applications" class="dashboard-section">
-                            <h2>Applications</h2>
+                <!-- Applications Section -->
+                <section id="applications" class="dashboard-section">
+                    <h2>Applications</h2>
                             <div class="application-container">
                                 <!-- Side Navigation -->
                                 <div class="application-nav">
@@ -546,14 +546,54 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
+                    </div>
+                </section>
 
-                        <!-- Documents Section -->
-                        <section id="documents" class="dashboard-section">
-                            <h2>Documents</h2>
-                            <div class="documents-container">
-                                <!-- Document upload and management interface -->
+                <!-- Documents Section -->
+                <section id="documents" class="dashboard-section">
+                            <h2>Document Upload</h2>
+                    <div class="documents-container">
+                                <!-- Policy Documents Section -->
+                                <div class="form-section">
+                                    <h3>Policy Documents</h3>
+                                    <div class="document-upload-section">
+                                        <div class="document-list" id="policy-documents">
+                                            <!-- Policy documents will be listed here -->
+                                        </div>
+                                        <div class="document-upload">
+                                            <input type="file" id="policy-document-upload" multiple accept=".pdf,.doc,.docx">
+                                            <button class="btn-primary" onclick="uploadPolicyDocument()">Upload Policy Document</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Government Identification Section -->
+                                <div class="form-section">
+                                    <h3>Government Identification</h3>
+                                    <div class="document-upload-section">
+                                        <div class="document-list" id="id-documents">
+                                            <!-- ID documents will be listed here -->
+                                        </div>
+                                        <div class="document-upload">
+                                            <input type="file" id="id-document-upload" multiple accept=".pdf,.jpg,.jpeg,.png">
+                                            <button class="btn-primary" onclick="uploadIDDocument()">Upload ID Document</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Medical Documents Section -->
+                                <div class="form-section">
+                                    <h3>Medical Documents</h3>
+                                    <div class="document-upload-section">
+                                        <div class="document-list" id="medical-documents">
+                                            <!-- Medical documents will be listed here -->
+                                        </div>
+                                        <div class="document-upload">
+                                            <input type="file" id="medical-document-upload" multiple accept=".pdf,.jpg,.jpeg,.png">
+                                            <button class="btn-primary" onclick="uploadMedicalDocument()">Upload Medical Document</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </section>
                     </div>
@@ -561,7 +601,6 @@
             </main>
         </div>
     </div>
-
 
     <script src="scripts/auth.js"></script>
 <script src="scripts/cards.js"></script>
@@ -600,6 +639,11 @@
                     // Add active class to first items
                     navItems[0].classList.add('active');
                     forms[0].classList.add('active');
+                    
+                    // If this is the Quick Quote section, trigger a click on the first nav item
+                    if (navItems[0].closest('#quick-quote')) {
+                        navItems[0].click();
+                    }
                 }
 
                 navItems.forEach(item => {
@@ -753,6 +797,143 @@
                     }, 0);
                 });
             });
+
+            // Document Management Functions
+            function uploadRegularDocument() {
+                const fileInput = document.getElementById('regular-document-upload');
+                const files = fileInput.files;
+                
+                if (files.length === 0) {
+                    alert('Please select at least one document to upload');
+                    return;
+                }
+
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('documents', files[i]);
+                }
+                formData.append('type', 'regular');
+
+                // Here you would typically make an API call to upload the documents
+                // For now, we'll just simulate the upload
+                simulateDocumentUpload(formData, 'regular-documents');
+            }
+
+            function uploadPolicyDocument() {
+                const fileInput = document.getElementById('policy-document-upload');
+                const files = fileInput.files;
+                
+                if (files.length === 0) {
+                    alert('Please select at least one document to upload');
+                    return;
+                }
+
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('documents', files[i]);
+                }
+                formData.append('type', 'policy');
+
+                simulateDocumentUpload(formData, 'policy-documents');
+            }
+
+            function uploadIDDocument() {
+                const fileInput = document.getElementById('id-document-upload');
+                const files = fileInput.files;
+                
+                if (files.length === 0) {
+                    alert('Please select at least one document to upload');
+                    return;
+                }
+
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('documents', files[i]);
+                }
+                formData.append('type', 'id');
+
+                simulateDocumentUpload(formData, 'id-documents');
+            }
+
+            function uploadMedicalDocument() {
+                const fileInput = document.getElementById('medical-document-upload');
+                const files = fileInput.files;
+                
+                if (files.length === 0) {
+                    alert('Please select at least one document to upload');
+                    return;
+                }
+
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('documents', files[i]);
+                }
+                formData.append('type', 'medical');
+
+                simulateDocumentUpload(formData, 'medical-documents');
+            }
+
+            function simulateDocumentUpload(formData, targetListId) {
+                const fileInput = document.getElementById(formData.get('type') + '-document-upload');
+                const files = fileInput.files;
+                const documentList = document.getElementById(targetListId);
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const documentItem = document.createElement('div');
+                    documentItem.className = 'document-item';
+                    documentItem.innerHTML = `
+                        <div class="document-info">
+                            <span class="document-name">${file.name}</span>
+                            <span class="document-size">${formatFileSize(file.size)}</span>
+                            <span class="document-type">${getFileType(file.name)}</span>
+                        </div>
+                        <div class="document-actions">
+                            <button class="btn-secondary download-btn" onclick="downloadDocument('${file.name}')">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn-secondary delete-btn" onclick="deleteDocument(this)">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    `;
+                    documentList.appendChild(documentItem);
+                }
+
+                // Clear the file input
+                fileInput.value = '';
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            function getFileType(filename) {
+                const extension = filename.split('.').pop().toLowerCase();
+                const types = {
+                    'pdf': 'PDF Document',
+                    'doc': 'Word Document',
+                    'docx': 'Word Document',
+                    'jpg': 'Image',
+                    'jpeg': 'Image',
+                    'png': 'Image'
+                };
+                return types[extension] || 'Document';
+            }
+
+            function downloadDocument(filename) {
+                // Here you would typically make an API call to download the document
+                alert(`Downloading ${filename}...`);
+            }
+
+            function deleteDocument(button) {
+                const documentItem = button.closest('.document-item');
+                documentItem.remove();
+            }
         });
     </script>
 
