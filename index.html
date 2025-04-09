@@ -76,6 +76,40 @@
                 </div>
             </div>
         </div>
+        <!-- Add this new section after the auth-section and before the dashboard-section -->
+        <div id="cards-section" class="section hidden">
+            <nav class="dashboard-nav">
+                <div class="logo">HealthInsure</div>
+                <div class="nav-links">
+                </div>
+                <div class="user-menu">
+                    <span class="user-name">John Doe</span>
+                    <button id="logout-btn" class="btn-secondary">Logout</button>
+                </div>
+            </nav>
+            
+            <div class="cards-container">
+                <div class="dashboard-card" id="policy-management-card">
+                    <div class="card-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Policy Management</h3>
+                        <p>Manage your insurance policies, quotes, and applications</p>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card" id="claims-card">
+                    <div class="card-icon">
+                        <i class="fas fa-hand-holding-medical"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Claims</h3>
+                        <p>File a new claim or check status of existing claims</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Dashboard Section (Hidden by default) -->
         <div id="dashboard-section" class="section hidden">
@@ -491,8 +525,11 @@
         </div>
     </div>
 
-    <script src="scripts/auth.js"></script>
-    <script src="scripts/dashboard.js"></script>
-    <script src="scripts/forms.js"></script>
+    
+<script src="scripts/auth.js"></script>
+<script src="scripts/cards.js"></script>
+<script src="scripts/dashboard.js"></script>
+<script src="scripts/forms.js"></script>
+
 </body>
 </html> 

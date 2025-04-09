@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login');
     const signupForm = document.getElementById('signup');
     const authSection = document.getElementById('auth-section');
+    const cardsSection = document.getElementById('cards-section');
     const dashboardSection = document.getElementById('dashboard-section');
 
     // Tab switching functionality
@@ -57,12 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Store user data too
                 sessionStorage.setItem('user', JSON.stringify(data.user));
                 
-                // Show dashboard
+                // Show cards section instead of dashboard
                 authSection.classList.add('hidden');
-                dashboardSection.classList.remove('hidden');
+                cardsSection.classList.remove('hidden');
                 
-                // Update user name in dashboard
+                // Update user name in cards section
                 document.querySelector('.user-name').textContent = data.user.fullName || data.user.name;
+                document.querySelector('.name').textContent = data.user.fullName || data.user.name;
             } else {
                 showError(data.message || 'Invalid credentials');
             }
@@ -141,12 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Store user data too
                 sessionStorage.setItem('user', JSON.stringify(data.user));
                 
-                // Show dashboard
+                // Show cards section instead of dashboard
                 authSection.classList.add('hidden');
-                dashboardSection.classList.remove('hidden');
+                cardsSection.classList.remove('hidden');
                 
-                // Update user name in dashboard
+                // Update user name in cards section
                 document.querySelector('.user-name').textContent = data.user.fullName || data.user.name;
+                document.querySelector('.name').textContent = data.user.fullName || data.user.name;
             } else {
                 showError(data.message || 'Signup failed');
             }
@@ -163,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Show auth section
         authSection.classList.remove('hidden');
+        cardsSection.classList.add('hidden');
         dashboardSection.classList.add('hidden');
         
         // Reset forms
@@ -176,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (user && token) {
         authSection.classList.add('hidden');
-        dashboardSection.classList.remove('hidden');
+        cardsSection.classList.remove('hidden');
         try {
             const userData = JSON.parse(user);
             document.querySelector('.user-name').textContent = userData.fullName || userData.name;
