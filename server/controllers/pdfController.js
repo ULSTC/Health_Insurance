@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Generate PDF for application
-exports.generatePDF = async (req, res) => {
+const generatePDF = async (req, res) => {
     try {
         const { applicationId } = req.params;
 
@@ -107,3 +107,6 @@ exports.generatePDF = async (req, res) => {
         res.status(500).json({ message: 'Error generating PDF', error: error.message });
     }
 }; 
+module.exports={
+    generatePDF
+}

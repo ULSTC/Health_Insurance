@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
         pincode: String,
         state: String,
         city: String,
-        addressLine: String
+        addressLine: String,
     },
     createdAt: {
         type: Date,

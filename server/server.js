@@ -24,12 +24,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/health-insurance', {
+console.log(process.env.MONGODB_URI," aa raha hai kya")
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+  }).then(() => console.log("MongoDB connected"))
+    .catch(err => console.log("MongoDB connection error:", err));
+  
 
 // Routes
 app.use('/api/auth', authRoutes);
