@@ -6,6 +6,8 @@
     --border-color: #e5e7eb;
     --error-color: #dc2626;
     --success-color: #059669;
+    --error-bg: #fef2f2;
+    --error-bg-light: #fef2f2;
 }
 
 * {
@@ -117,29 +119,31 @@ input:focus, select:focus {
     color: white;
     padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
-    font-weight: 500;
+    border-radius: 0.5rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: 500;
 }
 
 .btn-primary:hover {
     background-color: var(--secondary-color);
+    color: white;
 }
 
 .btn-secondary {
-    background-color: white;
-    color: var(--primary-color);
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--primary-color);
-    border-radius: 4px;
-    font-weight: 500;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
 }
 
 .btn-secondary:hover {
-    background-color: var(--light-gray);
+    background-color: var(--border-color);
+    color: var(--text-color);
 }
 
 /* Dashboard Styles */
@@ -191,10 +195,7 @@ input:focus, select:focus {
 
 .dashboard-section {
     display: none;
-    background: white;
     padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-section.active {
@@ -274,6 +275,38 @@ select:invalid {
     min-width: 200px;
 }
 
+/* Form Validation Styles */
+.error-message {
+    color: var(--error-color);
+    background-color: var(--error-bg);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+input.error,
+select.error {
+    border-color: var(--error-color);
+    background-color: var(--error-bg-light);
+}
+
+input.error:focus,
+select.error:focus {
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+}
+
+/* Form Actions Styles */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .dashboard-nav {
@@ -300,15 +333,28 @@ select:invalid {
     .checkbox-group {
         grid-template-columns: 1fr;
     }
+
+    .application-container {
+        flex-direction: column;
+    }
+
+    .application-nav {
+        width: 100%;
+    }
+
+    .dashboard-section {
+        padding: 1rem;
+    }
 }
 
-/* Application Section Styles */
+/* Application Container Styles */
 .application-container {
     display: flex;
     gap: 2rem;
     min-height: 600px;
 }
 
+/* Application Navigation Styles */
 .application-nav {
     width: 250px;
     background: white;
@@ -326,14 +372,20 @@ select:invalid {
     cursor: pointer;
     transition: all 0.3s ease;
     color: var(--text-color);
+    background: var(--light-gray);
 }
 
 .nav-item:hover {
-    background-color: var(--light-gray);
+    background-color: var(--primary-color-light);
 }
 
 .nav-item.active {
     background-color: var(--primary-color);
+    color: white;
+}
+
+.nav-item.completed {
+    background-color: var(--success-color);
     color: white;
 }
 
@@ -343,6 +395,7 @@ select:invalid {
     text-align: center;
 }
 
+/* Application Content Styles */
 .application-content {
     flex: 1;
     background: white;
@@ -351,62 +404,46 @@ select:invalid {
     padding: 2rem;
 }
 
-.application-form {
-    display: none;
-}
-
-.application-form.active {
-    display: block;
-}
-
-.application-form h3 {
-    margin-bottom: 2rem;
-    color: var(--text-color);
-    font-size: 1.5rem;
-}
-
-/* Member List Styles */
-.member-list {
-    margin-bottom: 1rem;
-}
-
-.member-card {
-    background: var(--light-gray);
+/* Quick Quote Specific Styles */
+#quick-quote .application-nav {
+    width: 250px;
+    background: white;
     border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 1rem;
-    margin-bottom: 1rem;
 }
 
-/* Form Elements */
-textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 1rem;
-    resize: vertical;
+#quick-quote .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-color);
 }
 
-textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+#quick-quote .nav-item:hover {
+    background-color: var(--light-gray);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .application-container {
-        flex-direction: column;
-    }
+#quick-quote .nav-item.active {
+    background-color: var(--primary-color);
+    color: white;
+}
 
-    .application-nav {
-        width: 100%;
-    }
+#quick-quote .nav-item.completed {
+    background-color: var(--success-color);
+    color: white;
+}
 
-    .nav-item {
-        padding: 0.75rem;
-    }
-} 
+#quick-quote .nav-item i {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
 /* Add these styles to main.css */
 
 /* Cards Section Styles */
@@ -458,4 +495,99 @@ textarea:focus {
     .cards-container {
         grid-template-columns: 1fr;
     }
+}
+
+/* Applications Specific Styles */
+#applications .application-nav {
+    flex-direction: column;
+}
+
+#applications .nav-item {
+    width: 100%;
+    justify-content: flex-start;
+}
+
+/* Quick Quote Specific Styles */
+#quick-quote .application-form {
+    display: none;
+}
+
+#quick-quote .application-form.active {
+    display: block;
+}
+
+/* Application Form Styles */
+.application-form {
+    display: none;
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.application-form.active {
+    display: block;
+    opacity: 1;
+}
+
+.application-form h3 {
+    margin-bottom: 2rem;
+    color: var(--text-color);
+    font-size: 1.5rem;
+}
+
+/* Applications Specific Styles */
+#applications .application-form {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#applications .application-form.active {
+    display: block;
+    opacity: 1;
+}
+
+#applications .application-content {
+    position: relative;
+    min-height: 500px;
+}
+
+/* Member List Styles */
+.member-list {
+    margin-bottom: 1rem;
+}
+
+.member-card {
+    background: var(--light-gray);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Form Elements */
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Section Visibility */
+.section {
+    display: block;
+}
+
+.section.hidden {
+    display: none;
 }
