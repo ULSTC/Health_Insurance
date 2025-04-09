@@ -32,27 +32,43 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
+        const userType = document.getElementById('login-user-type').value || "normal";
 
         try {
-            // TODO: Replace with actual API call
-            const response = await mockLogin(email, password);
+            const response = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    userType
+                })
+            });
             
-            if (response.success) {
-                // Store user data in localStorage
-                localStorage.setItem('user', JSON.stringify(response.user));
-                localStorage.setItem('token', response.token);
+            const data = await response.json();
+            console.log("Login response:", data);
+            
+            if (response.ok) {
+                // Store token in sessionStorage
+                sessionStorage.setItem('token', data.token);
+                
+                // Store user data too
+                sessionStorage.setItem('user', JSON.stringify(data.user));
                 
                 // Show dashboard
                 authSection.classList.add('hidden');
                 dashboardSection.classList.remove('hidden');
                 
                 // Update user name in dashboard
-                document.querySelector('.user-name').textContent = response.user.name;
+                document.querySelector('.user-name').textContent = data.user.fullName || data.user.name;
             } else {
-                showError('Invalid credentials');
+                showError(data.message || 'Invalid credentials');
             }
         } catch (error) {
             showError('An error occurred during login');
+            console.error('Login error:', error);
         }
     });
 
@@ -60,43 +76,90 @@ document.addEventListener('DOMContentLoaded', () => {
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const name = document.getElementById('signup-name').value;
+        const fullName = document.getElementById('signup-name').value;
         const email = document.getElementById('signup-email').value;
         const password = document.getElementById('signup-password').value;
         const confirmPassword = document.getElementById('signup-confirm-password').value;
+        const userType = document.getElementById('signup-user-type').value || "normal";
+        
+        // Check if all address fields exist before accessing
+        let phone = '';
+        let pincode = '';
+        let state = '';
+        let city = '';
+        let addressLine = '';
+        
+        
+        // Check if fields exist before accessing them
+        if (document.getElementById('signup-phone')) {
+            phone = document.getElementById('signup-phone').value;
+        }
+        if (document.getElementById('signup-pincode')) {
+            pincode = document.getElementById('signup-pincode').value;
+        }
+        if (document.getElementById('signup-state')) {
+            state = document.getElementById('signup-state').value;
+        }
+        if (document.getElementById('signup-city')) {
+            city = document.getElementById('signup-city').value;
+        }
+        if (document.getElementById('signup-address-line')) {
+            addressLine = document.getElementById('signup-address-line').value;
+        }
 
         if (password !== confirmPassword) {
             showError('Passwords do not match');
             return;
         }
-
+        
+        const reqbody = {
+            fullName,
+            email,
+            password,
+            userType,
+            phone
+        };
+        
+        console.log("Sending signup request:", reqbody);
+        
         try {
-            // TODO: Replace with actual API call
-            const response = await mockSignup(name, email, password);
+            const response = await fetch('http://localhost:5000/api/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reqbody)
+            });
             
-            if (response.success) {
-                // Store user data in localStorage
-                localStorage.setItem('user', JSON.stringify(response.user));
-                localStorage.setItem('token', response.token);
+            const data = await response.json();
+            console.log("Signup response:", data);
+            
+            if (response.ok) {
+                // Store token in sessionStorage
+                sessionStorage.setItem('token', data.token);
+                
+                // Store user data too
+                sessionStorage.setItem('user', JSON.stringify(data.user));
                 
                 // Show dashboard
                 authSection.classList.add('hidden');
                 dashboardSection.classList.remove('hidden');
                 
                 // Update user name in dashboard
-                document.querySelector('.user-name').textContent = response.user.name;
+                document.querySelector('.user-name').textContent = data.user.fullName || data.user.name;
             } else {
-                showError(response.message || 'Signup failed');
+                showError(data.message || 'Signup failed');
             }
         } catch (error) {
             showError('An error occurred during signup');
+            console.error('Signup error:', error);
         }
     });
 
     // Logout functionality
     document.getElementById('logout-btn').addEventListener('click', () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('token');
         
         // Show auth section
         authSection.classList.remove('hidden');
@@ -107,52 +170,56 @@ document.addEventListener('DOMContentLoaded', () => {
         signupForm.reset();
     });
 
-    // Check if user is already logged in
-    const user = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
+    // Check if user is already logged in - use sessionStorage consistently
+    const user = sessionStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
     
     if (user && token) {
         authSection.classList.add('hidden');
         dashboardSection.classList.remove('hidden');
-        document.querySelector('.user-name').textContent = JSON.parse(user).name;
+        try {
+            const userData = JSON.parse(user);
+            document.querySelector('.user-name').textContent = userData.fullName || userData.name;
+        } catch (e) {
+            console.error("Error parsing user data:", e);
+        }
     }
 });
 
-// Mock API functions (to be replaced with actual API calls)
-async function mockLogin(email, password) {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Mock successful login
-    return {
-        success: true,
-        user: {
-            id: '1',
-            name: 'John Doe',
-            email: email
-        },
-        token: 'mock-jwt-token'
-    };
-}
-
-async function mockSignup(name, email, password) {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Mock successful signup
-    return {
-        success: true,
-        user: {
-            id: '1',
-            name: name,
-            email: email
-        },
-        token: 'mock-jwt-token'
-    };
-}
-
 // Utility function to show error messages
 function showError(message) {
-    // TODO: Implement proper error message display
-    alert(message);
-} 
+    // Create or select error message container
+    let errorContainer = document.querySelector('.error-message');
+    
+    if (!errorContainer) {
+        errorContainer = document.createElement('div');
+        errorContainer.className = 'error-message';
+        
+        // Try to find a parent container (more robust approach)
+        const authContainer = document.querySelector('.auth-container');
+        if (authContainer) {
+            authContainer.appendChild(errorContainer);
+        } else {
+            // Fallback - append to the active form
+            const activeForm = document.querySelector('.auth-form.active');
+            if (activeForm) {
+                activeForm.appendChild(errorContainer);
+            } else {
+                // Last resort - append to auth section
+                document.getElementById('auth-section').appendChild(errorContainer);
+            }
+        }
+    }
+    
+    // Set the error message
+    errorContainer.textContent = message;
+    errorContainer.style.color = 'red';
+    errorContainer.style.marginTop = '10px';
+    errorContainer.style.padding = '8px';
+    errorContainer.style.textAlign = 'center';
+    
+    // Remove error after 5 seconds
+    setTimeout(() => {
+        errorContainer.textContent = '';
+    }, 5000);
+}
