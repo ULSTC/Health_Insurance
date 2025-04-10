@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <div id="app">
         <!-- Authentication Section -->
@@ -16,7 +18,7 @@
                     <button class="auth-tab active" data-tab="login">Login</button>
                     <button class="auth-tab" data-tab="signup">Sign Up</button>
                 </div>
-                
+
                 <div id="login-form" class="auth-form active">
                     <h2>Welcome Back</h2>
                     <form id="login">
@@ -32,8 +34,9 @@
                             <label for="login-user-type">User Type</label>
                             <select id="login-user-type" required>
                                 <option value="">Select User Type</option>
-                                <option value="normal">Normal User</option>
-                                <option value="intermediary">Intermediary</option>
+                                <option value="normal">User</option>
+                                
+
                             </select>
                         </div>
                         <button type="submit" class="btn-primary">Login</button>
@@ -67,8 +70,8 @@
                             <label for="signup-user-type">User Type</label>
                             <select id="signup-user-type" required>
                                 <option value="">Select User Type</option>
-                                <option value="normal">Normal User</option>
-                                <option value="intermediary">Intermediary</option>
+                                <option value="normal">User</option>
+                               
                             </select>
                         </div>
                         <button type="submit" class="btn-primary">Sign Up</button>
@@ -79,7 +82,7 @@
         <!-- Add this new section after the auth-section and before the dashboard-section -->
         <div id="cards-section" class="section hidden">
             <nav class="dashboard-nav">
-                <div class="logo">HealthInsure</div>
+                <div class="logo">Health Insurance</div>
                 <div class="nav-links">
                 </div>
                 <div class="user-menu">
@@ -87,7 +90,7 @@
                     <button id="logout-btn" class="btn-secondary">Logout</button>
                 </div>
             </nav>
-            
+
             <div class="cards-container">
                 <div class="dashboard-card" id="policy-management-card">
                     <div class="card-icon">
@@ -98,7 +101,7 @@
                         <p>Manage your insurance policies, quotes, and applications</p>
                     </div>
                 </div>
-                
+
                 <div class="dashboard-card" id="claims-card">
                     <div class="card-icon">
                         <i class="fas fa-hand-holding-medical"></i>
@@ -114,10 +117,10 @@
         <!-- Dashboard Section (Hidden by default) -->
         <div id="dashboard-section" class="section hidden">
             <nav class="dashboard-nav">
-                <div class="logo">HealthInsure</div>
+                <div class="logo">Health Insurance</div>
                 <div class="nav-links">
-                    <a href="#" class="active" data-section="quick-quote">Quick Quote</a>
-                    <a href="#" data-section="applications">Applications</a>
+                    <a href="#" class="active" data-section="quick-quote">Easy Quote</a>
+                    <a href="#" data-section="applications">Detail Data Capture</a>
                     <a href="#" data-section="documents">Documents</a>
                 </div>
                 <div class="user-menu">
@@ -129,11 +132,11 @@
             <main class="dashboard-content">
                 <!-- Quick Quote Section -->
                 <section id="quick-quote" class="dashboard-section active">
-                    <h2>Get a Quick Quote</h2>
+                    <h2>Get a Easy Quote</h2>
                     <div class="application-container">
                         <!-- Side Navigation -->
                         <div class="application-nav">
-                            <div class="nav-item" data-section="business-info">
+                            <div class="nav-item active" data-section="business-info">
                                 <i class="fas fa-building"></i>
                                 <span>Business Info</span>
                             </div>
@@ -141,10 +144,7 @@
                                 <i class="fas fa-file-contract"></i>
                                 <span>Policy Info</span>
                             </div>
-                            <div class="nav-item" data-section="address-info">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Address Info</span>
-                            </div>
+
                             <div class="nav-item" data-section="personal-info">
                                 <i class="fas fa-user"></i>
                                 <span>Personal Info</span>
@@ -153,36 +153,58 @@
                                 <i class="fas fa-heartbeat"></i>
                                 <span>Health Info</span>
                             </div>
+                            <div class="nav-item" data-section="address-info">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Address Info</span>
+                            </div>
+
                         </div>
 
                         <!-- Application Forms -->
                         <div class="application-content">
-                    <form id="quote-form">
+                            <form id="quote-form">
                                 <!-- Business information-->
-                                <div id="business-info-form" class="application-form">
+                                <div id="business-info-form" class="application-form active">
                                     <h3>Business Information</h3>
                                     <div class="form-row">
                                         <div class="form-group">
-                                        <label for="lineOfBusiness">LOB</label>
+                                            <label for="polCountry">Country</label>
+                                            <select id="polCountry" required>
+                                                <option value="">Select Country</option>
+                                                <option value="India">India</option>
+                                                <option value="United States">United States</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="Canada">Canada</option>
+                                                <option value="Australia">Australia</option>
+                                                <!-- Add more countries as needed -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="polState">State</label>
+                                            <input type="text" id="polState" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="polCity">City</label>
+                                            <input type="text" id="polCity" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="lineOfBusiness">LOB</label>
                                             <select id="lineOfBusiness" required>
                                                 <option value="">Select LOB</option>
-                                                <option value="male">Accident</option>
-                                                <option value="female">Health</option>
-                                                <option value="other">Fire</option>
+                                                <option value="accident">Accident</option>
+                                                <option value="health">Health</option>
+                                                <option value="fire">Fire</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                        <label for="typeOfBusiness">LOB</label>
+                                            <label for="typeOfBusiness">Type Of Business</label>
                                             <select id="typeOfBusiness" required>
-                                                <option value="">Select Business type</option>
-                                                <option value="male">New Business</option>
-                                                <option value="female">Renewal</option>
-                                                <option value="other">Portability</option>
+                                                <option value="new">New Business</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                        <label for="policyStartExpected">Start Date</label>
-                                        <input type="date" id="policystartDate" required>
+                                            <label for="policyStartExpected">Start Date</label>
+                                            <input type="date" id="policystartDate" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="policyEndExpected">End Date</label>
@@ -200,116 +222,148 @@
                                             <label for="Intermediaryemail">Intermediary email</label>
                                             <input type="email" id="Intermediaryemail" required>
                                         </div>
-                                        </div>
+                                    </div>
                                     <div class="form-actions">
-                                        <button type="reset" class="btn-secondary">Reset</button>
-                                        <button type="button" class="btn-primary save-continue">Save & Continue</button>
+                                        <button type="button" class="btn-primary save-continue">Continue</button>
                                     </div>
                                 </div>
-                                 <!--Policy Details-->
-                                 <div id="policy-info-form" class="application-form">
+
+                                <!--Policy Details-->
+                                <div id="policy-info-form" class="application-form">
                                     <h3>Policy Information</h3>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="premiumType">Premium </label>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="premiumType">Payment Type </label>
                                             <select id="premiumType" required>
                                                 <option value="">Select payment type</option>
-                                                <option value="male">Annual payment</option>
-                                                <option value="female">Single Payment</option>
-                                                <option value="other">Monthly Payment</option>
+                                                <option value="annual">Annual payment</option>
+                                                <option value="single">Single Payment</option>
+                                                <option value="monthly">Monthly Payment</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                        <label for="coverType"> Premium Cover</label>
+                                            <label for="coverType"> Premium Cover</label>
                                             <select id="coverType" required>
                                                 <option value="">Select Business type</option>
-                                                <option value="male">Single</option>
-                                                <option value="female">Family Floater</option>
+                                                <option value="single">Individual</option>
+                                                <option value="family">Family Floater</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="ploicyPlan"> Policy Plan</label>
-                                                <select id="ploicyPlan" required>
-                                                    <option value="">Select Business type</option>
-                                                    <option value="male">Gold</option>
-                                                    <option value="female">Silver</option>
-                                                    <option value="female">Platinum</option>
-                                                </select>
-                                            </div>
+                                            <select id="ploicyPlan" required>
+                                                <option value="">Select Plan type</option>
+                                                <option value="gold">Gold</option>
+                                                <option value="silver">Silver</option>
+                                                <option value="platinum">Platinum</option>
+                                            </select>
+                                        </div>
                                         <div class="form-group">
                                             <label for="sumInusred">Sum Insured INR</label>
                                             <input type="number" id="sumInusred" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="plicyTenure">Policy Tenure (Yrs)</label>
+                                            <label for="policyTenure">Policy Tenure (Yrs)</label>
                                             <input type="number" id="plicyTenure" required>
                                         </div>
-                                        </div>
-                                    <div class="form-actions">
-                                        <button type="reset" class="btn-secondary">Reset</button>
-                                        <button type="button" class="btn-primary save-continue">Save & Continue</button>
                                     </div>
-                                 </div>
-                                 <!-- Communication address-->
-                                 <div id="address-info-form" class="application-form">
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary save-continue">Continue</button>
+                                    </div>
+                                </div>
+
+                                <!-- Communication address-->
+                                <div id="address-info-form" class="application-form">
                                     <h3>Communication Address</h3>
                                     <div class="form-row">
                                         <div class="form-group">
-                                            <label for="PolicyLineOfAddress">Line Of Address</label>
-                                            <input type="text" id="policyLineOfAddress" required>
+                                            <label for="commLineOfAddress">Line Of Address</label>
+                                            <input type="text" id="commLineOfAddress" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="PolicyCountry">Country</label>
-                                            <input type="text" id="policyCountry" required>
+                                            <label for="commPinCode">PIN Code</label>
+                                            <div class="dropdown-container">
+                                                <input type="text" id="commPinCode" required autocomplete="off"
+                                                    oninput="filterPinCodes('comm')">
+                                                <div id="commPinCodeDropdown" class="dropdown-list"></div>
+                                            </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="PinCode">PIN Code</label>
-                                            <input type="number" id="pinCode" required>
+                                            <label for="commCountry">Country</label>
+                                            <select id="commCountry" required>
+                                                <option value="">Select Country</option>
+                                                <option value="India">India</option>
+                                                <option value="United States">United States</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="Canada">Canada</option>
+                                                <option value="Australia">Australia</option>
+                                                <!-- Add more countries as needed -->
+                                            </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="PolicyState">Stae</label>
-                                            <input type="text" id="policyState" required>
+                                            <label for="commState">State</label>
+                                            <select id="commState" required>
+                                                <option value="">Select State</option>
+                                                <!-- States will be populated based on selected country -->
+                                            </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="PolicyCity">City</label>
-                                            <input type="text" id="policyCity" required>
+                                            <label for="commCity">City</label>
+                                            <input type="text" id="commCity" required>
                                         </div>
-                                        </div>
-                                    <div class="form-actions">
-                                        <button type="reset" class="btn-secondary">Reset</button>
-                                        <button type="button" class="btn-primary save-continue">Save & Continue</button>
                                     </div>
-                                 </div> 
-                                 <!-- Present Address-->
-                                 <div class="application-form">
-                                    <h3>Present Address</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="PolicyLineOfAddress">Line Of Address</label>
-                                            <input type="text" id="policyLineOfAddress" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="PolicyCountry">Country</label>
-                                            <input type="text" id="policyCountry" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="PinCode">PIN Code</label>
-                                            <input type="number" id="pinCode" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="PolicyState">Stae</label>
-                                            <input type="text" id="policyState" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="PolicyCity">City</label>
-                                            <input type="text" id="policyCity" required>
-                                        </div>
-                                        </div>
-                                    <div class="form-actions">
-                                        <button type="reset" class="btn-secondary">Reset</button>
-                                        <button type="button" class="btn-primary save-continue">Save & Continue</button>
+
+                                    <h3>Permanent Address</h3>
+                                    <div class="form-group checkbox-container">
+                                        <input type="checkbox" id="sameAsComm">
+                                        <label for="sameAsComm">Same as Communication Address</label>
                                     </div>
-                                 </div>
+
+                                    <div class="form-row" id="presentAddressFields">
+                                        <div class="form-group">
+                                            <label for="presentLineOfAddress">Line Of Address</label>
+                                            <input type="text" id="presentLineOfAddress" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="presentPinCode">PIN Code</label>
+                                            <div class="dropdown-container">
+                                                <input type="text" id="presentPinCode" required autocomplete="off"
+                                                    oninput="filterPinCodes('present')">
+                                                <div id="presentPinCodeDropdown" class="dropdown-list"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="presentCountry">Country</label>
+                                            <select id="presentCountry" required>
+                                                <option value="">Select Country</option>
+                                                <option value="India">India</option>
+                                                <option value="United States">United States</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="Canada">Canada</option>
+                                                <option value="Australia">Australia</option>
+                                                <!-- Add more countries as needed -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="presentState">State</label>
+                                            <select id="presentState" required>
+                                                <option value="">Select State</option>
+                                                <!-- States will be populated based on selected country -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="presentCity">City</label>
+                                            <input type="text" id="presentCity" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary save-continue">Save and
+                                            Finalize</button>
+                                    </div>
+                                </div>
+
+
                                 <!-- Personal Information -->
                                 <div id="personal-info-form" class="application-form">
                                     <h3>Personal Information</h3>
@@ -327,18 +381,17 @@
                                             <input type="number" id="age" readonly>
                                         </div>
                                     </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
+                                    <div class="form-row">
+                                        <div class="form-group">
                                             <label for="gender">Gender</label>
                                             <select id="gender" required>
                                                 <option value="">Select Gender</option>
                                                 <option value="male">Male</option>
                                                 <option value="female">Female</option>
                                                 <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="relationship">Relationship</label>
                                             <select id="relationship">
                                                 <option value="">Select Relationship</option>
@@ -346,30 +399,44 @@
                                                 <option value="spouse">Spouse</option>
                                                 <option value="child">Child</option>
                                                 <option value="parent">Parent</option>
-                                </select>
-                            </div>
-                        </div>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input type="email" id="email" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="phone">Phone Number</label>
+                                            <input type="tel" id="phone" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary save-continue">Continue</button>
+                                    </div>
+                                </div>
 
                                 <!-- Health Information -->
                                 <div id="health-info-form" class="application-form">
                                     <h3>Health Information</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="height">Height (cm)</label>
-                                <input type="number" id="height" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="weight">Weight (kg)</label>
-                                <input type="number" id="weight" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="bmi">BMI</label>
-                                <input type="text" id="bmi" readonly>
-                            </div>
-                        </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="height">Height (cm)</label>
+                                            <input type="number" id="height" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="weight">Weight (kg)</label>
+                                            <input type="number" id="weight" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="bmi">BMI</label>
+                                            <input type="text" id="bmi" readonly>
+                                        </div>
+                                    </div>
 
                                     <div class="form-row">
-                        <div class="form-group">
+                                        <div class="form-group">
                                             <label for="bloodGroup">Blood Group</label>
                                             <select id="bloodGroup" required>
                                                 <option value="">Select Blood Group</option>
@@ -382,560 +449,542 @@
                                                 <option value="AB+">AB+</option>
                                                 <option value="AB-">AB-</option>
                                             </select>
-                                    </div>
-                        </div>
-
-                        <div class="form-group">
-                                        <label>Pre-existing Conditions</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-label">
-                                                <input type="checkbox" name="conditions" value="diabetes">
-                                                Diabetes
-                                            </label>
-                                            <label class="checkbox-label">
-                                                <input type="checkbox" name="conditions" value="hypertension">
-                                                Hypertension
-                                            </label>
-                                            <label class="checkbox-label">
-                                                <input type="checkbox" name="conditions" value="heart-disease">
-                                                Heart Disease
-                                </label>
-                                <label class="checkbox-label">
-                                                <input type="checkbox" name="conditions" value="asthma">
-                                                Asthma
-                                </label>
-                                <label class="checkbox-label">
-                                            <input type="checkbox" name="conditions" value="other">
-                                            Other
-                                </label>
-                            </div>
-                        </div>
-
-                                <!-- Contact Information -->
-                                <div class="application-form">
-                                    <h3>Contact Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="email">Email</label>
-                                            <input type="email" id="email" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="phone">Phone Number</label>
-                                            <input type="tel" id="phone" required>
+                                            <label>Pre-existing Conditions</label>
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="conditions" value="diabetes">
+                                                    Diabetes
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="conditions" value="hypertension">
+                                                    Hypertension
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="conditions" value="heart-disease">
+                                                    Heart Disease
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="conditions" value="asthma">
+                                                    Asthma
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="conditions" value="other">
+                                                    Other
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary save-continue"> Save & Continue</button>
+                                    </div>
                                 </div>
-
-                                <div class="form-actions">
-                                    <button type="reset" class="btn-secondary">Reset</button>
-                                    <button type="button" class="btn-primary save-continue">Save & Continue</button>
-                                </div>
-                    </form>
+                            </form>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Applications Section -->
                 <section id="applications" class="dashboard-section">
-                    <h2>Applications</h2>
-                            <div class="application-container">
-                                <!-- Side Navigation -->
-                                <div class="application-nav">
-                                    <div class="nav-item" data-section="basic-info">
-                                        <i class="fas fa-info-circle"></i>
-                                        <span>Basic Info</span>
+                    <h2>Detail Data Capture</h2>
+
+                    <!-- Quick Code Lookup Field -->
+                    
+
+                    <div class="application-container">
+                        <!-- Side Navigation -->
+                        <div class="application-nav">
+                            <div class="nav-item active" data-section="business-info-app">
+                                <i class="fas fa-building"></i>
+                                <span>Business Info</span>
+                            </div>
+                            <div class="nav-item" data-section="policy-info-app">
+                                <i class="fas fa-file-contract"></i>
+                                <span>Policy Info</span>
+                            </div>
+                            <div class="nav-item" data-section="personal-info-app">
+                                <i class="fas fa-user"></i>
+                                <span>Personal Info</span>
+                            </div>
+                            <div class="nav-item" data-section="health-info-app">
+                                <i class="fas fa-heartbeat"></i>
+                                <span>Health Info</span>
+                            </div>
+                            <div class="nav-item" data-section="address-info-app">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Address Info</span>
+                            </div>
+                            <div class="nav-item" data-section="questionnaire-app">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Questionnaire</span>
+                            </div>
+                            <div class="nav-item" data-section="finalize-app">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Finalize</span>
+                            </div>
+                        </div>
+
+                        <!-- Application Forms -->
+                        <div class="application-content">
+                            <form id="application-form">
+                                <!-- Business Info Form -->
+                                <div id="business-info-app-form" class="application-form active">
+                                    <h3>Business Information</h3>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="app-polCountry">Country</label>
+                                            <select id="app-polCountry" required>
+                                                <option value="">Select Country</option>
+                                                <option value="India">India</option>
+                                                <option value="United States">United States</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="Canada">Canada</option>
+                                                <option value="Australia">Australia</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-polState">State</label>
+                                            <input type="text" id="app-polState" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-polCity">City</label>
+                                            <input type="text" id="app-polCity" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-lineOfBusiness">LOB</label>
+                                            <select id="app-lineOfBusiness" required>
+                                                <option value="">Select LOB</option>
+                                                <option value="accident">Accident</option>
+                                                <option value="health">Health</option>
+                                                <option value="fire">Fire</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-typeOfBusiness">Type Of Business</label>
+                                            <select id="app-typeOfBusiness" required>
+                                                <option value="new">New Business</option>
+                                                <option value="renewal">Renewal</option>
+                                                <option value="portability">Portability</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-policystartDate">Start Date</label>
+                                            <input type="date" id="app-policystartDate" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-policyEndDate">End Date</label>
+                                            <input type="date" id="app-policyEndDate" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-IntermediaryCode">Intermediary Code</label>
+                                            <input type="text" id="app-IntermediaryCode" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-IntermediaryName">Intermediary Name</label>
+                                            <input type="text" id="app-IntermediaryName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-Intermediaryemail">Intermediary email</label>
+                                            <input type="email" id="app-Intermediaryemail" required>
+                                        </div>
                                     </div>
-                                    <div class="nav-item" data-section="member-details">
-                                        <i class="fas fa-users"></i>
-                                        <span>Member Details</span>
-                                    </div>
-                                    <div class="nav-item" data-section="questionnaire">
-                                        <i class="fas fa-clipboard-list"></i>
-                                        <span>Questionnaire</span>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary app-save-continue">Save &
+                                            Continue</button>
                                     </div>
                                 </div>
 
-                                <!-- Application Forms -->
-                                <div class="application-content">
-                                    <!-- Basic Info Form -->
-                                    <div id="basic-info-form" class="application-form">
-                                        <h3>Basic Information</h3>
-                                        <form>
-                                            <div class="form-section">
-                                                <div class="form-row">
-                                                    <div class="form-group">
-                                                        <label for="policy-type">Policy Type</label>
-                                                        <select id="policy-type" required>
-                                                            <option value="">Select Policy Type</option>
-                                                            <option value="individual">Individual</option>
-                                                            <option value="family-floater">Family Floater</option>
-                                                            <option value="group">Group</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="sum-insured">Sum Insured</label>
-                                                        <select id="sum-insured" required>
-                                                            <option value="">Select Sum Insured</option>
-                                                            <option value="500000">5 Lakhs</option>
-                                                            <option value="1000000">10 Lakhs</option>
-                                                            <option value="1500000">15 Lakhs</option>
-                                                            <option value="2000000">20 Lakhs</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-actions">
-                                                <button type="reset" class="btn-secondary">Reset</button>
-                                                <button type="button" class="btn-primary save-continue">Save & Continue</button>
-                                            </div>
-                                        </form>
+                                <!-- Policy Info Form -->
+                                <div id="policy-info-app-form" class="application-form">
+                                    <h3>Policy Information</h3>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="app-premiumType">Payment Type</label>
+                                            <select id="app-premiumType" required>
+                                                <option value="">Select payment type</option>
+                                                <option value="annual">Annual payment</option>
+                                                <option value="single">Single Payment</option>
+                                                <option value="monthly">Monthly Payment</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-coverType">Premium Cover</label>
+                                            <select id="app-coverType" required>
+                                                <option value="">Select Business type</option>
+                                                <option value="single">Individual</option>
+                                                <option value="family">Family Floater</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-ploicyPlan">Policy Plan</label>
+                                            <select id="app-ploicyPlan" required>
+                                                <option value="">Select Plan type</option>
+                                                <option value="gold">Gold</option>
+                                                <option value="silver">Silver</option>
+                                                <option value="platinum">Platinum</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-sumInusred">Sum Insured INR</label>
+                                            <input type="number" id="app-sumInusred" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-plicyTenure">Policy Tenure (Yrs)</label>
+                                            <input type="number" id="app-plicyTenure" required>
+                                        </div>
                                     </div>
-
-                                    <!-- Member Details Form -->
-                                    <div id="member-details-form" class="application-form">
-                                        <h3>Member Details</h3>
-                                        <form>
-                                            <div class="form-section">
-                                                <div class="member-list" id="member-list">
-                                                    <!-- Member cards will be added here dynamically -->
-                                                </div>
-                                                <button type="button" class="btn-secondary" id="add-member">
-                                                    <i class="fas fa-plus"></i> Add Member
-                                                </button>
-                                            </div>
-                                            <div class="form-actions">
-                                                <button type="reset" class="btn-secondary">Reset</button>
-                                                <button type="button" class="btn-primary save-continue">Save & Continue</button>
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                    <!-- Questionnaire Form -->
-                                    <div id="questionnaire-form" class="application-form">
-                                        <h3>Health Questionnaire</h3>
-                                        <form>
-                                            <div class="form-section">
-                                                <div class="form-group">
-                                                    <label>Have you or any family members had any of the following conditions?</label>
-                                                    <div class="checkbox-group">
-                                                        <label class="checkbox-label">
-                                                            <input type="checkbox" name="health-conditions" value="heart">
-                                                            Heart Disease
-                                                        </label>
-                                                        <label class="checkbox-label">
-                                                            <input type="checkbox" name="health-conditions" value="diabetes">
-                                                            Diabetes
-                                                        </label>
-                                                        <label class="checkbox-label">
-                                                            <input type="checkbox" name="health-conditions" value="cancer">
-                                                            Cancer
-                                                        </label>
-                                                        <label class="checkbox-label">
-                                                            <input type="checkbox" name="health-conditions" value="respiratory">
-                                                            Respiratory Conditions
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="medical-history">Please provide details of any medical conditions:</label>
-                                                    <textarea id="medical-history" rows="4"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="form-actions">
-                                                <button type="reset" class="btn-secondary">Reset</button>
-                                                <button type="button" class="btn-primary save-continue">Save & Continue</button>
-                                            </div>
-                                        </form>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary app-save-continue">Save &
+                                            Continue</button>
                                     </div>
                                 </div>
+
+                                <!-- Personal Info Form -->
+                                <div id="personal-info-app-form" class="application-form">
+                                    <h3>Personal Information</h3>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="app-fullName">Full Name</label>
+                                            <input type="text" id="app-fullName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-dateOfBirth">Date of Birth</label>
+                                            <input type="date" id="app-dateOfBirth" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-age">Age</label>
+                                            <input type="number" id="app-age" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="app-gender">Gender</label>
+                                            <select id="app-gender" required>
+                                                <option value="">Select Gender</option>
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-relationship">Relationship</label>
+                                            <select id="app-relationship">
+                                                <option value="">Select Relationship</option>
+                                                <option value="self">Self</option>
+                                                <option value="spouse">Spouse</option>
+                                                <option value="child">Child</option>
+                                                <option value="parent">Parent</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="app-email">Email</label>
+                                            <input type="email" id="app-email" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-phone">Phone Number</label>
+                                            <input type="tel" id="app-phone" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary app-save-continue">Save &
+                                            Continue</button>
+                                    </div>
+                                </div>
+
+                                <!-- Health Info Form -->
+                                <div id="health-info-app-form" class="application-form">
+                                    <h3>Health Information</h3>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="app-height">Height (cm)</label>
+                                            <input type="number" id="app-height" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-weight">Weight (kg)</label>
+                                            <input type="number" id="app-weight" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-bmi">BMI</label>
+                                            <input type="text" id="app-bmi" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="app-bloodGroup">Blood Group</label>
+                                            <select id="app-bloodGroup" required>
+                                                <option value="">Select Blood Group</option>
+                                                <option value="A+">A+</option>
+                                                <option value="A-">A-</option>
+                                                <option value="B+">B+</option>
+                                                <option value="B-">B-</option>
+                                                <option value="O+">O+</option>
+                                                <option value="O-">O-</option>
+                                                <option value="AB+">AB+</option>
+                                                <option value="AB-">AB-</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Pre-existing Conditions</label>
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="app-conditions" value="diabetes">
+                                                    Diabetes
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="app-conditions" value="hypertension">
+                                                    Hypertension
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="app-conditions" value="heart-disease">
+                                                    Heart Disease
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="app-conditions" value="asthma">
+                                                    Asthma
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="app-conditions" value="other">
+                                                    Other
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary app-save-continue">Save &
+                                            Continue</button>
+                                    </div>
+                                </div>
+
+                                <!-- Address Info Form -->
+                                <div id="address-info-app-form" class="application-form">
+                                    <h3>Communication Address</h3>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="app-commLineOfAddress">Line Of Address</label>
+                                            <input type="text" id="app-commLineOfAddress" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-commPinCode">PIN Code</label>
+                                            <div class="dropdown-container">
+                                                <input type="text" id="app-commPinCode" required autocomplete="off"
+                                                    oninput="filterPinCodes('app-comm')">
+                                                <div id="app-commPinCodeDropdown" class="dropdown-list"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-commCountry">Country</label>
+                                            <select id="app-commCountry" required>
+                                                <option value="">Select Country</option>
+                                                <option value="India">India</option>
+                                                <option value="United States">United States</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="Canada">Canada</option>
+                                                <option value="Australia">Australia</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-commState">State</label>
+                                            <select id="app-commState" required>
+                                                <option value="">Select State</option>
+                                                <!-- States will be populated based on selected country -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-commCity">City</label>
+                                            <input type="text" id="app-commCity" required>
+                                        </div>
+                                    </div>
+
+                                    <h3>Permanent Address</h3>
+                                    <div class="form-group checkbox-container">
+                                        <input type="checkbox" id="app-sameAsComm">
+                                        <label for="app-sameAsComm">Same as Communication Address</label>
+                                    </div>
+
+                                    <div class="form-row" id="app-presentAddressFields">
+                                        <div class="form-group">
+                                            <label for="app-presentLineOfAddress">Line Of Address</label>
+                                            <input type="text" id="app-presentLineOfAddress" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-presentPinCode">PIN Code</label>
+                                            <div class="dropdown-container">
+                                                <input type="text" id="app-presentPinCode" required autocomplete="off"
+                                                    oninput="filterPinCodes('app-present')">
+                                                <div id="app-presentPinCodeDropdown" class="dropdown-list"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-presentCountry">Country</label>
+                                            <select id="app-presentCountry" required>
+                                                <option value="">Select Country</option>
+                                                <option value="India">India</option>
+                                                <option value="United States">United States</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="Canada">Canada</option>
+                                                <option value="Australia">Australia</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-presentState">State</label>
+                                            <select id="app-presentState" required>
+                                                <option value="">Select State</option>
+                                                <!-- States will be populated based on selected country -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-presentCity">City</label>
+                                            <input type="text" id="app-presentCity" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary app-save-continue">Save &
+                                            Continue</button>
+                                    </div>
+                                </div>
+
+                                <!-- Questionnaire Form -->
+                                <div id="questionnaire-app-form" class="application-form">
+                                    <h3>Health Questionnaire</h3>
+                                    <div class="form-section">
+                                        <div class="form-group">
+                                            <label>Have you or any family members had any of the following
+                                                conditions?</label>
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="app-health-conditions" value="heart">
+                                                    Heart Disease
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="app-health-conditions"
+                                                        value="diabetes">
+                                                    Diabetes
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="app-health-conditions" value="cancer">
+                                                    Cancer
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="app-health-conditions"
+                                                        value="respiratory">
+                                                    Respiratory Conditions
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="app-medical-history">Please provide details of any medical
+                                                conditions:</label>
+                                            <textarea id="app-medical-history" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-primary app-save-continue">Save &
+                                            Continue</button>
+                                    </div>
+                                </div>
+
+                                <!-- Finalize Form -->
+                                <div id="finalize-app-form" class="application-form">
+                                    <h3>Application Summary</h3>
+                                    <div id="application-summary" class="summary-container">
+                                        <!-- This will be filled dynamically via JavaScript -->
+                                    </div>
+                                    <div class="premium-section">
+                                        <h3>Premium Details</h3>
+                                        <div class="premium-details">
+                                            <div class="premium-row">
+                                                <span>Base Premium:</span>
+                                                <span id="base-premium">₹0.00</span>
+                                            </div>
+                                            <div class="premium-row">
+                                                <span>Taxes (18% GST):</span>
+                                                <span id="premium-tax">₹0.00</span>
+                                            </div>
+                                            <div class="premium-row total">
+                                                <span>Total Premium:</span>
+                                                <span id="total-premium">₹0.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions finalize-actions">
+                                        <button type="button" id="calculate-premium-btn" class="btn-secondary">Calculate
+                                            Premium</button>
+                                        <button type="button" id="activate-policy-btn" class="btn-primary">Activate
+                                            Policy</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </section>
 
                 <!-- Documents Section -->
                 <section id="documents" class="dashboard-section">
-                            <h2>Document Upload</h2>
+                    <h2>Document Upload</h2>
                     <div class="documents-container">
-                                <!-- Policy Documents Section -->
-                                <div class="form-section">
-                                    <h3>Policy Documents</h3>
-                                    <div class="document-upload-section">
-                                        <div class="document-list" id="policy-documents">
-                                            <!-- Policy documents will be listed here -->
-                                        </div>
-                                        <div class="document-upload">
-                                            <input type="file" id="policy-document-upload" multiple accept=".pdf,.doc,.docx">
-                                            <button class="btn-primary" onclick="uploadPolicyDocument()">Upload Policy Document</button>
-                                        </div>
-                                    </div>
+                        <!-- Policy Documents Section -->
+                        <div class="form-section">
+                            <h3>Policy Documents</h3>
+                            <div class="document-upload-section">
+                                <div class="document-list" id="policy-documents">
+                                    <!-- Policy documents will be listed here -->
                                 </div>
-
-                                <!-- Government Identification Section -->
-                                <div class="form-section">
-                                    <h3>Government Identification</h3>
-                                    <div class="document-upload-section">
-                                        <div class="document-list" id="id-documents">
-                                            <!-- ID documents will be listed here -->
-                                        </div>
-                                        <div class="document-upload">
-                                            <input type="file" id="id-document-upload" multiple accept=".pdf,.jpg,.jpeg,.png">
-                                            <button class="btn-primary" onclick="uploadIDDocument()">Upload ID Document</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Medical Documents Section -->
-                                <div class="form-section">
-                                    <h3>Medical Documents</h3>
-                                    <div class="document-upload-section">
-                                        <div class="document-list" id="medical-documents">
-                                            <!-- Medical documents will be listed here -->
-                                        </div>
-                                        <div class="document-upload">
-                                            <input type="file" id="medical-document-upload" multiple accept=".pdf,.jpg,.jpeg,.png">
-                                            <button class="btn-primary" onclick="uploadMedicalDocument()">Upload Medical Document</button>
-                                        </div>
-                                    </div>
+                                <div class="document-upload">
+                                    <input type="file" id="policy-document-upload" multiple accept=".pdf,.doc,.docx">
+                                    <button class="btn-primary" onclick="uploadPolicyDocument()">Upload Policy
+                                        Document</button>
                                 </div>
                             </div>
-                        </section>
+                        </div>
+
+                        <!-- Government Identification Section -->
+                        <div class="form-section">
+                            <h3>Government Identification</h3>
+                            <div class="document-upload-section">
+                                <div class="document-list" id="id-documents">
+                                    <!-- ID documents will be listed here -->
+                                </div>
+                                <div class="document-upload">
+                                    <input type="file" id="id-document-upload" multiple accept=".pdf,.jpg,.jpeg,.png">
+                                    <button class="btn-primary" onclick="uploadIDDocument()">Upload ID Document</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medical Documents Section -->
+                        <div class="form-section">
+                            <h3>Medical Documents</h3>
+                            <div class="document-upload-section">
+                                <div class="document-list" id="medical-documents">
+                                    <!-- Medical documents will be listed here -->
+                                </div>
+                                <div class="document-upload">
+                                    <input type="file" id="medical-document-upload" multiple
+                                        accept=".pdf,.jpg,.jpeg,.png">
+                                    <button class="btn-primary" onclick="uploadMedicalDocument()">Upload Medical
+                                        Document</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </section>
             </main>
         </div>
     </div>
 
     <script src="scripts/auth.js"></script>
-<script src="scripts/cards.js"></script>
+    <script src="scripts/cards.js"></script>
     <script src="scripts/dashboard.js"></script>
     <script src="scripts/forms.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Handle logout functionality for both buttons
-            const logoutButtons = document.querySelectorAll('#logout-btn');
-            logoutButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Hide dashboard and cards sections
-                    document.getElementById('dashboard-section').classList.add('hidden');
-                    document.getElementById('cards-section').classList.add('hidden');
-                    
-                    // Show auth section
-                    document.getElementById('auth-section').classList.remove('hidden');
-                    
-                    // Reset any active states
-                    document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
-                        el.classList.remove('active');
-                    });
-                });
-            });
-
-            // Function to handle navigation and form display
-            function setupNavigation(navItems, forms) {
-                // Set first item as active by default
-                if (navItems.length > 0 && forms.length > 0) {
-                    // Remove any existing active classes
-                    document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
-                        el.classList.remove('active');
-                    });
-                    
-                    // Add active class to first items
-                    navItems[0].classList.add('active');
-                    forms[0].classList.add('active');
-                    
-                    // If this is the Quick Quote section, trigger a click on the first nav item
-                    if (navItems[0].closest('#quick-quote')) {
-                        navItems[0].click();
-                    }
-                }
-
-                navItems.forEach(item => {
-                    item.addEventListener('click', function() {
-                        const section = this.getAttribute('data-section');
-                        
-                        // Update active state
-                        navItems.forEach(nav => nav.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        // Show corresponding form
-                        forms.forEach(form => {
-                            form.classList.remove('active');
-                            if (form.id === `${section}-form`) {
-                                form.classList.add('active');
-                            }
-                        });
-                    });
-                });
-            }
-
-            // Function to handle form validation and color change
-            function setupFormValidation(formInputs, navItems) {
-                formInputs.forEach(input => {
-                    input.addEventListener('change', function() {
-                        const formSection = this.closest('.application-form');
-                        const sectionId = formSection.id.replace('-form', '');
-                        const navItem = document.querySelector(`[data-section="${sectionId}"]`);
-                        
-                        // Check if all required fields in this section are filled
-                        const allFilled = Array.from(formSection.querySelectorAll('input[required], select[required]'))
-                            .every(field => field.value.trim() !== '');
-                        
-                        if (allFilled) {
-                            navItem.classList.add('completed');
-                        } else {
-                            navItem.classList.remove('completed');
-                        }
-                    });
-                });
-            }
-
-            // Setup Quick Quote section
-            const quickQuoteNavItems = document.querySelectorAll('#quick-quote .nav-item');
-            const quickQuoteForms = document.querySelectorAll('#quick-quote .application-form');
-            const quickQuoteInputs = document.querySelectorAll('#quote-form input, #quote-form select');
-            
-            setupNavigation(quickQuoteNavItems, quickQuoteForms);
-            setupFormValidation(quickQuoteInputs, quickQuoteNavItems);
-
-            // Setup Applications section
-            const applicationsNavItems = document.querySelectorAll('#applications .nav-item');
-            const applicationsForms = document.querySelectorAll('#applications .application-form');
-            const applicationsInputs = document.querySelectorAll('#applications input, #applications select');
-            
-            setupNavigation(applicationsNavItems, applicationsForms);
-            setupFormValidation(applicationsInputs, applicationsNavItems);
-
-            // Initially hide all dashboard sections except the active one
-            const dashboardSections = document.querySelectorAll('.dashboard-section');
-            dashboardSections.forEach(section => {
-                if (!section.classList.contains('active')) {
-                    section.classList.add('hidden');
-                }
-            });
-
-            // Set first nav link as active by default
-            const navLinks = document.querySelectorAll('.nav-links a');
-            if (navLinks.length > 0) {
-                navLinks[0].classList.add('active');
-            }
-
-            // Function to validate form section
-            function validateFormSection(formSection) {
-                const requiredFields = formSection.querySelectorAll('input[required], select[required]');
-                const emptyFields = Array.from(requiredFields).filter(field => !field.value.trim());
-                
-                if (emptyFields.length > 0) {
-                    // Show error message
-                    const errorMessage = document.createElement('div');
-                    errorMessage.className = 'error-message';
-                    errorMessage.textContent = 'Please fill in all required fields';
-                    
-                    // Remove any existing error message
-                    const existingError = formSection.querySelector('.error-message');
-                    if (existingError) {
-                        existingError.remove();
-                    }
-                    
-                    // Add error message before form actions
-                    const formActions = formSection.querySelector('.form-actions');
-                    formSection.insertBefore(errorMessage, formActions);
-                    
-                    // Highlight empty fields
-                    emptyFields.forEach(field => {
-                        field.classList.add('error');
-                        field.addEventListener('input', function() {
-                            this.classList.remove('error');
-                            if (this.value.trim()) {
-                                const errorMessage = formSection.querySelector('.error-message');
-                                if (errorMessage) {
-                                    errorMessage.remove();
-                                }
-                            }
-                        });
-                    });
-                    
-                    return false;
-                }
-                
-                return true;
-            }
-
-            // Handle Save & Continue buttons in Quick Quote section
-            document.querySelectorAll('#quick-quote .save-continue').forEach(button => {
-                button.addEventListener('click', function() {
-                    const currentForm = this.closest('.application-form');
-                    
-                    // Validate the form section
-                    if (!validateFormSection(currentForm)) {
-                        return; // Stop if validation fails
-                    }
-                    
-                    const currentNavItem = document.querySelector(`[data-section="${currentForm.id.replace('-form', '')}"]`);
-                    const nextNavItem = currentNavItem.nextElementSibling;
-
-                    if (nextNavItem) {
-                        // Mark current section as completed
-                        currentNavItem.classList.add('completed');
-                        
-                        // Click the next nav item
-                        nextNavItem.click();
-                    }
-                });
-            });
-
-            // Handle Reset buttons in Quick Quote section
-            document.querySelectorAll('#quick-quote button[type="reset"]').forEach(button => {
-                button.addEventListener('click', function() {
-                    const form = this.closest('form');
-                    const formSection = this.closest('.application-form');
-                    const sectionId = formSection.id.replace('-form', '');
-                    const navItem = document.querySelector(`[data-section="${sectionId}"]`);
-                    
-                    // Remove completed class
-                    navItem.classList.remove('completed');
-                    
-                    // Reset form after a short delay to allow the default reset to complete
-                    setTimeout(() => {
-                        form.reset();
-                    }, 0);
-                });
-            });
-
-            // Document Management Functions
-            function uploadRegularDocument() {
-                const fileInput = document.getElementById('regular-document-upload');
-                const files = fileInput.files;
-                
-                if (files.length === 0) {
-                    alert('Please select at least one document to upload');
-                    return;
-                }
-
-                const formData = new FormData();
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('documents', files[i]);
-                }
-                formData.append('type', 'regular');
-
-                // Here you would typically make an API call to upload the documents
-                // For now, we'll just simulate the upload
-                simulateDocumentUpload(formData, 'regular-documents');
-            }
-
-            function uploadPolicyDocument() {
-                const fileInput = document.getElementById('policy-document-upload');
-                const files = fileInput.files;
-                
-                if (files.length === 0) {
-                    alert('Please select at least one document to upload');
-                    return;
-                }
-
-                const formData = new FormData();
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('documents', files[i]);
-                }
-                formData.append('type', 'policy');
-
-                simulateDocumentUpload(formData, 'policy-documents');
-            }
-
-            function uploadIDDocument() {
-                const fileInput = document.getElementById('id-document-upload');
-                const files = fileInput.files;
-                
-                if (files.length === 0) {
-                    alert('Please select at least one document to upload');
-                    return;
-                }
-
-                const formData = new FormData();
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('documents', files[i]);
-                }
-                formData.append('type', 'id');
-
-                simulateDocumentUpload(formData, 'id-documents');
-            }
-
-            function uploadMedicalDocument() {
-                const fileInput = document.getElementById('medical-document-upload');
-                const files = fileInput.files;
-                
-                if (files.length === 0) {
-                    alert('Please select at least one document to upload');
-                    return;
-                }
-
-                const formData = new FormData();
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('documents', files[i]);
-                }
-                formData.append('type', 'medical');
-
-                simulateDocumentUpload(formData, 'medical-documents');
-            }
-
-            function simulateDocumentUpload(formData, targetListId) {
-                const fileInput = document.getElementById(formData.get('type') + '-document-upload');
-                const files = fileInput.files;
-                const documentList = document.getElementById(targetListId);
-
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const documentItem = document.createElement('div');
-                    documentItem.className = 'document-item';
-                    documentItem.innerHTML = `
-                        <div class="document-info">
-                            <span class="document-name">${file.name}</span>
-                            <span class="document-size">${formatFileSize(file.size)}</span>
-                            <span class="document-type">${getFileType(file.name)}</span>
-                        </div>
-                        <div class="document-actions">
-                            <button class="btn-secondary download-btn" onclick="downloadDocument('${file.name}')">
-                                <i class="fas fa-download"></i> Download
-                            </button>
-                            <button class="btn-secondary delete-btn" onclick="deleteDocument(this)">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                    `;
-                    documentList.appendChild(documentItem);
-                }
-
-                // Clear the file input
-                fileInput.value = '';
-            }
-
-            function formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
-
-            function getFileType(filename) {
-                const extension = filename.split('.').pop().toLowerCase();
-                const types = {
-                    'pdf': 'PDF Document',
-                    'doc': 'Word Document',
-                    'docx': 'Word Document',
-                    'jpg': 'Image',
-                    'jpeg': 'Image',
-                    'png': 'Image'
-                };
-                return types[extension] || 'Document';
-            }
-
-            function downloadDocument(filename) {
-                // Here you would typically make an API call to download the document
-                alert(`Downloading ${filename}...`);
-            }
-
-            function deleteDocument(button) {
-                const documentItem = button.closest('.document-item');
-                documentItem.remove();
-            }
-        });
-    </script>
-
+    <script src="scripts/adress.js"></script>
+    <script src="scripts/quote.js"></script>
+    <script src="scripts/intermediary.js"></script>
+    <script src="scripts/application.js"></script>
+    <script src="scripts/app-intermediary.js"></script>
 </body>
-</html> 
+
+</html>

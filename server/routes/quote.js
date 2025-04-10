@@ -1,11 +1,27 @@
+// routes/quote.js
 const express = require('express');
 const router = express.Router();
 const quoteController = require('../controllers/quoteController');
-const { authMiddleware } = require('../middleware/authMiddleware');
 
-// Protected routes
-router.post('/', authMiddleware, quoteController.createQuote);
-router.get('/:token', authMiddleware, quoteController.getQuoteByToken);
-router.get('/', authMiddleware, quoteController.getUserQuotes);
+// Create a new quote
+router.post('/', quoteController.createQuote);
 
-module.exports = router; 
+// Get all quotes
+router.get('/', quoteController.getAllQuotes);
+
+// Get a single quote by ID
+router.get('/id/:id', quoteController.getQuoteById);
+
+// Get a single quote by code
+router.get('/code/:code', quoteController.getQuoteByCode);
+
+// Update a quote
+router.put('/:id', quoteController.updateQuote);
+
+// Delete a quote
+router.delete('/:id', quoteController.deleteQuote);
+
+// Calculate premium for a quote
+router.post('/:id/calculate-premium', quoteController.calculatePremium);
+
+module.exports = router;

@@ -13,6 +13,7 @@ const quoteRoutes = require('./routes/quote');
 const applicationRoutes = require('./routes/application');
 const uploadRoutes = require('./routes/upload');
 const pdfRoutes = require('./routes/pdf');
+const intermediaryRoutes = require('./routes/Intermediary.route'); // Assuming you have this route
 
 // Initialize express app
 const app = express();
@@ -38,6 +39,7 @@ app.use('/api/quote', quoteRoutes);
 app.use('/api/application', applicationRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/pdf', pdfRoutes);
+app.use('/api/intermediary', intermediaryRoutes); // Add this line for intermediary routes
 
 // Error handling middleware
 app.use((err, req, res, next) => {
