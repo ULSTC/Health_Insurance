@@ -115,8 +115,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                         return token;
                     }
-
-
+                    const sumInsured = parseFloat(document.getElementById('sumInusred').value);
+                const tenure = parseFloat(document.getElementById('plicyTenure').value) || 1;
+                
+                // Calculate a dummy monthly premium (simple formula for demo)
+                const basePremium = sumInsured * 0.02 / 12; // 2% of sum insured annually, divided by 12 for monthly
+                const tenureFactor = 1 - (tenure > 1 ? 0.05 * (tenure - 1) : 0); // 5% discount per additional year
+                const premium = Math.round(basePremium * tenureFactor);
+                console.log('Calculated Premium:', premium," tenureFactor",tenureFactor, "basePremium", basePremium, "sumInsured", sumInsured, "tenure", tenure);
                     // Create payload for API
                     const payload = {
                         token: token(),
@@ -183,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         },
                         status: "draft",
-                        premiumAmount: 12500 // This would normally be calculated from previous step
+                        premiumAmount: premium // This would normally be calculated from previous step
                     };
 
                     // Show loading state

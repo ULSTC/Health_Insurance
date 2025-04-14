@@ -720,3 +720,103 @@ textarea:focus {
     background-color: var(--error-color);
     color: white;
 }
+.application-nav .nav-item.completed {
+    background-color: #28a745; /* Green */
+    color: #fff;
+}
+#final-summary {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    margin: auto;
+    background: white;
+    font-size: 14px;
+    color: #000;
+    overflow-wrap: break-word;
+
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #final-summary, #final-summary * {
+        visibility: visible;
+    }
+
+    #final-summary {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}
+
+/* Helps html2pdf decide page break positions */
+.break {
+    page-break-before: always;
+}
+.summary-container {
+    font-family: Arial, sans-serif;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.summary-section {
+    margin-bottom: 20px;
+    page-break-inside: avoid;
+}
+
+.summary-section h4 {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    color: #333;
+}
+
+.summary-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.detail-label {
+    font-weight: bold;
+    width: 150px;
+    flex-shrink: 0;
+}
+
+.detail-value {
+    flex-grow: 1;
+}
+
+.premium-section {
+    margin-top: 20px;
+    border-top: 2px solid #333;
+    padding-top: 15px;
+}
+
+.premium-details {
+    width: 100%;
+}
+
+.premium-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.premium-row.total {
+    font-weight: bold;
+    font-size: 1.1em;
+    border-top: 1px solid #ddd;
+    padding-top: 8px;
+    margin-top: 8px;
+}

@@ -7,6 +7,7 @@
     <title>Health Insurance Portal</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
 <body>
@@ -533,6 +534,11 @@
                                     <h3>Business Information</h3>
                                     <div class="form-row">
                                         <div class="form-group">
+                                            <label for="easyQuote">quote reference no</label>
+                                            <input type="text" id="easyQuote" required>
+
+                                        </div>
+                                        <div class="form-group">
                                             <label for="app-polCountry">Country</label>
                                             <select id="app-polCountry" required>
                                                 <option value="">Select Country</option>
@@ -790,7 +796,6 @@
                                             <label for="app-commState">State</label>
                                             <select id="app-commState" required>
                                                 <option value="">Select State</option>
-                                                <!-- States will be populated based on selected country -->
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -833,8 +838,8 @@
                                             <label for="app-presentState">State</label>
                                             <select id="app-presentState" required>
                                                 <option value="">Select State</option>
-                                                <!-- States will be populated based on selected country -->
                                             </select>
+                                            
                                         </div>
                                         <div class="form-group">
                                             <label for="app-presentCity">City</label>
@@ -890,6 +895,10 @@
                                 <!-- Finalize Form -->
                                 <div id="finalize-app-form" class="application-form">
                                     <h3>Application Summary</h3>
+                                    <div id="final-summary" class="summary-container">
+                                        <!-- This will be filled dynamically via JavaScript -->
+
+                                    
                                     <div id="application-summary" class="summary-container">
                                         <!-- This will be filled dynamically via JavaScript -->
                                     </div>
@@ -910,9 +919,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                     <div class="form-actions finalize-actions">
+                                        <button type="button" id="generate-summary" class="btn-secondary">Generate summary</button>
                                         <button type="button" id="calculate-premium-btn" class="btn-secondary">Calculate
                                             Premium</button>
+                                        <button id="download-summary" class="btn-secondary">Download Summary as PDF</button>
                                         <button type="button" id="activate-policy-btn" class="btn-primary">Activate
                                             Policy</button>
                                     </div>
@@ -983,8 +995,12 @@
     <script src="scripts/adress.js"></script>
     <script src="scripts/quote.js"></script>
     <script src="scripts/intermediary.js"></script>
-    <script src="scripts/application.js"></script>
+    <!-- <script src="scripts/application.js"></script> -->
     <script src="scripts/app-intermediary.js"></script>
+    <script src="scripts/datacapture.js"></script>
+    <script src="scripts/appnav.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script
+
 </body>
 
 </html>
