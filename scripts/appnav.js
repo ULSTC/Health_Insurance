@@ -49,7 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-});
+})
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     const indiaStates = [
         "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
@@ -60,10 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
         "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Jammu and Kashmir"
     ];
 
-    function populateStateDropdown(stateId) {
+    function populateStateDropdown(stateId, countryId) {
         const stateDropdown = document.getElementById(stateId);
-
+        const countryDropdown = document.getElementById(countryId);
         
+        if (!stateDropdown || !countryDropdown) {
+            console.error(`Elements not found: stateId=${stateId}, countryId=${countryId}`);
+            return;
+        }
 
         countryDropdown.addEventListener("change", () => {
             const selectedCountry = countryDropdown.value;
@@ -81,43 +88,87 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Apply to both Communication and Present Address
-    populateStateDropdown("app-commState");
-    populateStateDropdown("app-presentState");
-});
-
-// Update this event listener
-document.getElementById('generate-summary').addEventListener("click", () => {
-    generateApplicationSummary();
-});
-document.getElementById('download-summary').addEventListener("click", () => {
-    generateApplicationSummary()
-    const summaryContainer = document.getElementById('application-summary');
-
-    const opt = {
-        margin:       [0.5, 0.5, 0.5, 0.5],
-        filename:     'Application_Summary.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  {
-            scale: 2,
-            useCORS: true
-        },
-        jsPDF: {
-            unit: 'in',
-            format: 'a4',
-            orientation: 'portrait'
-        },
-        pagebreak: {
-            mode: ['avoid-all', 'css', 'legacy']
-        }
-    };
-
-    // Ensure it's the latest summary DOM
-    html2pdf().set(opt).from(summaryContainer).save();
+    populateStateDropdown("app-commState", "app-commCountry");
+    populateStateDropdown("app-presentState", "app-presentCountry");
 });
 
 
+
+document.addEventListener("DOMContentLoaded", () => {
+    const downloadBtn = document.getElementById('download-summary');
+    if (downloadBtn) {
+        downloadBtn.addEventListener("click", function() {
+            generateApplicationSummary();
+            
+            // Get container
+            const summaryContainer = document.getElementById('application-summary');
+            if (!summaryContainer) {
+                alert("Summary container not found");
+                return;
+            }
+            
+            // Create a complete HTML document
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Application Summary</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            padding: 20px;
+                        }
+                        .summary-section {
+                            margin-bottom: 20px;
+                        }
+                        .summary-section h4 {
+                            margin-bottom: 10px;
+                            border-bottom: 1px solid #ddd;
+                            padding-bottom: 5px;
+                        }
+                        .detail-row {
+                            display: flex;
+                            margin-bottom: 5px;
+                        }
+                        .detail-label {
+                            font-weight: bold;
+                            width: 150px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${summaryContainer.innerHTML}
+                </body>
+                </html>
+            `;
+            
+            // Create a download link for the HTML file
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Application_Summary.html';
+            a.click();
+            
+            // Clean up
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            alert("Download initiated. Please open the HTML file and use your browser's Print feature to save as PDF.");
+        });
+    }
+});
+
+// Your existing generateApplicationSummary function
 function generateApplicationSummary() {
     const summaryContainer = document.getElementById('application-summary');
+    
+    if (!summaryContainer) {
+        console.error("Summary container not found");
+        return;
+    }
     
     // Clear existing content
     summaryContainer.innerHTML = '';
@@ -190,7 +241,6 @@ function generateApplicationSummary() {
         }
     ];
     
-    
     // Create and append summary sections
     sections.forEach(section => {
         const sectionDiv = document.createElement('div');
@@ -223,6 +273,28 @@ function generateApplicationSummary() {
         sectionDiv.appendChild(detailsDiv);
         summaryContainer.appendChild(sectionDiv);
     });
+    
+    // Ensure the container is visible
+    summaryContainer.style.display = 'block';
+}
+
+// Helper function for date formatting (might be missing in your code)
+function formatDate(dateString) {
+    if (!dateString) return '';
+    
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return dateString; // Return original if invalid
+        
+        return date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    } catch (e) {
+        console.error("Date formatting error:", e);
+        return dateString;
+    }
 }
 
 
