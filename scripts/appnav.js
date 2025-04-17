@@ -92,7 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
     populateStateDropdown("app-presentState", "app-presentCountry");
 });
 
-
+document.getElementById('generate-summary').addEventListener("click",()=>{
+    generateApplicationSummary()
+})
 
 document.addEventListener("DOMContentLoaded", () => {
     const downloadBtn = document.getElementById('download-summary');
@@ -101,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
             generateApplicationSummary();
             
             // Get container
-            const summaryContainer = document.getElementById('application-summary');
+            const summaryContainer = document.getElementById('final-summary');
             if (!summaryContainer) {
                 alert("Summary container not found");
                 return;
