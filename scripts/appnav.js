@@ -49,6 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+    const activatePolicyBtn = document.getElementById('activate-policy-btn');
+    if (activatePolicyBtn) {
+        activatePolicyBtn.addEventListener("click", submitApplication);
+    }
 })
 
 
@@ -297,6 +301,195 @@ function formatDate(dateString) {
         console.error("Date formatting error:", e);
         return dateString;
     }
+}
+function submitApplication() {
+    // Gather all form data
+    const applicationData = {
+        easyQuote: document.getElementById('easyQuote')?.value || '',
+        businessInfo: {
+            country: document.getElementById('app-polCountry')?.value || '',
+            state: document.getElementById('app-polState')?.value || '',
+            city: document.getElementById('app-polCity')?.value || '',
+            lineOfBusiness: document.getElementById('app-lineOfBusiness')?.value || '',
+            typeOfBusiness: document.getElementById('app-typeOfBusiness')?.value || '',
+            policyStartDate: document.getElementById('app-policystartDate')?.value || '',
+            policyEndDate: document.getElementById('app-policyEndDate')?.value || '',
+            intermediaryCode: document.getElementById('app-IntermediaryCode')?.value || '',
+            intermediaryName: document.getElementById('app-IntermediaryName')?.value || '',
+            intermediaryEmail: document.getElementById('app-Intermediaryemail')?.value || ''
+        },
+        policyInfo: {
+            premiumType: document.getElementById('app-premiumType')?.value || '',
+            coverType: document.getElementById('app-coverType')?.value || '',
+            policyPlan: document.getElementById('app-ploicyPlan')?.value || '', 
+            sumInsured: Number(document.getElementById('app-sumInusred')?.value || 0),
+            policyTenure: Number(document.getElementById('app-plicyTenure')?.value || 0)
+        },
+        personalInfo: {
+            fullName: document.getElementById('app-fullName')?.value || '',
+            dateOfBirth: document.getElementById('app-dateOfBirth')?.value || '',
+            age: Number(document.getElementById('app-age')?.value || 0),
+            gender: document.getElementById('app-gender')?.value || '',
+            relationship: document.getElementById('app-relationship')?.value || '',
+            email: document.getElementById('app-email')?.value || '',
+            phone: document.getElementById('app-phone')?.value || ''
+        },
+        healthInfo: {
+            height: Number(document.getElementById('app-height')?.value || 0),
+            weight: Number(document.getElementById('app-weight')?.value || 0),
+            bmi: Number(document.getElementById('app-bmi')?.value || 0),
+            bloodGroup: document.getElementById('app-bloodGroup')?.value || '',
+            preExistingConditions: Array.from(document.querySelectorAll('input[name="app-conditions"]:checked')).map(cb => cb.value)
+        },
+        addressInfo: {
+            communicationAddress: {
+                lineOfAddress: document.getElementById('app-commLineOfAddress')?.value || '',
+                pinCode: document.getElementById('app-commPinCode')?.value || '',
+                country: document.getElementById('app-commCountry')?.value || '',
+                state: document.getElementById('app-commState')?.value || '',
+                city: document.getElementById('app-commCity')?.value || ''
+            },
+            permanentAddress: {
+                sameAsCommunication: document.getElementById('app-sameAsComm')?.checked || false
+            }
+        },
+        questionnaire: {
+            healthConditions: Array.from(document.querySelectorAll('input[name="app-health-conditions"]:checked')).map(cb => cb.value),
+            medicalHistory: document.getElementById('app-medical-history')?.value || ''
+        },
+        premium:{
+            basePremium:document.getElementById('base-premium')?.innerHTML || 0,
+            tax:document.getElementById('premium-tax')?.innerHTML || 0,
+            totalPremium:document.getElementById('total-premium')?.innerHTML || 0,
+        },
+        policyDocument:document.getElementById('final-summary')?.innerHTML || ''
+
+    };
+
+    // Add permanent address details if not same as communication address
+    if (!applicationData.addressInfo.permanentAddress.sameAsCommunication) {
+        applicationData.addressInfo.permanentAddress = {
+            ...applicationData.addressInfo.permanentAddress,
+            lineOfAddress: document.getElementById('app-presentLineOfAddress')?.value || '',
+            pinCode: document.getElementById('app-presentPinCode')?.value || '',
+            country: document.getElementById('app-presentCountry')?.value || '',
+            state: document.getElementById('app-presentState')?.value || '',
+            city: document.getElementById('app-presentCity')?.value || ''
+        };
+    }
+
+    // Generate the summary HTML for PDF
+    generateApplicationSummary();
+    const summaryHTML = document.getElementById('application-summary').innerHTML;
+
+    // Submit the application
+    fetch('http://localhost:5000/api/application/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(applicationData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data)
+        console.log(data.data.applicationCode)
+        // Show success message with application code
+        showSuccessMessage(`Application submitted successfully! Application Code: ${data.data.applicationCode}`);
+        console.log("yahi hai bhai",applicationData)
+        // Handle PDF storage by converting the summary to PDF format
+        storePDF(data.applicationCode, summaryHTML);
+    })
+    .catch(error => {
+        console.error('Error submitting application:', error);
+        showErrorMessage('Error submitting application. Please try again.');
+    });
+}
+function showSuccessMessage(message) {
+    // You can implement this in various ways - alert, modal, or toast notification
+    const notificationArea = document.createElement('div');
+    notificationArea.className = 'notification success';
+    notificationArea.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+        <button class="close-btn"><i class="fas fa-times"></i></button>
+    `;
+    
+    document.body.appendChild(notificationArea);
+    
+    // Add event listener to close notification
+    notificationArea.querySelector('.close-btn').addEventListener('click', () => {
+        notificationArea.remove();
+    });
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (document.body.contains(notificationArea)) {
+            notificationArea.remove();
+        }
+    }, 5000);
+}
+
+function showErrorMessage(message) {
+    // Similar to success but with different styling
+    const notificationArea = document.createElement('div');
+    notificationArea.className = 'notification error';
+    notificationArea.innerHTML = `
+        <i class="fas fa-exclamation-circle"></i>
+        <span>${message}</span>
+        <button class="close-btn"><i class="fas fa-times"></i></button>
+    `;
+    
+    document.body.appendChild(notificationArea);
+    
+    // Add event listener to close notification
+    notificationArea.querySelector('.close-btn').addEventListener('click', () => {
+        notificationArea.remove();
+    });
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (document.body.contains(notificationArea)) {
+            notificationArea.remove();
+        }
+    }, 5000);
+}
+function storePDF(applicationCode, htmlContent) {
+    // Convert the HTML to PDF using html2pdf library or similar
+    // This is a placeholder - you'll need to implement actual PDF conversion
+    
+    // Example using html2pdf.js (you'll need to include this library)
+    // html2pdf().from(htmlContent).save(`Application_${applicationCode}.pdf`);
+    
+    // If you want to send the PDF to the server for storage
+    // You can create another endpoint for PDF upload and call it here
+    
+    console.log(`PDF for application ${applicationCode} would be stored here`);
+    
+    // If you want to store the PDF on the server, you can:
+    /*
+    const formData = new FormData();
+    // Convert HTML to PDF blob here
+    // formData.append('pdfFile', pdfBlob, `Application_${applicationCode}.pdf`);
+    formData.append('applicationCode', applicationCode);
+    
+    fetch('http://localhost:5000/api/application/upload-pdf', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('PDF uploaded successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error uploading PDF:', error);
+    });
+    */
 }
 
 

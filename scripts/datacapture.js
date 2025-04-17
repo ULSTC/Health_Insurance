@@ -135,11 +135,19 @@ function populateAddressInfo(addressInfo) {
         const sameAsCommCheckbox = document.getElementById('app-sameAsComm');
         sameAsCommCheckbox.checked = permAddress.sameAsCommunication || false;
         
-        // If same as communication, hide the permanent address fields
+        // Always display permanent address fields, regardless of checkbox status
+        document.getElementById('app-presentAddressFields').style.display = 'flex';
+        
         if (permAddress.sameAsCommunication) {
-            document.getElementById('app-presentAddressFields').style.display = 'none';
+            // Copy values from communication address to permanent address
+            document.getElementById('app-presentLineOfAddress').value = commAddress.lineOfAddress || '';
+            document.getElementById('app-presentPinCode').value = commAddress.pinCode || '';
+            document.getElementById('app-presentCountry').value = commAddress.country || '';
+            
+            // Need to populate state dropdown first
+            populateStateDropdown('app-presentCountry', 'app-presentState', commAddress.state);
+            document.getElementById('app-presentCity').value = commAddress.city || '';
         } else {
-            document.getElementById('app-presentAddressFields').style.display = 'flex';
             document.getElementById('app-presentLineOfAddress').value = permAddress.lineOfAddress || '';
             document.getElementById('app-presentPinCode').value = permAddress.pinCode || '';
             document.getElementById('app-presentCountry').value = permAddress.country || '';
@@ -244,18 +252,19 @@ function formatDateForInput(dateString) {
 
 // Add event listener for "Same as Communication Address" checkbox
 document.getElementById('app-sameAsComm').addEventListener('change', function() {
+    // Always keep the permanent address fields visible
     const permanentAddressFields = document.getElementById('app-presentAddressFields');
+    permanentAddressFields.style.display = 'flex';
+    
     if (this.checked) {
-        permanentAddressFields.style.display = 'none';
-        
         // Copy values from communication address to permanent address
         document.getElementById('app-presentLineOfAddress').value = document.getElementById('app-commLineOfAddress').value;
         document.getElementById('app-presentPinCode').value = document.getElementById('app-commPinCode').value;
         document.getElementById('app-presentCountry').value = document.getElementById('app-commCountry').value;
-        document.getElementById('app-presentState').value = document.getElementById('app-commState').value;
+        
+        // Populate state dropdown for permanent address based on communication country
+        populateStateDropdown('app-commCountry', 'app-presentState', document.getElementById('app-commState').value);
         document.getElementById('app-presentCity').value = document.getElementById('app-commCity').value;
-    } else {
-        permanentAddressFields.style.display = 'flex';
     }
 });
 

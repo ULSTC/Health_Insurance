@@ -86,4 +86,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dashboardSections.length > 0) {
         dashboardSections[0].classList.add('active');
     }
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Update active nav link
+            navLinks.forEach(item => item.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show selected section
+            const sectionId = this.getAttribute('data-section');
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Hide endorsement section if it exists
+            const endorsementSection = document.getElementById('endorsement-section');
+            if (endorsementSection) {
+                endorsementSection.classList.remove('active');
+            }
+        });
+    });
 }); 
+// Add to the existing dashboard section handlers
