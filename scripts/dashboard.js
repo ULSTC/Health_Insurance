@@ -5,25 +5,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const applicationTabs = document.querySelectorAll('.application-tabs .tab-btn');
 
     // Navigation functionality
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
+    // navLinks.forEach(link => {
+    //     link.addEventListener('click', (e) => {
+    //         e.preventDefault();
             
-            const targetSection = link.dataset.section;
+    //         const targetSection = link.dataset.section;
             
-            // Update active nav link
-            navLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
+    //         // Update active nav link
+    //         navLinks.forEach(l => l.classList.remove('active'));
+    //         link.classList.add('active');
             
-            // Show corresponding section
-            dashboardSections.forEach(section => {
-                section.classList.remove('active');
-                if (section.id === targetSection) {
-                    section.classList.add('active');
-                }
-            });
-        });
-    });
+    //         // Show corresponding section
+    //         dashboardSections.forEach(section => {
+    //             section.classList.remove('active');
+    //             if (section.id === targetSection) {
+    //                 section.classList.add('active');
+    //             }
+    //         });
+    //     });
+    // });
 
     // Application tabs functionality
     applicationTabs.forEach(tab => {
@@ -108,5 +108,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    const searchButton = document.getElementById('search-btn');
+    
+    // Add click event listener to the search button
+    if (searchButton) {
+        searchButton.addEventListener('click', () => {
+            // Remove active class from all navigation links
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+        });
+    }
 }); 
 // Add to the existing dashboard section handlers
