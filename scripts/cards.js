@@ -18,10 +18,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Claims card click handler
     claimsCard.addEventListener('click', () => {
-        // For now, show an alert that this feature is coming soon
-        alert('Claims management feature coming soon!');
+        // Hide cards section and show dashboard
+        cardsSection.classList.add('hidden');
+        dashboardSection.classList.remove('hidden');
+        
+        // Activate claims tab in the navigation
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => link.classList.remove('active'));
+        const claimsNavLink = document.querySelector('.nav-links a[data-section="claims"]');
+        if (claimsNavLink) {
+            claimsNavLink.classList.add('active');
+        }
+        
+        // Show claims section
+        const dashboardSections = document.querySelectorAll('.dashboard-section');
+        dashboardSections.forEach(section => section.classList.remove('active'));
+        const claimsSection = document.getElementById('claims');
+        if (claimsSection) {
+            claimsSection.classList.add('active');
+        }
+        
+        // Update user name in dashboard section
+        updateUserNameInDashboard();
+        
+        console.log('claims card clicked');
     });
-
+    
     // Add back button to dashboard nav
     // const dashboardNav = document.querySelector('.dashboard-nav .nav-links');
     // const backButton = document.createElement('a');

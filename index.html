@@ -19,7 +19,7 @@
                     <button class="auth-tab active" data-tab="login">Login</button>
                     <button class="auth-tab" data-tab="signup">Sign Up</button>
                 </div>
-
+                
                 <div id="login-form" class="auth-form active">
                     <h2>Welcome Back</h2>
                     <form id="login">
@@ -123,6 +123,7 @@
                     <a href="#" class="active" data-section="quick-quote">Easy Quote</a>
                     <a href="#" data-section="applications">Detail Data Capture</a>
                     <a href="#" data-section="documents">Documents</a>
+                    <a href="#" data-section="claims">Claims</a>
                     <div class="search-container">
                         <input type="search" id="code-search" placeholder="Search by code...">
                         <button id="search-btn" class="btn-search"><i class="fas fa-search"></i></button>
@@ -167,7 +168,7 @@
 
                         <!-- Application Forms -->
                         <div class="application-content">
-                            <form id="quote-form">
+                    <form id="quote-form">
                                 <!-- Business information-->
                                 <div id="business-info-form" class="application-form active">
                                     <h3>Business Information</h3>
@@ -280,8 +281,8 @@
                                 <!-- Communication address-->
                                 <div id="address-info-form" class="application-form">
                                     <h3>Communication Address</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
+                        <div class="form-row">
+                            <div class="form-group">
                                             <label for="commLineOfAddress">Line Of Address</label>
                                             <input type="text" id="commLineOfAddress" required>
                                         </div>
@@ -340,7 +341,7 @@
                                         <div class="form-group">
                                             <label for="presentCountry">Country</label>
                                             <select id="presentCountry" required>
-                                                <option value="">Select Country</option>
+                                    <option value="">Select Country</option>
                                                 <option value="India">India</option>
                                                 <option value="United States">United States</option>
                                                 <option value="United Kingdom">United Kingdom</option>
@@ -394,9 +395,9 @@
                                                 <option value="male">Male</option>
                                                 <option value="female">Female</option>
                                                 <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
+                                </select>
+                            </div>
+                            <div class="form-group">
                                             <label for="relationship">Relationship</label>
                                             <select id="relationship">
                                                 <option value="">Select Relationship</option>
@@ -404,7 +405,7 @@
                                                 <option value="spouse">Spouse</option>
                                                 <option value="child">Child</option>
                                                 <option value="parent">Parent</option>
-                                            </select>
+                                </select>
                                         </div>
                                     </div>
                                     <div class="form-row">
@@ -419,29 +420,29 @@
                                     </div>
                                     <div class="form-actions">
                                         <button type="button" class="btn-primary save-continue">Continue</button>
-                                    </div>
-                                </div>
+                            </div>
+                        </div>
 
                                 <!-- Health Information -->
                                 <div id="health-info-form" class="application-form">
                                     <h3>Health Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="height">Height (cm)</label>
-                                            <input type="number" id="height" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="weight">Weight (kg)</label>
-                                            <input type="number" id="weight" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="bmi">BMI</label>
-                                            <input type="text" id="bmi" readonly>
-                                        </div>
-                                    </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="height">Height (cm)</label>
+                                <input type="number" id="height" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bmi">BMI</label>
+                                <input type="text" id="bmi" readonly>
+                            </div>
+                        </div>
 
                                     <div class="form-row">
-                                        <div class="form-group">
+                        <div class="form-group">
                                             <label for="bloodGroup">Blood Group</label>
                                             <select id="bloodGroup" required>
                                                 <option value="">Select Blood Group</option>
@@ -454,11 +455,11 @@
                                                 <option value="AB+">AB+</option>
                                                 <option value="AB-">AB-</option>
                                             </select>
-                                        </div>
-                                        <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                             <label>Pre-existing Conditions</label>
-                                            <div class="checkbox-group">
-                                                <label class="checkbox-label">
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
                                                     <input type="checkbox" name="conditions" value="diabetes">
                                                     Diabetes
                                                 </label>
@@ -469,16 +470,16 @@
                                                 <label class="checkbox-label">
                                                     <input type="checkbox" name="conditions" value="heart-disease">
                                                     Heart Disease
-                                                </label>
-                                                <label class="checkbox-label">
+                                </label>
+                                <label class="checkbox-label">
                                                     <input type="checkbox" name="conditions" value="asthma">
                                                     Asthma
-                                                </label>
-                                                <label class="checkbox-label">
+                                </label>
+                                <label class="checkbox-label">
                                                     <input type="checkbox" name="conditions" value="other">
                                                     Other
-                                                </label>
-                                            </div>
+                                </label>
+                            </div>
                                         </div>
                                     </div>
                                     <div class="form-actions">
@@ -986,6 +987,157 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-actions">
+                            <button class="btn-primary" id="download-all">Download All Documents</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Claims Section -->
+                <section id="claims" class="dashboard-section">
+                    <h2>Claims Management</h2>
+                    <div class="claims-container">
+                        <div class="claims-options">
+                            <div class="claims-card" id="submit-claim-option">
+                                <div class="card-icon">
+                                    <i class="fas fa-file-medical"></i>
+                                </div>
+                                <h3>Submit a New Claim</h3>
+                                <p>File a new health insurance claim for medical expenses or reimbursement</p>
+                                <button class="btn-primary" id="submit-claim-btn">Submit New Claim</button>
+                            </div>
+                            
+                            <div class="claims-card" id="track-claim-option">
+                                <div class="card-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <h3>Track Your Claims</h3>
+                                <p>Check the status of your existing claims and view claim history</p>
+                                <button class="btn-primary" id="track-claim-btn">Track Claims</button>
+                            </div>
+                        </div>
+                        
+                        <div class="claim-search-section" id="claim-search">
+                            <h3>Search Claims</h3>
+                            <div class="search-container">
+                                <input type="search" id="claim-search-input" placeholder="Enter claim number...">
+                                <button id="claim-search-btn" class="btn-search"><i class="fas fa-search"></i> Search</button>
+                            </div>
+                            <div id="claim-search-results">
+                                <!-- Search results will appear here -->
+                            </div>
+                        </div>
+                        
+                        <div id="claim-form-container" class="hidden">
+                            <!-- Step 1: Claim Type Selection -->
+                            <div id="claim-type-selection" class="claim-step active">
+                                <h3>Select Claim Type</h3>
+                                <p class="form-description">Please select the type of claim you would like to submit.</p>
+                                
+                                <div class="claim-options">
+                                    <div class="claim-option-card" data-claim-type="cashless">
+                                        <div class="card-icon">
+                                            <i class="fas fa-hospital"></i>
+                                        </div>
+                                        <h4>Cashless Claim</h4>
+                                        <p>For pre-authorized hospital treatment with no upfront payment required. Available at network hospitals only.</p>
+                                        <button type="button" class="btn-primary select-claim-type" data-claim-type="cashless">Select Cashless</button>
+                                    </div>
+                                    
+                                    <div class="claim-option-card" data-claim-type="reimbursement">
+                                        <div class="card-icon">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </div>
+                                        <h4>Reimbursement Claim</h4>
+                                        <p>For treatment you've already paid for. Submit expenses and get reimbursed as per policy terms.</p>
+                                        <button type="button" class="btn-primary select-claim-type" data-claim-type="reimbursement">Select Reimbursement</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 2: Terms and Conditions -->
+                            <div id="claim-terms-acceptance" class="claim-step hidden">
+                                <h3>Terms and Conditions</h3>
+                                <div class="terms-container">
+                                    <h4>Please read and accept the following terms before proceeding:</h4>
+                                    <div class="terms-content">
+                                        <p><strong>1. Accuracy of Information:</strong> I declare that all information provided in this claim submission is true, correct, and complete to the best of my knowledge.</p>
+                                        <p><strong>2. Authorization:</strong> I authorize any hospital, physician, or other healthcare provider to release to the insurance company any information regarding my medical history, symptoms, treatment, examination results, or diagnosis.</p>
+                                        <p><strong>3. Documentation:</strong> I understand that I must provide all required supporting documentation for my claim to be processed.</p>
+                                        <p><strong>4. Fraud Warning:</strong> Any person who knowingly presents false or fraudulent information in an application for insurance or claim may be guilty of insurance fraud and subject to legal action.</p>
+                                        <p><strong>5. Processing Timeline:</strong> I understand that claims processing typically takes 7-15 business days after submission of all required documents, and additional time may be needed for complex cases.</p>
+                                        <p><strong>6. Communication:</strong> I authorize the insurance company to communicate with me regarding this claim via the contact information provided.</p>
+                                        <p><strong>7. Pre-existing Conditions:</strong> I understand that any pre-existing conditions not disclosed during policy inception may result in claim rejection as per policy terms.</p>
+                                        <p><strong>8. Policy Terms:</strong> I acknowledge that this claim will be processed according to the terms, conditions, and exclusions of my insurance policy.</p>
+                                    </div>
+                                    <div class="terms-checkbox-container">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="terms-checkbox" required>
+                                            <span>I have read and agree to the above terms and conditions</span>
+                                        </label>
+                                    </div>
+                                    <div class="terms-buttons">
+                                        <button type="button" class="btn-secondary" id="back-to-claim-type">Back</button>
+                                        <button type="button" class="btn-primary" id="accept-terms">Proceed</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 3: Claim Form -->
+                            <div id="claim-form-step" class="claim-step hidden">
+                                <h3>Submit a New Claim</h3>
+                                <p class="form-description" id="claim-type-description">Please fill in the claim details below. After submission, your policy information will be automatically retrieved and displayed.</p>
+                                <form id="new-claim-form" class="form-section">
+                                    <input type="hidden" id="claim-submission-type" value="">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="policy-number">Policy Number</label>
+                                            <input type="text" id="policy-number" required>
+                                            <small class="form-hint">Try using "POL987654" or "POL123456" for testing.</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="claim-type">Claim Type</label>
+                                            <select id="claim-type" required>
+                                                <option value="">Select Claim Type</option>
+                                                <option value="hospitalization">Hospitalization</option>
+                                                <option value="medication">Medication</option>
+                                                <option value="consultation">Doctor Consultation</option>
+                                                <option value="procedure">Medical Procedure</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="incident-date">Incident Date</label>
+                                            <input type="date" id="incident-date" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="claim-amount">Claim Amount (₹)</label>
+                                            <input type="number" id="claim-amount" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group full-width">
+                                            <label for="claim-description">Description</label>
+                                            <textarea id="claim-description" rows="4" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group full-width">
+                                            <label for="claim-documents">Supporting Documents</label>
+                                            <input type="file" id="claim-documents" multiple accept=".pdf,.jpg,.jpeg,.png">
+                                            <small>Upload invoices, medical reports, prescriptions, etc.</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-secondary" id="back-to-terms">Back</button>
+                                        <button type="submit" class="btn-primary" id="submit-claim-form">Submit Claim</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </main>
@@ -1005,8 +1157,7 @@
     <script src="scripts/appnav.js"></script>
     <script src="scripts/search.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-
+    <script src="scripts/claims.js"></script>
 </body>
 
-</html>
+</html> 
