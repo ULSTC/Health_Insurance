@@ -1,14 +1,14 @@
 // Search functionality
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('code-search');
     const searchBtn = document.getElementById('search-btn');
-    
+
     if (searchBtn) {
         searchBtn.addEventListener('click', searchApplication);
     }
-    
+
     if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
+        searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 searchApplication();
             }
@@ -19,15 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
 function searchApplication() {
     const codeInput = document.getElementById('code-search');
     const code = codeInput.value.trim();
-    
+
     if (!code) {
         alert('Please enter an application code');
         return;
     }
-    
+
     // Show loading state
     document.getElementById('search-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    
+
     // Make API request
     fetch(`http://localhost:5000/api/application/code/${code}`)
         .then(response => {
@@ -58,7 +58,7 @@ function displayEndorsementView(applicationData) {
     document.querySelectorAll('.dashboard-section').forEach(section => {
         section.classList.remove('active');
     });
-    
+
     // If endorsement section doesn't exist yet, create it
     let endorsementSection = document.getElementById('endorsement-section');
     if (!endorsementSection) {
@@ -67,7 +67,7 @@ function displayEndorsementView(applicationData) {
     } else {
         endorsementSection.classList.add('active');
     }
-    
+
     // Fill in the data
     populateEndorsementData(applicationData);
 }
@@ -76,9 +76,9 @@ function createEndorsementSection() {
     const section = document.createElement('section');
     section.id = 'endorsement-section';
     section.className = 'dashboard-section active';
-    
+
     section.innerHTML = `
-        <h2>Application Details</h2>
+        <h2>Captured Details</h2>
         <div class="application-container">
             <!-- Side Navigation -->
             <div class="application-nav">
@@ -383,12 +383,36 @@ function createEndorsementSection() {
                             <button type="button" class="btn-secondary end-nav-prev">Previous</button>
                             <button type="button" id="make-endorsement-btn" class="btn-primary">Make Endorsement</button>
                         </div>
+                        <div id="endorsement-selection" style="display: none; margin-top: 20px;">
+                            <h3>Select Field to Endorse</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="endorsement-category">Category</label>
+                                    <select id="endorsement-category" class="form-control">
+                                        <option value="">Select Category</option>
+                                        <option value="end-business-info">Business Info</option>
+                                        <option value="end-policy-info">Policy Info</option>
+                                        <option value="end-personal-info">Personal Info</option>
+                                        <option value="end-health-info">Health Info</option>
+                                        <option value="end-address-info">Address Info</option>
+                                        <option value="end-questionnaire">Questionnaire</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="endorsement-field">Field</label>
+                                    <select id="endorsement-field" class="form-control" disabled>
+                                        <option value="">Select Field</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" id="endorse-changes-btn" class="btn-primary" disabled>Endorse Changes</button>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     `;
-    
+
     return section;
 }
 
@@ -396,7 +420,7 @@ function populateEndorsementData(data) {
     // Application code and quote
     document.getElementById('end-application-code').value = data.applicationCode || '';
     document.getElementById('end-easy-quote').value = data.easyQuote || '';
-    
+
     // Business Info
     const business = data.businessInfo || {};
     document.getElementById('end-country').value = business.country || '';
@@ -409,7 +433,7 @@ function populateEndorsementData(data) {
     document.getElementById('end-intermediary-code').value = business.intermediaryCode || '';
     document.getElementById('end-intermediary-name').value = business.intermediaryName || '';
     document.getElementById('end-intermediary-email').value = business.intermediaryEmail || '';
-    
+
     // Policy Info
     const policy = data.policyInfo || {};
     document.getElementById('end-premium-type').value = policy.premiumType || '';
@@ -417,7 +441,7 @@ function populateEndorsementData(data) {
     document.getElementById('end-policy-plan').value = policy.policyPlan || '';
     document.getElementById('end-sum-insured').value = policy.sumInsured || '';
     document.getElementById('end-policy-tenure').value = policy.policyTenure || '';
-    
+
     // Personal Info
     const personal = data.personalInfo || {};
     document.getElementById('end-full-name').value = personal.fullName || '';
@@ -427,7 +451,7 @@ function populateEndorsementData(data) {
     document.getElementById('end-relationship').value = personal.relationship || '';
     document.getElementById('end-email').value = personal.email || '';
     document.getElementById('end-phone').value = personal.phone || '';
-    
+
     // Health Info
     const health = data.healthInfo || {};
     document.getElementById('end-height').value = health.height || '';
@@ -435,7 +459,7 @@ function populateEndorsementData(data) {
     document.getElementById('end-bmi').value = health.bmi || '';
     document.getElementById('end-blood-group').value = health.bloodGroup || '';
     document.getElementById('end-conditions').value = (health.preExistingConditions || []).join(', ') || 'None';
-    
+
     // Address Info
     const address = data.addressInfo || {};
     const comm = address.communicationAddress || {};
@@ -444,11 +468,11 @@ function populateEndorsementData(data) {
     document.getElementById('end-comm-country').value = comm.country || '';
     document.getElementById('end-comm-state').value = comm.state || '';
     document.getElementById('end-comm-city').value = comm.city || '';
-    
+
     const perm = address.permanentAddress || {};
     const sameAsComm = perm.sameAsCommunication || false;
     document.getElementById('end-same-as-comm').checked = sameAsComm;
-    
+
     // If addresses are the same, hide permanent address fields
     const permFields = document.getElementById('end-permanent-address-fields');
     if (sameAsComm) {
@@ -461,21 +485,21 @@ function populateEndorsementData(data) {
         document.getElementById('end-perm-state').value = perm.state || '';
         document.getElementById('end-perm-city').value = perm.city || '';
     }
-    
+
     // Questionnaire
     const questionnaire = data.questionnaire || {};
     document.getElementById('end-health-conditions').value = (questionnaire.healthConditions || []).join(', ') || 'None';
     document.getElementById('end-medical-history').value = questionnaire.medicalHistory || '';
-    
+
     // Premium
     const premium = data.premium || {};
     document.getElementById('end-base-premium').textContent = premium.basePremium || '₹0.00';
     document.getElementById('end-premium-tax').textContent = premium.tax || '₹0.00';
     document.getElementById('end-total-premium').textContent = premium.totalPremium || '₹0.00';
-    
+
     // Setup navigation between sections
     setupEndorsementNavigation();
-    
+
     // Setup endorsement button
     setupEndorsementButton(data.applicationCode);
 }
@@ -491,69 +515,69 @@ function setupEndorsementNavigation() {
     // Setup navigation buttons
     const nextButtons = document.querySelectorAll('.end-nav-next');
     const prevButtons = document.querySelectorAll('.end-nav-prev');
-    
+
     nextButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             // Find current active form
             const currentForm = document.querySelector('#endorsement-section .application-form.active');
             // Find the corresponding nav item
             const currentNavItem = document.querySelector('#endorsement-section .nav-item.active');
-            
+
             // Find next nav item
             const nextNavItem = currentNavItem.nextElementSibling;
             if (nextNavItem) {
                 // Get the section to show
                 const nextSectionId = nextNavItem.getAttribute('data-section');
                 const nextForm = document.getElementById(nextSectionId + '-form');
-                
+
                 // Hide current, show next
                 currentForm.classList.remove('active');
                 nextForm.classList.add('active');
-                
+
                 // Update nav
                 currentNavItem.classList.remove('active');
                 nextNavItem.classList.add('active');
             }
         });
     });
-    
+
     prevButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             // Find current active form
             const currentForm = document.querySelector('#endorsement-section .application-form.active');
             // Find the corresponding nav item
             const currentNavItem = document.querySelector('#endorsement-section .nav-item.active');
-            
+
             // Find prev nav item
             const prevNavItem = currentNavItem.previousElementSibling;
             if (prevNavItem) {
                 // Get the section to show
                 const prevSectionId = prevNavItem.getAttribute('data-section');
                 const prevForm = document.getElementById(prevSectionId + '-form');
-                
+
                 // Hide current, show prev
                 currentForm.classList.remove('active');
                 prevForm.classList.add('active');
-                
+
                 // Update nav
                 currentNavItem.classList.remove('active');
                 prevNavItem.classList.add('active');
             }
         });
     });
-    
+
     // Add click handlers for sidebar navigation
     const navItems = document.querySelectorAll('#endorsement-section .nav-item');
     navItems.forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function () {
             // Remove active class from all items
             navItems.forEach(nav => nav.classList.remove('active'));
             this.classList.add('active');
-            
+
             // Get section to show
             const sectionId = this.getAttribute('data-section');
             const sectionToShow = document.getElementById(sectionId + '-form');
-            
+
             // Hide all forms and show the selected one
             document.querySelectorAll('#endorsement-section .application-form').forEach(form => {
                 form.classList.remove('active');
@@ -567,8 +591,182 @@ function setupEndorsementButton(applicationCode) {
     const endorsementBtn = document.getElementById('make-endorsement-btn');
     if (endorsementBtn) {
         endorsementBtn.addEventListener('click', function() {
-            alert(`Endorsement request initiated for application ${applicationCode}. Redirecting to endorsement form...`);
-            // Here you could redirect to a new endorsement form or open a modal, etc.
+            // Show the endorsement selection form
+            const endorsementSelection = document.getElementById('endorsement-selection');
+            endorsementSelection.style.display = 'block';
+            
+            // Setup the category dropdown change handler
+            setupEndorsementCategoryDropdown();
         });
+    }
+    
+    // Set up the "Endorse Changes" button
+    const endorseChangesBtn = document.getElementById('endorse-changes-btn');
+    if (endorseChangesBtn) {
+        endorseChangesBtn.addEventListener('click', function() {
+            const category = document.getElementById('endorsement-category').value;
+            const field = document.getElementById('endorsement-field').value;
+            
+            if (category && field) {
+                // Navigate to the selected section
+                navigateToSection(category);
+                
+                // Make the selected field editable
+                makeFieldEditable(field);
+            }
+        });
+    }
+}
+function setupEndorsementCategoryDropdown() {
+    const categoryDropdown = document.getElementById('endorsement-category');
+    const fieldDropdown = document.getElementById('endorsement-field');
+    const endorseChangesBtn = document.getElementById('endorse-changes-btn');
+    
+    categoryDropdown.addEventListener('change', function() {
+        const selectedCategory = this.value;
+        
+        // Clear previous options
+        fieldDropdown.innerHTML = '<option value="">Select Field</option>';
+        
+        if (selectedCategory) {
+            // Enable field dropdown
+            fieldDropdown.disabled = false;
+            
+            // Populate fields based on the selected category
+            const fields = getCategoryFields(selectedCategory);
+            fields.forEach(field => {
+                const option = document.createElement('option');
+                option.value = field.id;
+                option.textContent = field.label;
+                fieldDropdown.appendChild(option);
+            });
+        } else {
+            fieldDropdown.disabled = true;
+        }
+        
+        // Disable the "Endorse Changes" button
+        endorseChangesBtn.disabled = true;
+    });
+    
+    // Enable the "Endorse Changes" button when a field is selected
+    fieldDropdown.addEventListener('change', function() {
+        endorseChangesBtn.disabled = !this.value;
+    });
+}
+
+function getCategoryFields(category) {
+    // Return field IDs and labels for each category
+    const categoryFields = {
+        'end-business-info': [
+            { id: 'end-country', label: 'Country' },
+            { id: 'end-state', label: 'State' },
+            { id: 'end-city', label: 'City' },
+            { id: 'end-lob', label: 'LOB' },
+            { id: 'end-business-type', label: 'Type Of Business' },
+            { id: 'end-start-date', label: 'Start Date' },
+            { id: 'end-end-date', label: 'End Date' },
+            { id: 'end-intermediary-code', label: 'Intermediary Code' },
+            { id: 'end-intermediary-name', label: 'Intermediary Name' },
+            { id: 'end-intermediary-email', label: 'Intermediary Email' }
+        ],
+        'end-policy-info': [
+            { id: 'end-premium-type', label: 'Payment Type' },
+            { id: 'end-cover-type', label: 'Premium Cover' },
+            { id: 'end-policy-plan', label: 'Policy Plan' },
+            { id: 'end-sum-insured', label: 'Sum Insured INR' },
+            { id: 'end-policy-tenure', label: 'Policy Tenure (Yrs)' }
+        ],
+        'end-personal-info': [
+            { id: 'end-full-name', label: 'Full Name' },
+            { id: 'end-dob', label: 'Date of Birth' },
+            { id: 'end-age', label: 'Age' },
+            { id: 'end-gender', label: 'Gender' },
+            { id: 'end-relationship', label: 'Relationship' },
+            { id: 'end-email', label: 'Email' },
+            { id: 'end-phone', label: 'Phone Number' }
+        ],
+        'end-health-info': [
+            { id: 'end-height', label: 'Height (cm)' },
+            { id: 'end-weight', label: 'Weight (kg)' },
+            { id: 'end-bmi', label: 'BMI' },
+            { id: 'end-blood-group', label: 'Blood Group' },
+            { id: 'end-conditions', label: 'Pre-existing Conditions' }
+        ],
+        'end-address-info': [
+            { id: 'end-comm-address', label: 'Communication - Line Of Address' },
+            { id: 'end-comm-pincode', label: 'Communication - PIN Code' },
+            { id: 'end-comm-country', label: 'Communication - Country' },
+            { id: 'end-comm-state', label: 'Communication - State' },
+            { id: 'end-comm-city', label: 'Communication - City' },
+            { id: 'end-perm-address', label: 'Permanent - Line Of Address' },
+            { id: 'end-perm-pincode', label: 'Permanent - PIN Code' },
+            { id: 'end-perm-country', label: 'Permanent - Country' },
+            { id: 'end-perm-state', label: 'Permanent - State' },
+            { id: 'end-perm-city', label: 'Permanent - City' }
+        ],
+        'end-questionnaire': [
+            { id: 'end-health-conditions', label: 'Health Conditions' },
+            { id: 'end-medical-history', label: 'Medical History' }
+        ]
+    };
+    
+    return categoryFields[category] || [];
+}
+
+function navigateToSection(sectionId) {
+    // Find the nav item for this section and click it
+    const navItem = document.querySelector(`.nav-item[data-section="${sectionId}"]`);
+    if (navItem) {
+        navItem.click();
+    }
+}
+
+function makeFieldEditable(fieldId) {
+    // Get the field element
+    const field = document.getElementById(fieldId);
+    
+    if (field) {
+        // Remove readonly attribute
+        field.removeAttribute('readonly');
+        
+        // Add a class to highlight the editable field
+        field.classList.add('editable-field');
+        
+        // Focus on the field
+        field.focus();
+        
+        // Add a save button next to the field
+        addSaveButton(field, fieldId);
+    }
+}
+
+function addSaveButton(field, fieldId) {
+    // Create container for the field and button if not exists
+    let container = field.parentElement;
+    
+    // Check if save button already exists
+    if (!container.querySelector('.save-field-btn')) {
+        // Create save button
+        const saveBtn = document.createElement('button');
+        saveBtn.type = 'button';
+        saveBtn.className = 'btn-primary save-field-btn';
+        saveBtn.textContent = 'Save Changes';
+        saveBtn.style.marginTop = '8px';
+        
+        // Add click handler for save button
+        saveBtn.addEventListener('click', function() {
+            // Here you'll implement the save functionality later
+            alert(`Changes saved for field: ${fieldId}`);
+            
+            // Make the field readonly again
+            field.setAttribute('readonly', true);
+            field.classList.remove('editable-field');
+            
+            // Remove the save button
+            this.remove();
+        });
+        
+        // Add to container
+        container.appendChild(saveBtn);
     }
 }

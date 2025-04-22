@@ -999,6 +999,7 @@ textarea:focus {
     color: #666;
     border: 1px solid #ddd;
 }
+<<<<<<< HEAD
 
 /* Claims Styles */
 .claims-container {
@@ -1483,4 +1484,16 @@ textarea:focus {
     .terms-buttons button {
         width: 100%;
     }
+=======
+.editable-field {
+    background-color: #fff8e8 !important;
+    border: 2px solid #ffc107 !important;
+}
+
+#endorsement-selection {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+>>>>>>> 2d3e20b08c2bd165f4d908f0430cb1ad524f1ee4
 }
