@@ -1,1148 +1,1203 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Health Insurance Portal</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="app">
-        <!-- Authentication Section -->
-        <div id="auth-section" class="section">
-            <div class="auth-container">
-                <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="login">Login</button>
-                    <button class="auth-tab" data-tab="signup">Sign Up</button>
-                </div>
-                
-                <div id="login-form" class="auth-form active">
-                    <h2>Welcome Back</h2>
-                    <form id="login">
-                        <div class="form-group">
-                            <label for="login-email">Email</label>
-                            <input type="email" id="login-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="login-password">Password</label>
-                            <input type="password" id="login-password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="login-user-type">User Type</label>
-                            <select id="login-user-type" required>
-                                <option value="">Select User Type</option>
-                                <option value="normal">User</option>
-                                
+      <!-- Authentication Section -->
+      <div id="auth-section" class="section">
+        <div class="auth-container">
+          <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="login">Login</button>
+            <button class="auth-tab" data-tab="signup">Sign Up</button>
+          </div>
 
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-primary">Login</button>
-                    </form>
-                </div>
+          <div id="login-form" class="auth-form active">
+            <h2>Welcome Back</h2>
+            <form id="login">
+              <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" required />
+              </div>
+              <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required />
+              </div>
+              <div class="form-group">
+                <label for="login-user-type">User Type</label>
+                <select id="login-user-type" required>
+                  <option value="">Select User Type</option>
+                  <option value="normal">User</option>
+                </select>
+              </div>
+              <button type="submit" class="btn-primary">Login</button>
+            </form>
+          </div>
 
-                <div id="signup-form" class="auth-form">
-                    <h2>Create Account</h2>
-                    <form id="signup">
-                        <div class="form-group">
-                            <label for="signup-name">Full Name</label>
-                            <input type="text" id="signup-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-email">Email</label>
-                            <input type="email" id="signup-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-phone">Phone</label>
-                            <input type="text" id="signup-phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-password">Password</label>
-                            <input type="password" id="signup-password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-confirm-password">Confirm Password</label>
-                            <input type="password" id="signup-confirm-password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-user-type">User Type</label>
-                            <select id="signup-user-type" required>
-                                <option value="">Select User Type</option>
-                                <option value="normal">User</option>
-                               
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-primary">Sign Up</button>
-                    </form>
-                </div>
+          <div id="signup-form" class="auth-form">
+            <h2>Create Account</h2>
+            <form id="signup">
+              <div class="form-group">
+                <label for="signup-name">Full Name</label>
+                <input type="text" id="signup-name" required />
+              </div>
+              <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" required />
+              </div>
+              <div class="form-group">
+                <label for="signup-phone">Phone</label>
+                <input type="text" id="signup-phone" required />
+              </div>
+              <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" required />
+              </div>
+              <div class="form-group">
+                <label for="signup-confirm-password">Confirm Password</label>
+                <input type="password" id="signup-confirm-password" required />
+              </div>
+              <div class="form-group">
+                <label for="signup-user-type">User Type</label>
+                <select id="signup-user-type" required>
+                  <option value="">Select User Type</option>
+                  <option value="normal">User</option>
+                </select>
+              </div>
+              <button type="submit" class="btn-primary">Sign Up</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- Add this new section after the auth-section and before the dashboard-section -->
+      <div id="cards-section" class="section hidden">
+        <nav class="dashboard-nav">
+          <div class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">Health Insurance</a></div>
+          <div class="nav-links"></div>
+          <div class="user-menu">
+            <span class="user-name">John Doe</span>
+            <button id="logout-btn" class="btn-secondary">Logout</button>
+          </div>
+        </nav>
+
+        <div class="cards-container">
+          <div class="dashboard-card" id="policy-management-card">
+            <div class="card-icon">
+              <i class="fas fa-file-contract"></i>
             </div>
-        </div>
-        <!-- Add this new section after the auth-section and before the dashboard-section -->
-        <div id="cards-section" class="section hidden">
-            <nav class="dashboard-nav">
-                <div class="logo">Health Insurance</div>
-                <div class="nav-links">
-                </div>
-                <div class="user-menu">
-                    <span class="user-name">John Doe</span>
-                    <button id="logout-btn" class="btn-secondary">Logout</button>
-                </div>
-            </nav>
-
-            <div class="cards-container">
-                <div class="dashboard-card" id="policy-management-card">
-                    <div class="card-icon">
-                        <i class="fas fa-file-contract"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>Policy Management</h3>
-                        <p>Manage your insurance policies, quotes, and applications</p>
-                    </div>
-                </div>
-
-                <div class="dashboard-card" id="claims-card">
-                    <div class="card-icon">
-                        <i class="fas fa-hand-holding-medical"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>Claims</h3>
-                        <p>File a new claim or check status of existing claims</p>
-                    </div>
-                </div>
+            <div class="card-content">
+              <h3>Policy Management</h3>
+              <p>Manage your insurance policies, quotes, and applications</p>
             </div>
+          </div>
+
+          <div class="dashboard-card" id="claims-card">
+            <div class="card-icon">
+              <i class="fas fa-hand-holding-medical"></i>
+            </div>
+            <div class="card-content">
+              <h3>Claims</h3>
+              <p>File a new claim or check status of existing claims</p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Dashboard Section (Hidden by default) -->
-        <div id="dashboard-section" class="section hidden">
-            <nav class="dashboard-nav">
-                <div class="logo">Health Insurance</div>
-                <div class="nav-links">
-                    <a href="#" class="active" data-section="quick-quote">Easy Quote</a>
-                    <a href="#" data-section="applications">Detail Data Capture</a>
-                    <a href="#" data-section="documents">Documents</a>
-                    <a href="#" data-section="claims">Claims</a>
-                    <div class="search-container">
-                        <input type="search" id="code-search" placeholder="Search by code...">
-                        <button id="search-btn" class="btn-search"><i class="fas fa-search"></i></button>
-                    </div>
+      <!-- Dashboard Section (Hidden by default) -->
+      <div id="dashboard-section" class="section hidden">
+        <nav class="dashboard-nav">
+          <div class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">Health Insurance</a></div>
+          <div class="nav-links">
+            <a href="#" class="active" data-section="quick-quote">Easy Quote</a>
+            <a href="#" data-section="applications">Detail Data Capture</a>
+            <a href="#" data-section="documents">Documents</a>
+            
+            <div class="search-container">
+              <input
+                type="search"
+                id="code-search"
+                placeholder="Search by code..."
+              />
+              <button id="search-btn" class="btn-search">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+          <div class="user-menu">
+            <span class="user-name">John Doe</span>
+            <button id="logout-btn" class="btn-secondary">Logout</button>
+          </div>
+        </nav>
+
+        <main class="dashboard-content">
+          <!-- Quick Quote Section -->
+          <section id="quick-quote" class="dashboard-section active">
+            <h2>Get a Easy Quote</h2>
+            <div class="application-container">
+              <!-- Side Navigation -->
+              <div class="application-nav">
+                <div class="nav-item active" data-section="business-info">
+                  <i class="fas fa-building"></i>
+                  <span>Business Info</span>
                 </div>
-                <div class="user-menu">
-                    <span class="user-name">John Doe</span>
-                    <button id="logout-btn" class="btn-secondary">Logout</button>
+                <div class="nav-item" data-section="policy-info">
+                  <i class="fas fa-file-contract"></i>
+                  <span>Policy Info</span>
                 </div>
-            </nav>
 
-            <main class="dashboard-content">
-                <!-- Quick Quote Section -->
-                <section id="quick-quote" class="dashboard-section active">
-                    <h2>Get a Easy Quote</h2>
-                    <div class="application-container">
-                        <!-- Side Navigation -->
-                        <div class="application-nav">
-                            <div class="nav-item active" data-section="business-info">
-                                <i class="fas fa-building"></i>
-                                <span>Business Info</span>
-                            </div>
-                            <div class="nav-item" data-section="policy-info">
-                                <i class="fas fa-file-contract"></i>
-                                <span>Policy Info</span>
-                            </div>
+                <div class="nav-item" data-section="personal-info">
+                  <i class="fas fa-user"></i>
+                  <span>Personal Info</span>
+                </div>
+                <div class="nav-item" data-section="health-info">
+                  <i class="fas fa-heartbeat"></i>
+                  <span>Health Info</span>
+                </div>
+                <div class="nav-item" data-section="address-info">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>Address Info</span>
+                </div>
+              </div>
 
-                            <div class="nav-item" data-section="personal-info">
-                                <i class="fas fa-user"></i>
-                                <span>Personal Info</span>
-                            </div>
-                            <div class="nav-item" data-section="health-info">
-                                <i class="fas fa-heartbeat"></i>
-                                <span>Health Info</span>
-                            </div>
-                            <div class="nav-item" data-section="address-info">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Address Info</span>
-                            </div>
-
-                        </div>
-
-                        <!-- Application Forms -->
-                        <div class="application-content">
-                    <form id="quote-form">
-                                <!-- Business information-->
-                                <div id="business-info-form" class="application-form active">
-                                    <h3>Business Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="polCountry">Country</label>
-                                            <select id="polCountry" required>
-                                                <option value="">Select Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="Australia">Australia</option>
-                                                <!-- Add more countries as needed -->
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="polState">State</label>
-                                            <input type="text" id="polState" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="polCity">City</label>
-                                            <input type="text" id="polCity" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="lineOfBusiness">LOB</label>
-                                            <select id="lineOfBusiness" required>
-                                                <option value="">Select LOB</option>
-                                                <option value="accident">Accident</option>
-                                                <option value="health">Health</option>
-                                                <option value="fire">Fire</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="typeOfBusiness">Type Of Business</label>
-                                            <select id="typeOfBusiness" required>
-                                                <option value="new">New Business</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="policyStartExpected">Start Date</label>
-                                            <input type="date" id="policystartDate" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="policyEndExpected">End Date</label>
-                                            <input type="date" id="policyEndDate" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="IntermediaryCode">Intermediary Code</label>
-                                            <input type="text" id="IntermediaryCode" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="IntermediaryName">Intermediary Name</label>
-                                            <input type="text" id="IntermediaryName" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="Intermediaryemail">Intermediary email</label>
-                                            <input type="email" id="Intermediaryemail" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary save-continue">Continue</button>
-                                    </div>
-                                </div>
-
-                                <!--Policy Details-->
-                                <div id="policy-info-form" class="application-form">
-                                    <h3>Policy Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="premiumType">Payment Type </label>
-                                            <select id="premiumType" required>
-                                                <option value="">Select payment type</option>
-                                                <option value="annual">Annual payment</option>
-                                                <option value="single">Single Payment</option>
-                                                <option value="monthly">Monthly Payment</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="coverType"> Premium Cover</label>
-                                            <select id="coverType" required>
-                                                <option value="">Select Business type</option>
-                                                <option value="single">Individual</option>
-                                                <option value="family">Family Floater</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="ploicyPlan"> Policy Plan</label>
-                                            <select id="ploicyPlan" required>
-                                                <option value="">Select Plan type</option>
-                                                <option value="gold">Gold</option>
-                                                <option value="silver">Silver</option>
-                                                <option value="platinum">Platinum</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="sumInusred">Sum Insured INR</label>
-                                            <input type="number" id="sumInusred" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="policyTenure">Policy Tenure (Yrs)</label>
-                                            <input type="number" id="plicyTenure" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary save-continue">Continue</button>
-                                    </div>
-                                </div>
-
-                                <!-- Communication address-->
-                                <div id="address-info-form" class="application-form">
-                                    <h3>Communication Address</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                            <label for="commLineOfAddress">Line Of Address</label>
-                                            <input type="text" id="commLineOfAddress" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="commPinCode">PIN Code</label>
-                                            <div class="dropdown-container">
-                                                <input type="text" id="commPinCode" required autocomplete="off"
-                                                    oninput="filterPinCodes('comm')">
-                                                <div id="commPinCodeDropdown" class="dropdown-list"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="commCountry">Country</label>
-                                            <select id="commCountry" required>
-                                                <option value="">Select Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="Australia">Australia</option>
-                                                <!-- Add more countries as needed -->
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="commState">State</label>
-                                            <select id="commState" required>
-                                                <option value="">Select State</option>
-                                                <!-- States will be populated based on selected country -->
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="commCity">City</label>
-                                            <input type="text" id="commCity" required>
-                                        </div>
-                                    </div>
-
-                                    <h3>Permanent Address</h3>
-                                    <div class="form-group checkbox-container">
-                                        <input type="checkbox" id="sameAsComm">
-                                        <label for="sameAsComm">Same as Communication Address</label>
-                                    </div>
-
-                                    <div class="form-row" id="presentAddressFields">
-                                        <div class="form-group">
-                                            <label for="presentLineOfAddress">Line Of Address</label>
-                                            <input type="text" id="presentLineOfAddress" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="presentPinCode">PIN Code</label>
-                                            <div class="dropdown-container">
-                                                <input type="text" id="presentPinCode" required autocomplete="off"
-                                                    oninput="filterPinCodes('present')">
-                                                <div id="presentPinCodeDropdown" class="dropdown-list"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="presentCountry">Country</label>
-                                            <select id="presentCountry" required>
-                                    <option value="">Select Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="Australia">Australia</option>
-                                                <!-- Add more countries as needed -->
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="presentState">State</label>
-                                            <select id="presentState" required>
-                                                <option value="">Select State</option>
-                                                <!-- States will be populated based on selected country -->
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="presentCity">City</label>
-                                            <input type="text" id="presentCity" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary save-continue">Save and
-                                            Finalize</button>
-                                    </div>
-                                </div>
-
-
-                                <!-- Personal Information -->
-                                <div id="personal-info-form" class="application-form">
-                                    <h3>Personal Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="fullName">Full Name</label>
-                                            <input type="text" id="fullName" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="dateOfBirth">Date of Birth</label>
-                                            <input type="date" id="dateOfBirth" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="age">Age</label>
-                                            <input type="number" id="age" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="gender">Gender</label>
-                                            <select id="gender" required>
-                                                <option value="">Select Gender</option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
-                                                <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                            <label for="relationship">Relationship</label>
-                                            <select id="relationship">
-                                                <option value="">Select Relationship</option>
-                                                <option value="self">Self</option>
-                                                <option value="spouse">Spouse</option>
-                                                <option value="child">Child</option>
-                                                <option value="parent">Parent</option>
-                                </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="email">Email</label>
-                                            <input type="email" id="email" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="phone">Phone Number</label>
-                                            <input type="tel" id="phone" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary save-continue">Continue</button>
-                            </div>
-                        </div>
-
-                                <!-- Health Information -->
-                                <div id="health-info-form" class="application-form">
-                                    <h3>Health Information</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="height">Height (cm)</label>
-                                <input type="number" id="height" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="weight">Weight (kg)</label>
-                                <input type="number" id="weight" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="bmi">BMI</label>
-                                <input type="text" id="bmi" readonly>
-                            </div>
-                        </div>
-
-                                    <div class="form-row">
-                        <div class="form-group">
-                                            <label for="bloodGroup">Blood Group</label>
-                                            <select id="bloodGroup" required>
-                                                <option value="">Select Blood Group</option>
-                                                <option value="A+">A+</option>
-                                                <option value="A-">A-</option>
-                                                <option value="B+">B+</option>
-                                                <option value="B-">B-</option>
-                                                <option value="O+">O+</option>
-                                                <option value="O-">O-</option>
-                                                <option value="AB+">AB+</option>
-                                                <option value="AB-">AB-</option>
-                                            </select>
-                        </div>
-                        <div class="form-group">
-                                            <label>Pre-existing Conditions</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="conditions" value="diabetes">
-                                                    Diabetes
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="conditions" value="hypertension">
-                                                    Hypertension
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="conditions" value="heart-disease">
-                                                    Heart Disease
-                                </label>
-                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="conditions" value="asthma">
-                                                    Asthma
-                                </label>
-                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="conditions" value="other">
-                                                    Other
-                                </label>
-                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary save-continue"> Save & Continue</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+              <!-- Application Forms -->
+              <div class="application-content">
+                <form id="quote-form">
+                  <!-- Business information-->
+                  <div id="business-info-form" class="application-form active">
+                    <h3>Business Information</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="polCountry">Country</label>
+                        <select id="polCountry" required>
+                          <option value="">Select Country</option>
+                          <option value="India">India</option>
+                          <option value="United States">United States</option>
+                          <option value="United Kingdom">United Kingdom</option>
+                          <option value="Canada">Canada</option>
+                          <option value="Australia">Australia</option>
+                          <!-- Add more countries as needed -->
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="polState">State</label>
+                        <input type="text" id="polState" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="polCity">City</label>
+                        <input type="text" id="polCity" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="lineOfBusiness">LOB</label>
+                        <select id="lineOfBusiness" required>
+                          <option value="">Select LOB</option>
+                          <option value="accident">Accident</option>
+                          <option value="health">Health</option>
+                          <option value="fire">Fire</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="typeOfBusiness">Type Of Business</label>
+                        <select id="typeOfBusiness" required>
+                          <option value="new">New Business</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="policyStartExpected">Start Date</label>
+                        <input type="date" id="policystartDate" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="policyEndExpected">End Date</label>
+                        <input type="date" id="policyEndDate" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="IntermediaryCode">Intermediary Code</label>
+                        <input type="text" id="IntermediaryCode" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="IntermediaryName">Intermediary Name</label>
+                        <input type="text" id="IntermediaryName" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="Intermediaryemail"
+                          >Intermediary email</label
+                        >
+                        <input type="email" id="Intermediaryemail" required />
+                      </div>
                     </div>
-                </section>
-
-                <!-- Applications Section -->
-                <section id="applications" class="dashboard-section">
-                    <h2>Detail Data Capture</h2>
-
-                    <!-- Quick Code Lookup Field -->
-                    
-
-                    <div class="application-container">
-                        <!-- Side Navigation -->
-                        <div class="application-nav">
-                            <div class="nav-item active" data-section="business-info-app">
-                                <i class="fas fa-building"></i>
-                                <span>Business Info</span>
-                            </div>
-                            <div class="nav-item" data-section="policy-info-app">
-                                <i class="fas fa-file-contract"></i>
-                                <span>Policy Info</span>
-                            </div>
-                            <div class="nav-item" data-section="personal-info-app">
-                                <i class="fas fa-user"></i>
-                                <span>Personal Info</span>
-                            </div>
-                            <div class="nav-item" data-section="health-info-app">
-                                <i class="fas fa-heartbeat"></i>
-                                <span>Health Info</span>
-                            </div>
-                            <div class="nav-item" data-section="address-info-app">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Address Info</span>
-                            </div>
-                            <div class="nav-item" data-section="questionnaire-app">
-                                <i class="fas fa-clipboard-list"></i>
-                                <span>Questionnaire</span>
-                            </div>
-                            <div class="nav-item" data-section="finalize-app">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Finalize</span>
-                            </div>
-                        </div>
-
-                        <!-- Application Forms -->
-                        <div class="application-content">
-                            <form id="application-form">
-                                <!-- Business Info Form -->
-                                <div id="business-info-app-form" class="application-form active">
-                                    <h3>Business Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="easyQuote">quote reference no</label>
-                                            <input type="text" id="easyQuote" required>
-
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-polCountry">Country</label>
-                                            <select id="app-polCountry" required>
-                                                <option value="">Select Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="Australia">Australia</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-polState">State</label>
-                                            <input type="text" id="app-polState" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-polCity">City</label>
-                                            <input type="text" id="app-polCity" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-lineOfBusiness">LOB</label>
-                                            <select id="app-lineOfBusiness" required>
-                                                <option value="">Select LOB</option>
-                                                <option value="accident">Accident</option>
-                                                <option value="health">Health</option>
-                                                <option value="fire">Fire</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-typeOfBusiness">Type Of Business</label>
-                                            <select id="app-typeOfBusiness" required>
-                                                <option value="new">New Business</option>
-                                                <option value="renewal">Renewal</option>
-                                                <option value="portability">Portability</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-policystartDate">Start Date</label>
-                                            <input type="date" id="app-policystartDate" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-policyEndDate">End Date</label>
-                                            <input type="date" id="app-policyEndDate" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-IntermediaryCode">Intermediary Code</label>
-                                            <input type="text" id="app-IntermediaryCode" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-IntermediaryName">Intermediary Name</label>
-                                            <input type="text" id="app-IntermediaryName" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-Intermediaryemail">Intermediary email</label>
-                                            <input type="email" id="app-Intermediaryemail" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary app-save-continue">Save &
-                                            Continue</button>
-                                    </div>
-                                </div>
-
-                                <!-- Policy Info Form -->
-                                <div id="policy-info-app-form" class="application-form">
-                                    <h3>Policy Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="app-premiumType">Payment Type</label>
-                                            <select id="app-premiumType" required>
-                                                <option value="">Select payment type</option>
-                                                <option value="annual">Annual payment</option>
-                                                <option value="single">Single Payment</option>
-                                                <option value="monthly">Monthly Payment</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-coverType">Premium Cover</label>
-                                            <select id="app-coverType" required>
-                                                <option value="">Select Business type</option>
-                                                <option value="single">Individual</option>
-                                                <option value="family">Family Floater</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-ploicyPlan">Policy Plan</label>
-                                            <select id="app-ploicyPlan" required>
-                                                <option value="">Select Plan type</option>
-                                                <option value="gold">Gold</option>
-                                                <option value="silver">Silver</option>
-                                                <option value="platinum">Platinum</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-sumInusred">Sum Insured INR</label>
-                                            <input type="number" id="app-sumInusred" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-plicyTenure">Policy Tenure (Yrs)</label>
-                                            <input type="number" id="app-plicyTenure" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary app-save-continue">Save &
-                                            Continue</button>
-                                    </div>
-                                </div>
-
-                                <!-- Personal Info Form -->
-                                <div id="personal-info-app-form" class="application-form">
-                                    <h3>Personal Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="app-fullName">Full Name</label>
-                                            <input type="text" id="app-fullName" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-dateOfBirth">Date of Birth</label>
-                                            <input type="date" id="app-dateOfBirth" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-age">Age</label>
-                                            <input type="number" id="app-age" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="app-gender">Gender</label>
-                                            <select id="app-gender" required>
-                                                <option value="">Select Gender</option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-relationship">Relationship</label>
-                                            <select id="app-relationship">
-                                                <option value="">Select Relationship</option>
-                                                <option value="self">Self</option>
-                                                <option value="spouse">Spouse</option>
-                                                <option value="child">Child</option>
-                                                <option value="parent">Parent</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="app-email">Email</label>
-                                            <input type="email" id="app-email" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-phone">Phone Number</label>
-                                            <input type="tel" id="app-phone" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary app-save-continue">Save &
-                                            Continue</button>
-                                    </div>
-                                </div>
-
-                                <!-- Health Info Form -->
-                                <div id="health-info-app-form" class="application-form">
-                                    <h3>Health Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="app-height">Height (cm)</label>
-                                            <input type="number" id="app-height" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-weight">Weight (kg)</label>
-                                            <input type="number" id="app-weight" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-bmi">BMI</label>
-                                            <input type="text" id="app-bmi" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="app-bloodGroup">Blood Group</label>
-                                            <select id="app-bloodGroup" required>
-                                                <option value="">Select Blood Group</option>
-                                                <option value="A+">A+</option>
-                                                <option value="A-">A-</option>
-                                                <option value="B+">B+</option>
-                                                <option value="B-">B-</option>
-                                                <option value="O+">O+</option>
-                                                <option value="O-">O-</option>
-                                                <option value="AB+">AB+</option>
-                                                <option value="AB-">AB-</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Pre-existing Conditions</label>
-                                            <div class="checkbox-group">
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="app-conditions" value="diabetes">
-                                                    Diabetes
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="app-conditions" value="hypertension">
-                                                    Hypertension
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="app-conditions" value="heart-disease">
-                                                    Heart Disease
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="app-conditions" value="asthma">
-                                                    Asthma
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="app-conditions" value="other">
-                                                    Other
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary app-save-continue">Save &
-                                            Continue</button>
-                                    </div>
-                                </div>
-
-                                <!-- Address Info Form -->
-                                <div id="address-info-app-form" class="application-form">
-                                    <h3>Communication Address</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="app-commLineOfAddress">Line Of Address</label>
-                                            <input type="text" id="app-commLineOfAddress" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-commPinCode">PIN Code</label>
-                                            <div class="dropdown-container">
-                                                <input type="text" id="app-commPinCode" required autocomplete="off"
-                                                    oninput="filterPinCodes('app-comm')">
-                                                <div id="app-commPinCodeDropdown" class="dropdown-list"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-commCountry">Country</label>
-                                            <select id="app-commCountry" required>
-                                                <option value="">Select Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="Australia">Australia</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-commState">State</label>
-                                            <select id="app-commState" required>
-                                                <option value="">Select State</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-commCity">City</label>
-                                            <input type="text" id="app-commCity" required>
-                                        </div>
-                                    </div>
-
-                                    <h3>Permanent Address</h3>
-                                    <div class="form-group checkbox-container">
-                                        <input type="checkbox" id="app-sameAsComm">
-                                        <label for="app-sameAsComm">Same as Communication Address</label>
-                                    </div>
-
-                                    <div class="form-row" id="app-presentAddressFields">
-                                        <div class="form-group">
-                                            <label for="app-presentLineOfAddress">Line Of Address</label>
-                                            <input type="text" id="app-presentLineOfAddress" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-presentPinCode">PIN Code</label>
-                                            <div class="dropdown-container">
-                                                <input type="text" id="app-presentPinCode" required autocomplete="off"
-                                                    oninput="filterPinCodes('app-present')">
-                                                <div id="app-presentPinCodeDropdown" class="dropdown-list"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-presentCountry">Country</label>
-                                            <select id="app-presentCountry" required>
-                                                <option value="">Select Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="Australia">Australia</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-presentState">State</label>
-                                            <select id="app-presentState" required>
-                                                <option value="">Select State</option>
-                                            </select>
-                                            
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-presentCity">City</label>
-                                            <input type="text" id="app-presentCity" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary app-save-continue">Save &
-                                            Continue</button>
-                                    </div>
-                                </div>
-
-                                <!-- Questionnaire Form -->
-                                <div id="questionnaire-app-form" class="application-form">
-                                    <h3>Health Questionnaire</h3>
-                                    <div class="form-section">
-                                        <div class="form-group">
-                                            <label>Have you or any family members had any of the following
-                                                conditions?</label>
-                                            <div class="checkbox-group">
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="app-health-conditions" value="heart">
-                                                    Heart Disease
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="app-health-conditions"
-                                                        value="diabetes">
-                                                    Diabetes
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="app-health-conditions" value="cancer">
-                                                    Cancer
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" name="app-health-conditions"
-                                                        value="respiratory">
-                                                    Respiratory Conditions
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="app-medical-history">Please provide details of any medical
-                                                conditions:</label>
-                                            <textarea id="app-medical-history" rows="4"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-primary app-save-continue">Save &
-                                            Continue</button>
-                                    </div>
-                                </div>
-
-                                <!-- Finalize Form -->
-                                <div id="finalize-app-form" class="application-form">
-                                    <h3>Application Summary</h3>
-                                    <div id="final-summary" class="summary-container">
-                                        <!-- This will be filled dynamically via JavaScript -->
-
-                                    
-                                    <div id="application-summary" class="summary-container">
-                                        <!-- This will be filled dynamically via JavaScript -->
-                                    </div>
-                                    <div class="premium-section">
-                                        <h3>Premium Details</h3>
-                                        <div class="premium-details">
-                                            <div class="premium-row">
-                                                <span>Base Premium:</span>
-                                                <span id="base-premium">₹0.00</span>
-                                            </div>
-                                            <div class="premium-row">
-                                                <span>Taxes (18% GST):</span>
-                                                <span id="premium-tax">₹0.00</span>
-                                            </div>
-                                            <div class="premium-row total">
-                                                <span>Total Premium:</span>
-                                                <span id="total-premium">₹0.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                    <div class="form-actions finalize-actions">
-                                        <button type="button" id="generate-summary" class="btn-secondary">Generate summary</button>
-                                        <button type="button" id="calculate-premium-btn" class="btn-secondary">Calculate
-                                            Premium</button>
-                                        <button id="download-summary" class="btn-secondary">Download Summary as PDF</button>
-                                        <button type="button" id="activate-policy-btn" class="btn-primary">Activate
-                                            Policy</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                    <div class="form-actions">
+                      <button type="button" class="btn-primary save-continue">
+                        Continue
+                      </button>
                     </div>
-                </section>
+                  </div>
 
-                <!-- Documents Section -->
-                <section id="documents" class="dashboard-section">
-                    <h2>Document Upload</h2>
-                    <div class="documents-container">
-                        <!-- Policy Documents Section -->
-                        <div class="form-section">
-                            <h3>Policy Documents</h3>
-                            <div class="document-upload-section">
-                                <div class="document-list" id="policy-documents">
-                                    <!-- Policy documents will be listed here -->
-                                </div>
-                                <div class="document-upload">
-                                    <input type="file" id="policy-document-upload" multiple accept=".pdf,.doc,.docx">
-                                    <button class="btn-primary" onclick="uploadPolicyDocument()">Upload Policy
-                                        Document</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Government Identification Section -->
-                        <div class="form-section">
-                            <h3>Government Identification</h3>
-                            <div class="document-upload-section">
-                                <div class="document-list" id="id-documents">
-                                    <!-- ID documents will be listed here -->
-                                </div>
-                                <div class="document-upload">
-                                    <input type="file" id="id-document-upload" multiple accept=".pdf,.jpg,.jpeg,.png">
-                                    <button class="btn-primary" onclick="uploadIDDocument()">Upload ID Document</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Medical Documents Section -->
-                        <div class="form-section">
-                            <h3>Medical Documents</h3>
-                            <div class="document-upload-section">
-                                <div class="document-list" id="medical-documents">
-                                    <!-- Medical documents will be listed here -->
-                                </div>
-                                <div class="document-upload">
-                                    <input type="file" id="medical-document-upload" multiple
-                                        accept=".pdf,.jpg,.jpeg,.png">
-                                    <button class="btn-primary" onclick="uploadMedicalDocument()">Upload Medical
-                                        Document</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button class="btn-primary" id="download-all">Download All Documents</button>
-                        </div>
+                  <!--Policy Details-->
+                  <div id="policy-info-form" class="application-form">
+                    <h3>Policy Information</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="premiumType">Payment Type </label>
+                        <select id="premiumType" required>
+                          <option value="">Select payment type</option>
+                          <option value="annual">Annual payment</option>
+                          <option value="single">Single Payment</option>
+                          <option value="monthly">Monthly Payment</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="coverType"> Premium Cover</label>
+                        <select id="coverType" required>
+                          <option value="">Select Business type</option>
+                          <option value="single">Individual</option>
+                          <option value="family">Family Floater</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="ploicyPlan"> Policy Plan</label>
+                        <select id="ploicyPlan" required>
+                          <option value="">Select Plan type</option>
+                          <option value="gold">Gold</option>
+                          <option value="silver">Silver</option>
+                          <option value="platinum">Platinum</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="sumInusred">Sum Insured INR</label>
+                        <input type="number" id="sumInusred" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="policyTenure">Policy Tenure (Yrs)</label>
+                        <input type="number" id="plicyTenure" required />
+                      </div>
                     </div>
-                </section>
-
-                <!-- Claims Section -->
-                <section id="claims" class="dashboard-section">
-                    <h2>Claims Management</h2>
-                    <div class="claims-container">
-                        <div class="claims-options">
-                            <div class="claims-card" id="submit-claim-option">
-                                <div class="card-icon">
-                                    <i class="fas fa-file-medical"></i>
-                                </div>
-                                <h3>Submit a New Claim</h3>
-                                <p>File a new health insurance claim for medical expenses or reimbursement</p>
-                                <button class="btn-primary" id="submit-claim-btn">Submit New Claim</button>
-                            </div>
-                            
-                            <div class="claims-card" id="track-claim-option">
-                                <div class="card-icon">
-                                    <i class="fas fa-search"></i>
-                                </div>
-                                <h3>Track Your Claims</h3>
-                                <p>Check the status of your existing claims and view claim history</p>
-                                <button class="btn-primary" id="track-claim-btn">Track Claims</button>
-                            </div>
-                        </div>
-                        
-                        <div class="claim-search-section" id="claim-search">
-                            <h3>Search Claims</h3>
-                            <div class="search-container">
-                                <input type="search" id="claim-search-input" placeholder="Enter claim number...">
-                                <button id="claim-search-btn" class="btn-search"><i class="fas fa-search"></i> Search</button>
-                            </div>
-                            <div id="claim-search-results">
-                                <!-- Search results will appear here -->
-                            </div>
-                        </div>
-                        
-                        <div id="claim-form-container" class="hidden">
-                            <!-- Step 1: Claim Type Selection -->
-                            <div id="claim-type-selection" class="claim-step active">
-                                <h3>Select Claim Type</h3>
-                                <p class="form-description">Please select the type of claim you would like to submit.</p>
-                                
-                                <div class="claim-options">
-                                    <div class="claim-option-card" data-claim-type="cashless">
-                                        <div class="card-icon">
-                                            <i class="fas fa-hospital"></i>
-                                        </div>
-                                        <h4>Cashless Claim</h4>
-                                        <p>For pre-authorized hospital treatment with no upfront payment required. Available at network hospitals only.</p>
-                                        <button type="button" class="btn-primary select-claim-type" data-claim-type="cashless">Select Cashless</button>
-                                    </div>
-                                    
-                                    <div class="claim-option-card" data-claim-type="reimbursement">
-                                        <div class="card-icon">
-                                            <i class="fas fa-money-bill-wave"></i>
-                                        </div>
-                                        <h4>Reimbursement Claim</h4>
-                                        <p>For treatment you've already paid for. Submit expenses and get reimbursed as per policy terms.</p>
-                                        <button type="button" class="btn-primary select-claim-type" data-claim-type="reimbursement">Select Reimbursement</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Step 2: Terms and Conditions -->
-                            <div id="claim-terms-acceptance" class="claim-step hidden">
-                                <h3>Terms and Conditions</h3>
-                                <div class="terms-container">
-                                    <h4>Please read and accept the following terms before proceeding:</h4>
-                                    <div class="terms-content">
-                                        <p><strong>1. Accuracy of Information:</strong> I declare that all information provided in this claim submission is true, correct, and complete to the best of my knowledge.</p>
-                                        <p><strong>2. Authorization:</strong> I authorize any hospital, physician, or other healthcare provider to release to the insurance company any information regarding my medical history, symptoms, treatment, examination results, or diagnosis.</p>
-                                        <p><strong>3. Documentation:</strong> I understand that I must provide all required supporting documentation for my claim to be processed.</p>
-                                        <p><strong>4. Fraud Warning:</strong> Any person who knowingly presents false or fraudulent information in an application for insurance or claim may be guilty of insurance fraud and subject to legal action.</p>
-                                        <p><strong>5. Processing Timeline:</strong> I understand that claims processing typically takes 7-15 business days after submission of all required documents, and additional time may be needed for complex cases.</p>
-                                        <p><strong>6. Communication:</strong> I authorize the insurance company to communicate with me regarding this claim via the contact information provided.</p>
-                                        <p><strong>7. Pre-existing Conditions:</strong> I understand that any pre-existing conditions not disclosed during policy inception may result in claim rejection as per policy terms.</p>
-                                        <p><strong>8. Policy Terms:</strong> I acknowledge that this claim will be processed according to the terms, conditions, and exclusions of my insurance policy.</p>
-                                    </div>
-                                    <div class="terms-checkbox-container">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="terms-checkbox" required>
-                                            <span>I have read and agree to the above terms and conditions</span>
-                                        </label>
-                                    </div>
-                                    <div class="terms-buttons">
-                                        <button type="button" class="btn-secondary" id="back-to-claim-type">Back</button>
-                                        <button type="button" class="btn-primary" id="accept-terms">Proceed</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Step 3: Claim Form -->
-                            <div id="claim-form-step" class="claim-step hidden">
-                                <h3>Submit a New Claim</h3>
-                                <p class="form-description" id="claim-type-description">Please fill in the claim details below. After submission, your policy information will be automatically retrieved and displayed.</p>
-                                <form id="new-claim-form" class="form-section">
-                                    <input type="hidden" id="claim-submission-type" value="">
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="policy-number">Policy Number</label>
-                                            <input type="text" id="policy-number" required>
-                                            <small class="form-hint">Try using "POL987654" or "POL123456" for testing.</small>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="claim-type">Claim Type</label>
-                                            <select id="claim-type" required>
-                                                <option value="">Select Claim Type</option>
-                                                <option value="hospitalization">Hospitalization</option>
-                                                <option value="medication">Medication</option>
-                                                <option value="consultation">Doctor Consultation</option>
-                                                <option value="procedure">Medical Procedure</option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="incident-date">Incident Date</label>
-                                            <input type="date" id="incident-date" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="claim-amount">Claim Amount (₹)</label>
-                                            <input type="number" id="claim-amount" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group full-width">
-                                            <label for="claim-description">Description</label>
-                                            <textarea id="claim-description" rows="4" required></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group full-width">
-                                            <label for="claim-documents">Supporting Documents</label>
-                                            <input type="file" id="claim-documents" multiple accept=".pdf,.jpg,.jpeg,.png">
-                                            <small>Upload invoices, medical reports, prescriptions, etc.</small>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-secondary" id="back-to-terms">Back</button>
-                                        <button type="submit" class="btn-primary" id="submit-claim-form">Submit Claim</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                    <div class="form-actions">
+                      <button type="button" class="btn-primary save-continue">
+                        Continue
+                      </button>
                     </div>
-                </section>
-            </main>
-        </div>
+                  </div>
+
+                  <!-- Communication address-->
+                  <div id="address-info-form" class="application-form">
+                    <h3>Communication Address</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="commLineOfAddress">Line Of Address</label>
+                        <input type="text" id="commLineOfAddress" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="commPinCode">PIN Code</label>
+                        <div class="dropdown-container">
+                          <input
+                            type="text"
+                            id="commPinCode"
+                            required
+                            autocomplete="off"
+                            oninput="filterPinCodes('comm')"
+                          />
+                          <div
+                            id="commPinCodeDropdown"
+                            class="dropdown-list"
+                          ></div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="commCountry">Country</label>
+                        <select id="commCountry" required>
+                          <option value="">Select Country</option>
+                          <option value="India">India</option>
+                          <option value="United States">United States</option>
+                          <option value="United Kingdom">United Kingdom</option>
+                          <option value="Canada">Canada</option>
+                          <option value="Australia">Australia</option>
+                          <!-- Add more countries as needed -->
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="commState">State</label>
+                        <select id="commState" required>
+                          <option value="">Select State</option>
+                          <!-- States will be populated based on selected country -->
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="commCity">City</label>
+                        <input type="text" id="commCity" required />
+                      </div>
+                    </div>
+
+                    <h3>Permanent Address</h3>
+                    <div class="form-group checkbox-container">
+                      <input type="checkbox" id="sameAsComm" />
+                      <label for="sameAsComm"
+                        >Same as Communication Address</label
+                      >
+                    </div>
+
+                    <div class="form-row" id="presentAddressFields">
+                      <div class="form-group">
+                        <label for="presentLineOfAddress"
+                          >Line Of Address</label
+                        >
+                        <input type="text" id="presentLineOfAddress" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="presentPinCode">PIN Code</label>
+                        <div class="dropdown-container">
+                          <input
+                            type="text"
+                            id="presentPinCode"
+                            required
+                            autocomplete="off"
+                            oninput="filterPinCodes('present')"
+                          />
+                          <div
+                            id="presentPinCodeDropdown"
+                            class="dropdown-list"
+                          ></div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="presentCountry">Country</label>
+                        <select id="presentCountry" required>
+                          <option value="">Select Country</option>
+                          <option value="India">India</option>
+                          <option value="United States">United States</option>
+                          <option value="United Kingdom">United Kingdom</option>
+                          <option value="Canada">Canada</option>
+                          <option value="Australia">Australia</option>
+                          <!-- Add more countries as needed -->
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="presentState">State</label>
+                        <select id="presentState" required>
+                          <option value="">Select State</option>
+                          <!-- States will be populated based on selected country -->
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="presentCity">City</label>
+                        <input type="text" id="presentCity" required />
+                      </div>
+                    </div>
+
+                    <div class="form-actions">
+                      <button type="button" class="btn-primary save-continue">
+                        Save and Finalize
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Personal Information -->
+                  <div id="personal-info-form" class="application-form">
+                    <h3>Personal Information</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <input type="date" id="dateOfBirth" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" readonly />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" required>
+                          <option value="">Select Gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="relationship">Relationship</label>
+                        <select id="relationship">
+                          <option value="">Select Relationship</option>
+                          <option value="self">Self</option>
+                          <option value="spouse">Spouse</option>
+                          <option value="child">Child</option>
+                          <option value="parent">Parent</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required />
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button type="button" class="btn-primary save-continue">
+                        Continue
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Health Information -->
+                  <div id="health-info-form" class="application-form">
+                    <h3>Health Information</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="height">Height (cm)</label>
+                        <input type="number" id="height" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="bmi">BMI</label>
+                        <input type="text" id="bmi" readonly />
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="bloodGroup">Blood Group</label>
+                        <select id="bloodGroup" required>
+                          <option value="">Select Blood Group</option>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="O+">O+</option>
+                          <option value="O-">O-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>Pre-existing Conditions</label>
+                        <div class="checkbox-group">
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="conditions"
+                              value="diabetes"
+                            />
+                            Diabetes
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="conditions"
+                              value="hypertension"
+                            />
+                            Hypertension
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="conditions"
+                              value="heart-disease"
+                            />
+                            Heart Disease
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="conditions"
+                              value="asthma"
+                            />
+                            Asthma
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="conditions"
+                              value="other"
+                            />
+                            Other
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button type="button" class="btn-primary save-continue">
+                        Save & Continue
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <!-- Applications Section -->
+          <section id="applications" class="dashboard-section">
+            <h2>Detail Data Capture</h2>
+
+            <!-- Quick Code Lookup Field -->
+
+            <div class="application-container">
+              <!-- Side Navigation -->
+              <div class="application-nav">
+                <div class="nav-item active" data-section="business-info-app">
+                  <i class="fas fa-building"></i>
+                  <span>Business Info</span>
+                </div>
+                <div class="nav-item" data-section="policy-info-app">
+                  <i class="fas fa-file-contract"></i>
+                  <span>Policy Info</span>
+                </div>
+                <div class="nav-item" data-section="personal-info-app">
+                  <i class="fas fa-user"></i>
+                  <span>Personal Info</span>
+                </div>
+                <div class="nav-item" data-section="health-info-app">
+                  <i class="fas fa-heartbeat"></i>
+                  <span>Health Info</span>
+                </div>
+                <div class="nav-item" data-section="address-info-app">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>Address Info</span>
+                </div>
+                <div class="nav-item" data-section="questionnaire-app">
+                  <i class="fas fa-clipboard-list"></i>
+                  <span>Questionnaire</span>
+                </div>
+                <div class="nav-item" data-section="finalize-app">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Finalize</span>
+                </div>
+              </div>
+
+              <!-- Application Forms -->
+              <div class="application-content">
+                <form id="application-form">
+                  <!-- Business Info Form -->
+                  <div
+                    id="business-info-app-form"
+                    class="application-form active"
+                  >
+                    <h3>Business Information</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="easyQuote">quote reference no</label>
+                        <input type="text" id="easyQuote" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-polCountry">Country</label>
+                        <select id="app-polCountry" required>
+                          <option value="">Select Country</option>
+                          <option value="India">India</option>
+                          <option value="United States">United States</option>
+                          <option value="United Kingdom">United Kingdom</option>
+                          <option value="Canada">Canada</option>
+                          <option value="Australia">Australia</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-polState">State</label>
+                        <input type="text" id="app-polState" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-polCity">City</label>
+                        <input type="text" id="app-polCity" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-lineOfBusiness">LOB</label>
+                        <select id="app-lineOfBusiness" required>
+                          <option value="">Select LOB</option>
+                          <option value="accident">Accident</option>
+                          <option value="health">Health</option>
+                          <option value="fire">Fire</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-typeOfBusiness">Type Of Business</label>
+                        <select id="app-typeOfBusiness" required>
+                          <option value="new">New Business</option>
+                          <option value="renewal">Renewal</option>
+                          <option value="portability">Portability</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-policystartDate">Start Date</label>
+                        <input type="date" id="app-policystartDate" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-policyEndDate">End Date</label>
+                        <input type="date" id="app-policyEndDate" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-IntermediaryCode"
+                          >Intermediary Code</label
+                        >
+                        <input type="text" id="app-IntermediaryCode" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-IntermediaryName"
+                          >Intermediary Name</label
+                        >
+                        <input type="text" id="app-IntermediaryName" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-Intermediaryemail"
+                          >Intermediary email</label
+                        >
+                        <input
+                          type="email"
+                          id="app-Intermediaryemail"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        class="btn-primary app-save-continue"
+                      >
+                        Save & Continue
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Policy Info Form -->
+                  <div id="policy-info-app-form" class="application-form">
+                    <h3>Policy Information</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="app-premiumType">Payment Type</label>
+                        <select id="app-premiumType" required>
+                          <option value="">Select payment type</option>
+                          <option value="annual">Annual payment</option>
+                          <option value="single">Single Payment</option>
+                          <option value="monthly">Monthly Payment</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-coverType">Premium Cover</label>
+                        <select id="app-coverType" required>
+                          <option value="">Select Business type</option>
+                          <option value="single">Individual</option>
+                          <option value="family">Family Floater</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-ploicyPlan">Policy Plan</label>
+                        <select id="app-ploicyPlan" required>
+                          <option value="">Select Plan type</option>
+                          <option value="gold">Gold</option>
+                          <option value="silver">Silver</option>
+                          <option value="platinum">Platinum</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-sumInusred">Sum Insured INR</label>
+                        <input type="number" id="app-sumInusred" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-plicyTenure">Policy Tenure (Yrs)</label>
+                        <input type="number" id="app-plicyTenure" required />
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        class="btn-primary app-save-continue"
+                      >
+                        Save & Continue
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Personal Info Form -->
+                  <div id="personal-info-app-form" class="application-form">
+                    <h3>Personal Information</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="app-fullName">Full Name</label>
+                        <input type="text" id="app-fullName" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-dateOfBirth">Date of Birth</label>
+                        <input type="date" id="app-dateOfBirth" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-age">Age</label>
+                        <input type="number" id="app-age" readonly />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="app-gender">Gender</label>
+                        <select id="app-gender" required>
+                          <option value="">Select Gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-relationship">Relationship</label>
+                        <select id="app-relationship">
+                          <option value="">Select Relationship</option>
+                          <option value="self">Self</option>
+                          <option value="spouse">Spouse</option>
+                          <option value="child">Child</option>
+                          <option value="parent">Parent</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="app-email">Email</label>
+                        <input type="email" id="app-email" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-phone">Phone Number</label>
+                        <input type="tel" id="app-phone" required />
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        class="btn-primary app-save-continue"
+                      >
+                        Save & Continue
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Health Info Form -->
+                  <div id="health-info-app-form" class="application-form">
+                    <h3>Health Information</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="app-height">Height (cm)</label>
+                        <input type="number" id="app-height" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-weight">Weight (kg)</label>
+                        <input type="number" id="app-weight" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-bmi">BMI</label>
+                        <input type="text" id="app-bmi" readonly />
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="app-bloodGroup">Blood Group</label>
+                        <select id="app-bloodGroup" required>
+                          <option value="">Select Blood Group</option>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="O+">O+</option>
+                          <option value="O-">O-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>Pre-existing Conditions</label>
+                        <div class="checkbox-group">
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="app-conditions"
+                              value="diabetes"
+                            />
+                            Diabetes
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="app-conditions"
+                              value="hypertension"
+                            />
+                            Hypertension
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="app-conditions"
+                              value="heart-disease"
+                            />
+                            Heart Disease
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="app-conditions"
+                              value="asthma"
+                            />
+                            Asthma
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="app-conditions"
+                              value="other"
+                            />
+                            Other
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        class="btn-primary app-save-continue"
+                      >
+                        Save & Continue
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Address Info Form -->
+                  <div id="address-info-app-form" class="application-form">
+                    <h3>Communication Address</h3>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="app-commLineOfAddress"
+                          >Line Of Address</label
+                        >
+                        <input
+                          type="text"
+                          id="app-commLineOfAddress"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-commPinCode">PIN Code</label>
+                        <div class="dropdown-container">
+                          <input
+                            type="text"
+                            id="app-commPinCode"
+                            required
+                            autocomplete="off"
+                            oninput="filterPinCodes('app-comm')"
+                          />
+                          <div
+                            id="app-commPinCodeDropdown"
+                            class="dropdown-list"
+                          ></div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-commCountry">Country</label>
+                        <select id="app-commCountry" required>
+                          <option value="">Select Country</option>
+                          <option value="India">India</option>
+                          <option value="United States">United States</option>
+                          <option value="United Kingdom">United Kingdom</option>
+                          <option value="Canada">Canada</option>
+                          <option value="Australia">Australia</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-commState">State</label>
+                        <select id="app-commState" required>
+                          <option value="">Select State</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-commCity">City</label>
+                        <input type="text" id="app-commCity" required />
+                      </div>
+                    </div>
+
+                    <h3>Permanent Address</h3>
+                    <div class="form-group checkbox-container">
+                      <input type="checkbox" id="app-sameAsComm" />
+                      <label for="app-sameAsComm"
+                        >Same as Communication Address</label
+                      >
+                    </div>
+
+                    <div class="form-row" id="app-presentAddressFields">
+                      <div class="form-group">
+                        <label for="app-presentLineOfAddress"
+                          >Line Of Address</label
+                        >
+                        <input
+                          type="text"
+                          id="app-presentLineOfAddress"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="app-presentPinCode">PIN Code</label>
+                        <div class="dropdown-container">
+                          <input
+                            type="text"
+                            id="app-presentPinCode"
+                            required
+                            autocomplete="off"
+                            oninput="filterPinCodes('app-present')"
+                          />
+                          <div
+                            id="app-presentPinCodeDropdown"
+                            class="dropdown-list"
+                          ></div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-presentCountry">Country</label>
+                        <select id="app-presentCountry" required>
+                          <option value="">Select Country</option>
+                          <option value="India">India</option>
+                          <option value="United States">United States</option>
+                          <option value="United Kingdom">United Kingdom</option>
+                          <option value="Canada">Canada</option>
+                          <option value="Australia">Australia</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-presentState">State</label>
+                        <select id="app-presentState" required>
+                          <option value="">Select State</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-presentCity">City</label>
+                        <input type="text" id="app-presentCity" required />
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        class="btn-primary app-save-continue"
+                      >
+                        Save & Continue
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Questionnaire Form -->
+                  <div id="questionnaire-app-form" class="application-form">
+                    <h3>Health Questionnaire</h3>
+                    <div class="form-section">
+                      <div class="form-group">
+                        <label
+                          >Have you or any family members had any of the
+                          following conditions?</label
+                        >
+                        <div class="checkbox-group">
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="app-health-conditions"
+                              value="heart"
+                            />
+                            Heart Disease
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="app-health-conditions"
+                              value="diabetes"
+                            />
+                            Diabetes
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="app-health-conditions"
+                              value="cancer"
+                            />
+                            Cancer
+                          </label>
+                          <label class="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="app-health-conditions"
+                              value="respiratory"
+                            />
+                            Respiratory Conditions
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="app-medical-history"
+                          >Please provide details of any medical
+                          conditions:</label
+                        >
+                        <textarea id="app-medical-history" rows="4"></textarea>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        class="btn-primary app-save-continue"
+                      >
+                        Save & Continue
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Finalize Form -->
+                  <div id="finalize-app-form" class="application-form">
+                    <h3>Application Summary</h3>
+                    <div id="final-summary" class="summary-container">
+                      <!-- This will be filled dynamically via JavaScript -->
+
+                      <div id="application-summary" class="summary-container">
+                        <!-- This will be filled dynamically via JavaScript -->
+                      </div>
+                      <div class="premium-section">
+                        <h3>Premium Details</h3>
+                        <div class="premium-details">
+                          <div class="premium-row">
+                            <span>Base Premium:</span>
+                            <span id="base-premium">₹0.00</span>
+                          </div>
+                          <div class="premium-row">
+                            <span>Taxes (18% GST):</span>
+                            <span id="premium-tax">₹0.00</span>
+                          </div>
+                          <div class="premium-row total">
+                            <span>Total Premium:</span>
+                            <span id="total-premium">₹0.00</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-actions finalize-actions">
+                      <button
+                        type="button"
+                        id="generate-summary"
+                        class="btn-secondary"
+                      >
+                        Generate summary
+                      </button>
+                      <button
+                        type="button"
+                        id="calculate-premium-btn"
+                        class="btn-secondary"
+                      >
+                        Calculate Premium
+                      </button>
+                      <button id="download-summary" class="btn-secondary">
+                        Download Summary as PDF
+                      </button>
+                      <button
+                        type="button"
+                        id="activate-policy-btn"
+                        class="btn-primary"
+                      >
+                        Activate Policy
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <!-- Documents Section -->
+          <section id="documents" class="dashboard-section">
+            <h2>Document Upload</h2>
+            <div class="documents-container">
+              <!-- Policy Documents Section -->
+              <div class="form-section">
+                <h3>Policy Documents</h3>
+                <div class="document-upload-section">
+                  <div class="document-list" id="policy-documents">
+                    <!-- Policy documents will be listed here -->
+                  </div>
+                  <div class="document-upload">
+                    <input
+                      type="file"
+                      id="policy-document-upload"
+                      multiple
+                      accept=".pdf,.doc,.docx"
+                    />
+                    <button
+                      class="btn-primary"
+                      onclick="uploadPolicyDocument()"
+                    >
+                      Upload Policy Document
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Government Identification Section -->
+              <div class="form-section">
+                <h3>Government Identification</h3>
+                <div class="document-upload-section">
+                  <div class="document-list" id="id-documents">
+                    <!-- ID documents will be listed here -->
+                  </div>
+                  <div class="document-upload">
+                    <input
+                      type="file"
+                      id="id-document-upload"
+                      multiple
+                      accept=".pdf,.jpg,.jpeg,.png"
+                    />
+                    <button class="btn-primary" onclick="uploadIDDocument()">
+                      Upload ID Document
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Medical Documents Section -->
+              <div class="form-section">
+                <h3>Medical Documents</h3>
+                <div class="document-upload-section">
+                  <div class="document-list" id="medical-documents">
+                    <!-- Medical documents will be listed here -->
+                  </div>
+                  <div class="document-upload">
+                    <input
+                      type="file"
+                      id="medical-document-upload"
+                      multiple
+                      accept=".pdf,.jpg,.jpeg,.png"
+                    />
+                    <button
+                      class="btn-primary"
+                      onclick="uploadMedicalDocument()"
+                    >
+                      Upload Medical Document
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn-primary" id="download-all">
+                  Download All Documents
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Claims Section -->
+          
+        </main>
+      </div>
     </div>
+    
 
     <script src="scripts/auth.js"></script>
     <script src="scripts/cards.js"></script>
@@ -1158,6 +1213,5 @@
     <script src="scripts/search.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="scripts/claims.js"></script>
-</body>
-
-</html> 
+  </body>
+</html>

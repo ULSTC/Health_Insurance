@@ -19,25 +19,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Claims card click handler
     claimsCard.addEventListener('click', () => {
         // Hide cards section and show dashboard
-        cardsSection.classList.add('hidden');
-        dashboardSection.classList.remove('hidden');
+        // cardsSection.classList.add('hidden');
+        // dashboardSection.classList.remove('hidden');
         
-        // Activate claims tab in the navigation
-        const navLinks = document.querySelectorAll('.nav-links a');
-        navLinks.forEach(link => link.classList.remove('active'));
-        const claimsNavLink = document.querySelector('.nav-links a[data-section="claims"]');
-        if (claimsNavLink) {
-            claimsNavLink.classList.add('active');
-        }
+        // // Activate claims tab in the navigation
+        // const navLinks = document.querySelectorAll('.nav-links a');
+        // navLinks.forEach(link => link.classList.remove('active'));
+        // const claimsNavLink = document.querySelector('.nav-links a[data-section="claims"]');
+        // if (claimsNavLink) {
+        //     claimsNavLink.classList.add('active');
+        // }
         
-        // Show claims section
-        const dashboardSections = document.querySelectorAll('.dashboard-section');
-        dashboardSections.forEach(section => section.classList.remove('active'));
-        const claimsSection = document.getElementById('claims');
-        if (claimsSection) {
-            claimsSection.classList.add('active');
-        }
+        // // Show claims section
+        // const dashboardSections = document.querySelectorAll('.dashboard-section');
+        // dashboardSections.forEach(section => section.classList.remove('active'));
+        // const claimsSection = document.getElementById('claims');
+        // if (claimsSection) {
+        //     claimsSection.classList.add('active');
+        // }
         
+        window.location.href='claims.html';
         // Update user name in dashboard section
         updateUserNameInDashboard();
         

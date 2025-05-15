@@ -3,19 +3,61 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoutButtons = document.querySelectorAll('#logout-btn');
     logoutButtons.forEach(button => {
         button.addEventListener('click', function() {
-            // Hide dashboard and cards sections
-            document.getElementById('dashboard-section').classList.add('hidden');
-            document.getElementById('cards-section').classList.add('hidden');
+            // Clear user data from localStorage
+            if (sessionStorage.getItem('comingFromLogout') === 'true') {
+                // Clear the flag
+                sessionStorage.removeItem('comingFromLogout');
+                
+                // Hide dashboard and cards sections
+                document.getElementById('dashboard-section').classList.add('hidden');
+                document.getElementById('cards-section').classList.add('hidden');
+                
+                // Show auth section
+                document.getElementById('auth-section').classList.remove('hidden');
+                
+                // Reset any active states
+                document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
+                    el.classList.remove('active');
+                });
+            }else{
+                // Set the flag to indicate logout
+                sessionStorage.setItem('comingFromLogout', 'true');
+                if (sessionStorage.getItem('comingFromLogout') === 'true') {
+                    // Clear the flag
+                    sessionStorage.removeItem('comingFromLogout');
+                    
+                    // Hide dashboard and cards sections
+                    document.getElementById('dashboard-section').classList.add('hidden');
+                    document.getElementById('cards-section').classList.add('hidden');
+                    
+                    // Show auth section
+                    document.getElementById('auth-section').classList.remove('hidden');
+                    
+                    // Reset any active states
+                    document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
+                        el.classList.remove('active');
+                    });}
+                
+                // Redirect to index.html
+            //     window.location.href = 'index.html';
+            //     sessionStorage.removeItem('user')
+            //     document.getElementById('dashboard-section').classList.add('hidden');
+            // document.getElementById('cards-section').classList.add('hidden');
             
-            // Show auth section
-            document.getElementById('auth-section').classList.remove('hidden');
+            // // Show auth section
+            // document.getElementById('auth-section').classList.remove('hidden');
             
-            // Reset any active states
-            document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
-                el.classList.remove('active');
-            });
+            // // Reset any active states
+            // document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
+            //     el.classList.remove('active');
+            // });
+            }
         });
     });
+    
+    // Check if we're coming from logout (should be on index.html)
+   
+
 
     // Function to handle navigation and form display
     function setupNavigation(navItems, forms) {
