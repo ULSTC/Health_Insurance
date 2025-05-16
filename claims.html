@@ -497,53 +497,95 @@
             <!-- Document Attachment Form -->
             <div id="doc-info-form" class="application-form">
               <h3>Document Attachments</h3>
-              <div class="document-upload-section">
-                <h4>Hospital Bills</h4>
-                <div class="document-upload">
-                  <input type="file" id="hospitalBillsUpload" multiple />
-                  <button type="button" class="btn-secondary">Upload</button>
+              
+              <!-- Reimbursement Documents Section -->
+              <div id="reimbursement-documents" style="display: none;">
+                <h4>Reimbursement Documents</h4>
+                <div class="document-upload-section">
+                  <h4>Hospital Bills</h4>
+                  <div class="document-upload">
+                    <input type="file" id="hospitalBillsUpload" multiple accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="hospitalBillsList"></div>
                 </div>
-                <div class="document-list" id="hospitalBillsList">
-                  <!-- Document items will be inserted here -->
+
+                <div class="document-upload-section">
+                  <h4>Medical Reports</h4>
+                  <div class="document-upload">
+                    <input type="file" id="medicalReportsUpload" multiple accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="medicalReportsList"></div>
+                </div>
+
+                <div class="document-upload-section">
+                  <h4>Discharge Summary</h4>
+                  <div class="document-upload">
+                    <input type="file" id="dischargeSummaryUpload" accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="dischargeSummaryList"></div>
+                </div>
+
+                <div class="document-upload-section">
+                  <h4>ID Proof</h4>
+                  <div class="document-upload">
+                    <input type="file" id="idProofUpload" accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="idProofList"></div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="btn-secondary go-back">Back</button>
+                  <button type="button" class="btn-primary submit-reimbursement-claim">Submit Reimbursement Claim</button>
                 </div>
               </div>
 
-              <div class="document-upload-section">
-                <h4>Medical Reports</h4>
-                <div class="document-upload">
-                  <input type="file" id="medicalReportsUpload" multiple />
-                  <button type="button" class="btn-secondary">Upload</button>
+              <!-- Cashless Documents Section -->
+              <div id="cashless-documents" style="display: none;">
+                <h4>Cashless Documents</h4>
+                <div class="document-upload-section">
+                  <h4>Pre-Authorization Form</h4>
+                  <div class="document-upload">
+                    <input type="file" id="preAuthFormUpload" accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="preAuthFormList"></div>
                 </div>
-                <div class="document-list" id="medicalReportsList">
-                  <!-- Document items will be inserted here -->
-                </div>
-              </div>
 
-              <div class="document-upload-section">
-                <h4>Discharge Summary</h4>
-                <div class="document-upload">
-                  <input type="file" id="dischargeSummaryUpload" />
-                  <button type="button" class="btn-secondary">Upload</button>
+                <div class="document-upload-section">
+                  <h4>Doctor's Prescription</h4>
+                  <div class="document-upload">
+                    <input type="file" id="prescriptionUpload" accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="prescriptionList"></div>
                 </div>
-                <div class="document-list" id="dischargeSummaryList">
-                  <!-- Document items will be inserted here -->
-                </div>
-              </div>
 
-              <div class="document-upload-section">
-                <h4>ID Proof</h4>
-                <div class="document-upload">
-                  <input type="file" id="idProofUpload" />
-                  <button type="button" class="btn-secondary">Upload</button>
+                <div class="document-upload-section">
+                  <h4>Medical Reports</h4>
+                  <div class="document-upload">
+                    <input type="file" id="cashlessMedicalReportsUpload" multiple accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="cashlessMedicalReportsList"></div>
                 </div>
-                <div class="document-list" id="idProofList">
-                  <!-- Document items will be inserted here -->
-                </div>
-              </div>
 
-              <div class="form-actions">
-                <button type="button" class="btn-secondary go-back">Back</button>
-                <button type="button" class="btn-primary submit-claim">Submit Claim</button>
+                <div class="document-upload-section">
+                  <h4>ID Proof</h4>
+                  <div class="document-upload">
+                    <input type="file" id="cashlessIdProofUpload" accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="cashlessIdProofList"></div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="btn-secondary go-back">Back</button>
+                  <button type="button" class="btn-primary submit-cashless-claim">Submit Cashless Claim</button>
+                </div>
               </div>
             </div>
           </div>
