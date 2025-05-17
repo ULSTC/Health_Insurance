@@ -397,6 +397,9 @@ function initializeClaimsPage() {
   
     // Setup policy lookup functionality
     setupPolicyLookup();
+
+    // Initialize diagnosis search
+    initializeDiagnosisSearch();
 }
 
 // Function to debounce API calls
@@ -941,8 +944,14 @@ function displayClaimDetails(claim) {
 
     // Format date
     const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    // Format currency
+    const formatCurrency = (amount) => {
+        return amount ? `₹${parseFloat(amount).toLocaleString()}` : 'N/A';
     };
 
     const claimDetailsHtml = `
@@ -963,23 +972,72 @@ function displayClaimDetails(claim) {
                     <span class="value">${claim.claimType.charAt(0).toUpperCase() + claim.claimType.slice(1)}</span>
                 </div>
                 <div class="info-row">
+                    <span class="label">Policy Number:</span>
+                    <span class="value">${claim.policyNumber || 'N/A'}</span>
+                </div>
+                <div class="info-row">
                     <span class="label">Hospital:</span>
                     <span class="value">${claim.hospitalInfo.name}</span>
                 </div>
                 <div class="info-row">
-                    <span class="label">Admission Date:</span>
-                    <span class="value">${formatDate(claim.treatmentInfo.admissionDate)}</span>
+                    <span class="label">Hospital Address:</span>
+                    <span class="value">${claim.hospitalInfo.address}, ${claim.hospitalInfo.city}, ${claim.hospitalInfo.state}</span>
                 </div>
-                ${claim.claimType === 'reimbursement' ? `
+                ${claim.claimType === 'cashless' ? `
+                    <div class="info-row">
+                        <span class="label">Request Type:</span>
+                        <span class="value">${claim.requestType ? claim.requestType.charAt(0).toUpperCase() + claim.requestType.slice(1) : 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Expected Admission Date:</span>
+                        <span class="value">${formatDate(claim.treatmentInfo.expectedAdmissionDate)}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Expected Stay Duration:</span>
+                        <span class="value">${claim.treatmentInfo.expectedStayDuration ? claim.treatmentInfo.expectedStayDuration + ' days' : 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Treatment Type:</span>
+                        <span class="value">${claim.treatmentInfo.treatmentType ? claim.treatmentInfo.treatmentType.charAt(0).toUpperCase() + claim.treatmentInfo.treatmentType.slice(1) : 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Doctor Name:</span>
+                        <span class="value">${claim.treatmentInfo.doctorName || 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Diagnosis Details:</span>
+                        <span class="value">${claim.treatmentInfo.diagnosisDetails || 'N/A'}</span>
+                    </div>
+                ` : `
+                    <div class="info-row">
+                        <span class="label">Admission Date:</span>
+                        <span class="value">${formatDate(claim.treatmentInfo.admissionDate)}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Discharge Date:</span>
+                        <span class="value">${formatDate(claim.treatmentInfo.dischargeDate)}</span>
+                    </div>
                     <div class="info-row">
                         <span class="label">Total Amount:</span>
-                        <span class="value">₹${claim.expenseInfo.totalAmount.toLocaleString()}</span>
+                        <span class="value">${formatCurrency(claim.expenseInfo?.totalAmount)}</span>
                     </div>
-                ` : ''}
+                `}
                 <div class="info-row">
                     <span class="label">Submitted On:</span>
                     <span class="value">${formatDate(claim.createdAt)}</span>
                 </div>
+                ${claim.updatedAt ? `
+                    <div class="info-row">
+                        <span class="label">Last Updated:</span>
+                        <span class="value">${formatDate(claim.updatedAt)}</span>
+                    </div>
+                ` : ''}
+                ${claim.status === 'rejected' && claim.rejectionReason ? `
+                    <div class="info-row">
+                        <span class="label">Rejection Reason:</span>
+                        <span class="value" style="color: #dc3545;">${claim.rejectionReason}</span>
+                    </div>
+                ` : ''}
             </div>
         </div>
     `;
@@ -999,9 +1057,12 @@ function displayClaimDetails(claim) {
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
         }
         .claim-header h3 {
             margin: 0;
+            color: #333;
         }
         .claim-status {
             padding: 6px 12px;
@@ -1009,6 +1070,7 @@ function displayClaimDetails(claim) {
             color: white;
             font-size: 0.9em;
             font-weight: 500;
+            text-transform: uppercase;
         }
         .claim-info {
             display: grid;
@@ -1019,14 +1081,18 @@ function displayClaimDetails(claim) {
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
         }
+        .info-row:last-child {
+            border-bottom: none;
+        }
         .info-row .label {
             font-weight: 500;
-            width: 150px;
+            width: 200px;
             color: #666;
         }
         .info-row .value {
             flex: 1;
             color: #333;
+            line-height: 1.4;
         }
         .loading {
             text-align: center;
@@ -1085,6 +1151,90 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Function to initialize diagnosis search
+function initializeDiagnosisSearch() {
+    const searchInputs = [
+        { input: 'diagnosisSearch', results: 'diagnosisResults', textarea: 'diagnosisDetails' },
+        { input: 'cashlessDiagnosisSearch', results: 'cashlessDiagnosisResults', textarea: 'cashlessDiagnosisDetails' }
+    ];
+
+    searchInputs.forEach(({ input, results, textarea }) => {
+        const searchInput = document.getElementById(input);
+        const resultsContainer = document.getElementById(results);
+        const textareaElement = document.getElementById(textarea);
+
+        if (searchInput && resultsContainer && textareaElement) {
+            let debounceTimer;
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                const searchTerm = this.value.trim();
+
+                if (searchTerm.length < 2) {
+                    resultsContainer.style.display = 'none';
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    searchDiagnosis(searchTerm, resultsContainer, textareaElement);
+                }, 300);
+            });
+
+            // Close results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+                    resultsContainer.style.display = 'none';
+                }
+            });
+        }
+    });
+}
+
+// Function to search diagnosis using ICD-10-CM API
+async function searchDiagnosis(term, resultsContainer, textareaElement) {
+    try {
+        const response = await fetch(`https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?sf=code,name&terms=${encodeURIComponent(term)}&maxList=10`);
+        const data = await response.json();
+
+        if (data && data[1] && data[3]) {
+            const codes = data[1];
+            const descriptions = data[3];
+            
+            resultsContainer.innerHTML = '';
+            
+            codes.forEach((code, index) => {
+                const description = descriptions[index][1];
+                const resultItem = document.createElement('div');
+                resultItem.className = 'diagnosis-result-item';
+                resultItem.innerHTML = `
+                    <span class="code">${code}</span>
+                    <span class="name">${description}</span>
+                `;
+                
+                resultItem.addEventListener('click', () => {
+                    const currentValue = textareaElement.value;
+                    const newDiagnosis = `${code} - ${description}`;
+                    
+                    if (currentValue) {
+                        textareaElement.value = currentValue + '\n' + newDiagnosis;
+                    } else {
+                        textareaElement.value = newDiagnosis;
+                    }
+                    
+                    resultsContainer.style.display = 'none';
+                });
+                
+                resultsContainer.appendChild(resultItem);
+            });
+            
+            resultsContainer.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error searching diagnosis:', error);
+        showNotification('Failed to search diagnosis codes', 'error');
+    }
+}
 
 // Initialize the page when the DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeClaimsPage);
