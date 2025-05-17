@@ -120,7 +120,7 @@
           <div class="nav-links">
             <a href="#" class="active" data-section="quick-quote">Easy Quote</a>
             <a href="#" data-section="applications">Detail Data Capture</a>
-            <a href="#" data-section="documents">Documents</a>
+            
             
             <div class="search-container">
               <input
@@ -1111,86 +1111,7 @@
             </div>
           </section>
 
-          <!-- Documents Section -->
-          <section id="documents" class="dashboard-section">
-            <h2>Document Upload</h2>
-            <div class="documents-container">
-              <!-- Policy Documents Section -->
-              <div class="form-section">
-                <h3>Policy Documents</h3>
-                <div class="document-upload-section">
-                  <div class="document-list" id="policy-documents">
-                    <!-- Policy documents will be listed here -->
-                  </div>
-                  <div class="document-upload">
-                    <input
-                      type="file"
-                      id="policy-document-upload"
-                      multiple
-                      accept=".pdf,.doc,.docx"
-                    />
-                    <button
-                      class="btn-primary"
-                      onclick="uploadPolicyDocument()"
-                    >
-                      Upload Policy Document
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Government Identification Section -->
-              <div class="form-section">
-                <h3>Government Identification</h3>
-                <div class="document-upload-section">
-                  <div class="document-list" id="id-documents">
-                    <!-- ID documents will be listed here -->
-                  </div>
-                  <div class="document-upload">
-                    <input
-                      type="file"
-                      id="id-document-upload"
-                      multiple
-                      accept=".pdf,.jpg,.jpeg,.png"
-                    />
-                    <button class="btn-primary" onclick="uploadIDDocument()">
-                      Upload ID Document
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Medical Documents Section -->
-              <div class="form-section">
-                <h3>Medical Documents</h3>
-                <div class="document-upload-section">
-                  <div class="document-list" id="medical-documents">
-                    <!-- Medical documents will be listed here -->
-                  </div>
-                  <div class="document-upload">
-                    <input
-                      type="file"
-                      id="medical-document-upload"
-                      multiple
-                      accept=".pdf,.jpg,.jpeg,.png"
-                    />
-                    <button
-                      class="btn-primary"
-                      onclick="uploadMedicalDocument()"
-                    >
-                      Upload Medical Document
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-actions">
-                <button class="btn-primary" id="download-all">
-                  Download All Documents
-                </button>
-              </div>
-            </div>
-          </section>
+          
 
           <!-- Claims Section -->
           
@@ -1212,6 +1133,6 @@
     <script src="scripts/appnav.js"></script>
     <script src="scripts/search.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="scripts/claims.js"></script>
+    <!-- <script src="scripts/navigation-fix.js"></script> -->
   </body>
 </html>

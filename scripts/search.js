@@ -606,7 +606,7 @@ function setupEndorsementButton(applicationCode) {
         endorseChangesBtn.addEventListener('click', function() {
             const category = document.getElementById('endorsement-category').value;
             const field = document.getElementById('endorsement-field').value;
-            
+            console.log('dekh click to ho raha hai');
             if (category && field) {
                 // Navigate to the selected section
                 navigateToSection(category);
