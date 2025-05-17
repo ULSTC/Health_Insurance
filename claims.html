@@ -60,6 +60,53 @@
         #application-forms.active {
             display: block;
         }
+
+        .diagnosis-search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .diagnosis-search {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .diagnosis-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .diagnosis-result-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .diagnosis-result-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .diagnosis-result-item .code {
+            color: #666;
+            font-size: 0.9em;
+            margin-right: 8px;
+        }
+
+        .diagnosis-result-item .name {
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -289,7 +336,11 @@
               <div class="form-row">
                 <div class="form-group">
                   <label for="diagnosisDetails">Diagnosis Details</label>
-                  <textarea id="diagnosisDetails" rows="3" required></textarea>
+                  <div class="diagnosis-search-container">
+                    <input type="text" id="diagnosisSearch" class="diagnosis-search" placeholder="Search for diagnosis..." />
+                    <div id="diagnosisResults" class="diagnosis-results"></div>
+                    <textarea id="diagnosisDetails" rows="3" required></textarea>
+                  </div>
                 </div>
               </div>
               <div class="form-actions">
@@ -328,7 +379,11 @@
               <div class="form-row">
                 <div class="form-group">
                   <label for="cashlessDiagnosisDetails">Provisional Diagnosis Details</label>
-                  <textarea id="cashlessDiagnosisDetails" rows="3" required></textarea>
+                  <div class="diagnosis-search-container">
+                    <input type="text" id="cashlessDiagnosisSearch" class="diagnosis-search" placeholder="Search for diagnosis..." />
+                    <div id="cashlessDiagnosisResults" class="diagnosis-results"></div>
+                    <textarea id="cashlessDiagnosisDetails" rows="3" required></textarea>
+                  </div>
                 </div>
               </div>
               <div class="form-actions">
@@ -497,53 +552,95 @@
             <!-- Document Attachment Form -->
             <div id="doc-info-form" class="application-form">
               <h3>Document Attachments</h3>
+              
+              <!-- Reimbursement Documents Section -->
+              <div id="reimbursement-documents" style="display: none;">
+                <h4>Reimbursement Documents</h4>
               <div class="document-upload-section">
                 <h4>Hospital Bills</h4>
                 <div class="document-upload">
-                  <input type="file" id="hospitalBillsUpload" multiple />
+                    <input type="file" id="hospitalBillsUpload" multiple accept=".pdf,.jpg,.jpeg,.png" />
                   <button type="button" class="btn-secondary">Upload</button>
                 </div>
-                <div class="document-list" id="hospitalBillsList">
-                  <!-- Document items will be inserted here -->
-                </div>
+                  <div class="document-list" id="hospitalBillsList"></div>
               </div>
 
               <div class="document-upload-section">
                 <h4>Medical Reports</h4>
                 <div class="document-upload">
-                  <input type="file" id="medicalReportsUpload" multiple />
+                    <input type="file" id="medicalReportsUpload" multiple accept=".pdf,.jpg,.jpeg,.png" />
                   <button type="button" class="btn-secondary">Upload</button>
                 </div>
-                <div class="document-list" id="medicalReportsList">
-                  <!-- Document items will be inserted here -->
-                </div>
+                  <div class="document-list" id="medicalReportsList"></div>
               </div>
 
               <div class="document-upload-section">
                 <h4>Discharge Summary</h4>
                 <div class="document-upload">
-                  <input type="file" id="dischargeSummaryUpload" />
+                    <input type="file" id="dischargeSummaryUpload" accept=".pdf,.jpg,.jpeg,.png" />
                   <button type="button" class="btn-secondary">Upload</button>
                 </div>
-                <div class="document-list" id="dischargeSummaryList">
-                  <!-- Document items will be inserted here -->
-                </div>
+                  <div class="document-list" id="dischargeSummaryList"></div>
               </div>
 
               <div class="document-upload-section">
                 <h4>ID Proof</h4>
                 <div class="document-upload">
-                  <input type="file" id="idProofUpload" />
+                    <input type="file" id="idProofUpload" accept=".pdf,.jpg,.jpeg,.png" />
                   <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="idProofList"></div>
                 </div>
-                <div class="document-list" id="idProofList">
-                  <!-- Document items will be inserted here -->
+
+                <div class="form-actions">
+                  <button type="button" class="btn-secondary go-back">Back</button>
+                  <button type="button" class="btn-primary submit-reimbursement-claim">Submit Reimbursement Claim</button>
                 </div>
+              </div>
+
+              <!-- Cashless Documents Section -->
+              <div id="cashless-documents" style="display: none;">
+                <h4>Cashless Documents</h4>
+                <div class="document-upload-section">
+                  <h4>Pre-Authorization Form</h4>
+                  <div class="document-upload">
+                    <input type="file" id="preAuthFormUpload" accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="preAuthFormList"></div>
+                </div>
+
+                <div class="document-upload-section">
+                  <h4>Doctor's Prescription</h4>
+                  <div class="document-upload">
+                    <input type="file" id="prescriptionUpload" accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="prescriptionList"></div>
+                </div>
+
+                <div class="document-upload-section">
+                  <h4>Medical Reports</h4>
+                  <div class="document-upload">
+                    <input type="file" id="cashlessMedicalReportsUpload" multiple accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="cashlessMedicalReportsList"></div>
+                </div>
+
+                <div class="document-upload-section">
+                  <h4>ID Proof</h4>
+                  <div class="document-upload">
+                    <input type="file" id="cashlessIdProofUpload" accept=".pdf,.jpg,.jpeg,.png" />
+                    <button type="button" class="btn-secondary">Upload</button>
+                  </div>
+                  <div class="document-list" id="cashlessIdProofList"></div>
               </div>
 
               <div class="form-actions">
                 <button type="button" class="btn-secondary go-back">Back</button>
-                <button type="button" class="btn-primary submit-claim">Submit Claim</button>
+                  <button type="button" class="btn-primary submit-cashless-claim">Submit Cashless Claim</button>
+                </div>
               </div>
             </div>
           </div>
