@@ -15,6 +15,7 @@ const uploadRoutes = require('./routes/upload');
 const pdfRoutes = require('./routes/pdf');
 const intermediaryRoutes = require('./routes/Intermediary.route'); // Assuming you have this route
 const claimRoutes = require('./routes/claim');
+const hospitalRoutes = require('./routes/hospitalRoutes'); // Assuming you have this route
 
 // Initialize express app
 const app = express();
@@ -42,6 +43,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/pdf', pdfRoutes);
 app.use('/api/intermediary', intermediaryRoutes); 
 app.use('/api/claims', claimRoutes);
+app.use('/api/hospitals', hospitalRoutes); // Assuming you have this route
 
 // Error handling middleware
 app.use((err, req, res, next) => {
