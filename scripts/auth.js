@@ -36,6 +36,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const userType = document.getElementById('login-user-type').value || "normal";
 
         try {
+            // For superuser, handle differently
+            if (userType === "superuser") {
+                // Simulate a successful login for superuser (in production, verify with backend)
+                if (email === "admin@healthinsurance.com" && password === "admin123") {
+                    // Store superuser data
+                    const superuserData = {
+                        fullName: "Admin User",
+                        email: email,
+                        userType: "superuser"
+                    };
+                    
+                    sessionStorage.setItem('user', JSON.stringify(superuserData));
+                    sessionStorage.setItem('token', 'superuser-token');
+                    
+                    // Redirect to admin dashboard
+                    window.location.href = "superuser.html";
+                    return;
+                } else {
+                    showError('Invalid admin credentials');
+                    return;
+                }
+            }
+
+            // Regular user authentication
             const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
                 headers: {
@@ -84,13 +108,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmPassword = document.getElementById('signup-confirm-password').value;
         const userType = document.getElementById('signup-user-type').value || "normal";
         
+        // Handle superuser signup differently
+        if (userType === "superuser") {
+            showError('Admin accounts can only be created by system administrators');
+            return;
+        }
+        
         // Check if all address fields exist before accessing
         let phone = '';
         let pincode = '';
         let state = '';
         let city = '';
         let addressLine = '';
-        
         
         // Check if fields exist before accessing them
         if (document.getElementById('signup-phone')) {
@@ -160,32 +189,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Logout functionality
-    document.getElementById('logout-btn').addEventListener('click', () => {
-        sessionStorage.removeItem('user');
-        sessionStorage.removeItem('token');
-        
-        // Show auth section
-        authSection.classList.remove('hidden');
-        cardsSection.classList.add('hidden');
-        dashboardSection.classList.add('hidden');
-        
-        // Reset forms
-        loginForm.reset();
-        signupForm.reset();
-    });
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('token');
+            
+            // Redirect to home/login page
+            window.location.href = "index.html";
+        });
+    }
 
     // Check if user is already logged in - use sessionStorage consistently
     const user = sessionStorage.getItem('user');
     const token = sessionStorage.getItem('token');
     
     if (user && token) {
-        authSection.classList.add('hidden');
-        cardsSection.classList.remove('hidden');
         try {
             const userData = JSON.parse(user);
-            document.querySelector('.user-name').textContent = userData.fullName || userData.name;
+            
+            // If superuser, redirect to admin dashboard
+            if (userData.userType === 'superuser' && !window.location.href.includes('superuser.html')) {
+                window.location.href = 'superuser.html';
+                return;
+            }
+            
+            // For regular users
+            if (userData.userType === 'normal') {
+                authSection.classList.add('hidden');
+                cardsSection.classList.remove('hidden');
+                
+                // Update user name if element exists
+                const userNameElements = document.querySelectorAll('.user-name');
+                userNameElements.forEach(element => {
+                    element.textContent = userData.fullName || userData.name;
+                });
+                
+                const nameElements = document.querySelectorAll('.name');
+                nameElements.forEach(element => {
+                    element.textContent = userData.fullName || userData.name;
+                });
+            }
         } catch (e) {
             console.error("Error parsing user data:", e);
+        }
+    } else {
+        // If not logged in and trying to access admin dashboard, redirect to login
+        if (window.location.href.includes('superuser.html')) {
+            window.location.href = 'index.html';
         }
     }
 });
@@ -210,7 +261,10 @@ function showError(message) {
                 activeForm.appendChild(errorContainer);
             } else {
                 // Last resort - append to auth section
-                document.getElementById('auth-section').appendChild(errorContainer);
+                const authSection = document.getElementById('auth-section');
+                if (authSection) {
+                    authSection.appendChild(errorContainer);
+                }
             }
         }
     }
@@ -227,3 +281,5 @@ function showError(message) {
         errorContainer.textContent = '';
     }, 5000);
 }
+
+

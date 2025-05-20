@@ -15,70 +15,73 @@
   <body>
     <div id="app">
       <!-- Authentication Section -->
-      <div id="auth-section" class="section">
-        <div class="auth-container">
-          <div class="auth-tabs">
-            <button class="auth-tab active" data-tab="login">Login</button>
-            <button class="auth-tab" data-tab="signup">Sign Up</button>
-          </div>
+      <!-- Authentication Section -->
+<div id="auth-section" class="section">
+  <div class="auth-container">
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Login</button>
+      <button class="auth-tab" data-tab="signup">Sign Up</button>
+    </div>
 
-          <div id="login-form" class="auth-form active">
-            <h2>Welcome Back</h2>
-            <form id="login">
-              <div class="form-group">
-                <label for="login-email">Email</label>
-                <input type="email" id="login-email" required />
-              </div>
-              <div class="form-group">
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" required />
-              </div>
-              <div class="form-group">
-                <label for="login-user-type">User Type</label>
-                <select id="login-user-type" required>
-                  <option value="">Select User Type</option>
-                  <option value="normal">User</option>
-                </select>
-              </div>
-              <button type="submit" class="btn-primary">Login</button>
-            </form>
-          </div>
-
-          <div id="signup-form" class="auth-form">
-            <h2>Create Account</h2>
-            <form id="signup">
-              <div class="form-group">
-                <label for="signup-name">Full Name</label>
-                <input type="text" id="signup-name" required />
-              </div>
-              <div class="form-group">
-                <label for="signup-email">Email</label>
-                <input type="email" id="signup-email" required />
-              </div>
-              <div class="form-group">
-                <label for="signup-phone">Phone</label>
-                <input type="text" id="signup-phone" required />
-              </div>
-              <div class="form-group">
-                <label for="signup-password">Password</label>
-                <input type="password" id="signup-password" required />
-              </div>
-              <div class="form-group">
-                <label for="signup-confirm-password">Confirm Password</label>
-                <input type="password" id="signup-confirm-password" required />
-              </div>
-              <div class="form-group">
-                <label for="signup-user-type">User Type</label>
-                <select id="signup-user-type" required>
-                  <option value="">Select User Type</option>
-                  <option value="normal">User</option>
-                </select>
-              </div>
-              <button type="submit" class="btn-primary">Sign Up</button>
-            </form>
-          </div>
+    <div id="login-form" class="auth-form active">
+      <h2>Welcome Back</h2>
+      <form id="login">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" required />
         </div>
-      </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required />
+        </div>
+        <div class="form-group">
+          <label for="login-user-type">User Type</label>
+          <select id="login-user-type" required>
+            <option value="">Select User Type</option>
+            <option value="normal">User</option>
+            <option value="superuser">Admin</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary">Login</button>
+      </form>
+    </div>
+
+    <div id="signup-form" class="auth-form">
+      <h2>Create Account</h2>
+      <form id="signup">
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <input type="text" id="signup-name" required />
+        </div>
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" required />
+        </div>
+        <div class="form-group">
+          <label for="signup-phone">Phone</label>
+          <input type="text" id="signup-phone" required />
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" required />
+        </div>
+        <div class="form-group">
+          <label for="signup-confirm-password">Confirm Password</label>
+          <input type="password" id="signup-confirm-password" required />
+        </div>
+        <div class="form-group">
+          <label for="signup-user-type">User Type</label>
+          <select id="signup-user-type" required>
+            <option value="">Select User Type</option>
+            <option value="normal">User</option>
+            <option value="superuser">Admin</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary">Sign Up</button>
+      </form>
+    </div>
+  </div>
+</div>
       <!-- Add this new section after the auth-section and before the dashboard-section -->
       <div id="cards-section" class="section hidden">
         <nav class="dashboard-nav">
