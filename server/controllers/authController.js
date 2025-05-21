@@ -74,6 +74,7 @@ exports.login = async (req, res) => {
         const token = generateToken(user._id);
 
         res.json({
+            success: true,
             token,
             user: {
                 id: user._id,
@@ -83,7 +84,12 @@ exports.login = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error logging in', error: error.message });
+        console.error('Login error:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Error logging in', 
+            error: error.message 
+        });
     }
 };
 

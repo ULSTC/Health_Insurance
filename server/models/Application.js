@@ -26,6 +26,13 @@ const applicationSchema = new mongoose.Schema({
     trim: true
   },
   
+  // User reference
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  
   // Business Information
   businessInfo: {
     country: {

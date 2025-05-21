@@ -36,30 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const userType = document.getElementById('login-user-type').value || "normal";
 
         try {
-            // For superuser, handle differently
-            if (userType === "superuser") {
-                // Simulate a successful login for superuser (in production, verify with backend)
-                if (email === "admin@healthinsurance.com" && password === "admin123") {
-                    // Store superuser data
-                    const superuserData = {
-                        fullName: "Admin User",
-                        email: email,
-                        userType: "superuser"
-                    };
-                    
-                    sessionStorage.setItem('user', JSON.stringify(superuserData));
-                    sessionStorage.setItem('token', 'superuser-token');
-                    
-                    // Redirect to admin dashboard
-                    window.location.href = "superuser.html";
-                    return;
-                } else {
-                    showError('Invalid admin credentials');
-                    return;
-                }
-            }
-
-            // Regular user authentication
             const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
                 headers: {
@@ -73,28 +49,36 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             const data = await response.json();
-            console.log("Login response:", data);
             
-            if (response.ok) {
-                // Store token in sessionStorage
-                sessionStorage.setItem('token', data.token);
-                
-                // Store user data too
-                sessionStorage.setItem('user', JSON.stringify(data.user));
-                
-                // Show cards section instead of dashboard
-                authSection.classList.add('hidden');
-                cardsSection.classList.remove('hidden');
+            if (!response.ok) {
+                throw new Error(data.message || 'Login failed');
+            }
+            
+            if (!data.success) {
+                throw new Error(data.message || 'Login failed');
+            }
+            
+            // Store user data and token
+            sessionStorage.setItem('user', JSON.stringify(data.user));
+            sessionStorage.setItem('token', data.token);
+            
+            // Redirect based on user type
+            if (data.user.userType === 'superuser') {
+                window.location.href = 'superuser.html';
+            } else {
+                // For normal users, show cards section instead of redirecting
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('cards-section').classList.remove('hidden');
                 
                 // Update user name in cards section
-                document.querySelector('.user-name').textContent = data.user.fullName || data.user.name;
-                document.querySelector('.name').textContent = data.user.fullName || data.user.name;
-            } else {
-                showError(data.message || 'Invalid credentials');
+                const userNameElements = document.querySelectorAll('.user-name');
+                userNameElements.forEach(element => {
+                    element.textContent = data.user.fullName || data.user.name;
+                });
             }
         } catch (error) {
-            showError('An error occurred during login');
             console.error('Login error:', error);
+            showError(error.message || 'Login failed. Please try again.');
         }
     });
 
@@ -108,9 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmPassword = document.getElementById('signup-confirm-password').value;
         const userType = document.getElementById('signup-user-type').value || "normal";
         
-        // Handle superuser signup differently
-        if (userType === "superuser") {
-            showError('Admin accounts can only be created by system administrators');
+        // Remove the restriction for superuser signup
+        if (password !== confirmPassword) {
+            showError('Passwords do not match');
             return;
         }
         
@@ -138,11 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
             addressLine = document.getElementById('signup-address-line').value;
         }
 
-        if (password !== confirmPassword) {
-            showError('Passwords do not match');
-            return;
-        }
-        
         const reqbody = {
             fullName,
             email,
@@ -216,17 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // For regular users
             if (userData.userType === 'normal') {
-                authSection.classList.add('hidden');
-                cardsSection.classList.remove('hidden');
+                // Hide auth section and show cards section
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('cards-section').classList.remove('hidden');
                 
-                // Update user name if element exists
+                // Update user name in all relevant elements
                 const userNameElements = document.querySelectorAll('.user-name');
                 userNameElements.forEach(element => {
-                    element.textContent = userData.fullName || userData.name;
-                });
-                
-                const nameElements = document.querySelectorAll('.name');
-                nameElements.forEach(element => {
                     element.textContent = userData.fullName || userData.name;
                 });
             }

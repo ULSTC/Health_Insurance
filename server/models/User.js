@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     },
     userType: {
         type: String,
-        enum: ['normal', 'intermediary'],
+        enum: ['normal', 'intermediary', 'superuser'],
         required: true
     },
     phone: {
@@ -50,9 +50,13 @@ userSchema.pre('save', async function(next) {
     }
 });
 
-// Method to compare password
+// Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
-    return bcrypt.compare(candidatePassword, this.password);
+    try {
+        return await bcrypt.compare(candidatePassword, this.password);
+    } catch (error) {
+        throw error;
+    }
 };
 
 module.exports = mongoose.model('User', userSchema); 

@@ -69,24 +69,37 @@ function initializeClaimsPage() {
     function handleSuccessfulSubmission(response) {
         // Show success message with claim ID
         const claimId = response.data.claimId;
+        if (!claimId) {
+            showNotification('Claim submitted but no claim ID received. Please contact support.', 'warning');
+            return;
+        }
+
         showNotification(`Claim submitted successfully! Your Claim ID is: ${claimId}`, 'success');
 
         // Create and show claim ID display
         const claimIdDisplay = document.createElement('div');
         claimIdDisplay.className = 'claim-id-display';
         claimIdDisplay.innerHTML = `
-            <h3>Claim Submitted Successfully!</h3>
-            <p>Your Claim ID: <strong>${claimId}</strong></p>
-            <p>Status: <span class="status-badge">${response.data.status}</span></p>
-            <p>Please save this Claim ID for future reference.</p>
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                <h3 style="color: #2e7d32; margin-bottom: 15px;">Claim Submitted Successfully!</h3>
+                <p style="font-size: 1.1em; margin-bottom: 10px;">Your Claim ID: <strong style="color: #1b5e20;">${claimId}</strong></p>
+                <p style="margin-bottom: 10px;">Status: <span style="background: #c8e6c9; color: #2e7d32; padding: 4px 8px; border-radius: 4px;">${response.data.status}</span></p>
+                <p style="color: #666;">Please save this Claim ID for future reference.</p>
+                <div style="margin-top: 15px;">
+                    <button onclick="searchClaim('${claimId}')" style="background: #2e7d32; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+                        View Claim Details
+                    </button>
+                </div>
+            </div>
         `;
-        claimIdDisplay.style.cssText = `
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-        `;
+
+        // Insert the claim ID display at the top of the form
+        const form = document.querySelector('.application-form.active');
+        if (form) {
+            form.insertBefore(claimIdDisplay, form.firstChild);
+        } else {
+            document.body.appendChild(claimIdDisplay);
+        }
 
         // Reset form data
         document.querySelectorAll('input, select, textarea').forEach(input => {
@@ -95,9 +108,22 @@ function initializeClaimsPage() {
             }
         });
 
+        // Clear any uploaded files
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.value = '';
+        });
+
+        // Clear document lists
+        document.querySelectorAll('.document-list').forEach(list => {
+            list.innerHTML = '';
+        });
+
         // Navigate to track claim section after 3 seconds
         setTimeout(() => {
-            document.querySelector('.nav-links a[data-section="track-claim"]').click();
+            const trackClaimLink = document.querySelector('.nav-links a[data-section="track-claim"]');
+            if (trackClaimLink) {
+                trackClaimLink.click();
+            }
         }, 3000);
     }
   
@@ -871,26 +897,98 @@ function collectFormData() {
 
 // Function to submit claim
 async function submitClaim(claimData) {
-  try {
-    const response = await fetch('http://localhost:5000/api/claims', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-      },
-      body: JSON.stringify(claimData)
-    });
+    try {
+        // Check if server is reachable first
+        try {
+            await fetch('http://localhost:5000/api/health', { method: 'GET' });
+        } catch (error) {
+            throw new Error('Server is not reachable. Please make sure the server is running.');
+        }
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to submit claim');
+        const response = await fetch('http://localhost:5000/api/claims', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            },
+            body: JSON.stringify(claimData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to submit claim');
+        }
+
+        const data = await response.json();
+        console.log('Claim submission response:', data); // Debug log
+
+        if (!data.success || !data.data || !data.data.claimId) {
+            throw new Error('Invalid response from server: Missing claim ID');
+        }
+
+        // Upload documents if present
+        if (claimData.claimType === 'reimbursement') {
+            await uploadClaimDocuments(data.data.claimId, 'reimbursement');
+        } else {
+            await uploadClaimDocuments(data.data.claimId, 'cashless');
+        }
+
+        return data;
+    } catch (error) {
+        console.error('Error submitting claim:', error);
+        showNotification(error.message || 'Failed to submit claim. Please try again.', 'error');
+        throw error;
     }
+}
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error submitting claim:', error);
-    throw error;
+// Function to upload claim documents with retry logic
+async function uploadClaimDocuments(claimId, claimType) {
+  const maxRetries = 3;
+  const retryDelay = 1000; // 1 second
+
+  const documentTypes = claimType === 'reimbursement' 
+    ? ['hospitalBills', 'medicalReports', 'dischargeSummary', 'idProof']
+    : ['preAuthForm', 'prescription', 'medicalReports', 'idProof'];
+
+  for (const docType of documentTypes) {
+    const fileInput = document.getElementById(`${docType}Upload`);
+    if (fileInput && fileInput.files.length > 0) {
+      for (let i = 0; i < fileInput.files.length; i++) {
+        let retryCount = 0;
+        let success = false;
+
+        while (retryCount < maxRetries && !success) {
+          try {
+            const formData = new FormData();
+            formData.append('documents', fileInput.files[i]);
+            formData.append('documentType', docType);
+
+            const response = await fetch(`http://localhost:5000/api/claims/${claimId}/documents`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+              },
+              body: formData
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.message || `Failed to upload ${docType}`);
+            }
+
+            success = true;
+          } catch (error) {
+            retryCount++;
+            if (retryCount === maxRetries) {
+              console.error(`Failed to upload ${docType} after ${maxRetries} attempts:`, error);
+              showNotification(`Failed to upload ${docType}. Please try uploading it again later.`, 'error');
+            } else {
+              await new Promise(resolve => setTimeout(resolve, retryDelay));
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -927,122 +1025,230 @@ async function searchClaim(claimId) {
     }
 }
 
+// Function to generate document list HTML
+function generateDocumentList(documents, title) {
+    if (!documents || documents.length === 0) {
+        return `<div class="document-group">
+            <h4>${title}</h4>
+            <p class="no-documents">No documents uploaded</p>
+        </div>`;
+    }
+
+    let html = `<div class="document-group">
+        <h4>${title}</h4>
+        <ul class="document-list">`;
+    
+    documents.forEach(doc => {
+        html += `
+            <li>
+                <a href="${doc.url}" target="_blank" class="document-link">
+                    <i class="fas fa-file-alt"></i>
+                    ${doc.originalName || 'Document'}
+                </a>
+            </li>`;
+    });
+    
+    html += `</ul></div>`;
+    return html;
+}
+
 // Function to display claim details
 function displayClaimDetails(claim) {
     const resultsContainer = document.getElementById('claim-search-results');
     
-    // Get status color
-    const getStatusColor = (status) => {
-        switch (status) {
-            case 'pending': return '#ffc107';
-            case 'under_review': return '#17a2b8';
-            case 'approved': return '#28a745';
-            case 'rejected': return '#dc3545';
-            default: return '#6c757d';
-        }
-    };
-
-    // Format date
+    // Format date helper function
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString(undefined, options);
+        return new Date(dateString).toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
     };
 
-    // Format currency
+    // Format currency helper function
     const formatCurrency = (amount) => {
-        return amount ? `₹${parseFloat(amount).toLocaleString()}` : 'N/A';
+        if (!amount) return '₹0.00';
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR'
+        }).format(amount);
+    };
+
+    // Generate documents section HTML
+    const generateDocumentsSection = () => {
+        const documents = claim.documents || {};
+        let html = '<div class="documents-section"><h3>Uploaded Documents</h3>';
+        
+        if (claim.claimType === 'reimbursement') {
+            html += generateDocumentList(documents.hospitalBills, 'Hospital Bills');
+            html += generateDocumentList(documents.medicalReports, 'Medical Reports');
+            html += generateDocumentList(documents.dischargeSummary, 'Discharge Summary');
+            html += generateDocumentList(documents.idProof, 'ID Proof');
+        } else {
+            html += generateDocumentList(documents.preAuthForm, 'Pre-Authorization Form');
+            html += generateDocumentList(documents.prescription, 'Doctor\'s Prescription');
+            html += generateDocumentList(documents.medicalReports, 'Medical Reports');
+            html += generateDocumentList(documents.idProof, 'ID Proof');
+        }
+        
+        html += '</div>';
+        return html;
+    };
+
+    // Generate status with notes popup
+    const generateStatusWithNotes = () => {
+        if (claim.status === 'approved' || claim.status === 'rejected') {
+            return `
+                <div class="status-container">
+                    <span class="claim-status ${claim.status} clickable">${claim.status.toUpperCase()}</span>
+                    <div class="status-popup">
+                        <div class="popup-content">
+                            <h4>${claim.status === 'approved' ? 'Approval' : 'Rejection'} Details</h4>
+                            <p>${claim.notes || 'No additional notes provided.'}</p>
+                            <button class="close-popup">×</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        return `<span class="claim-status ${claim.status}">${claim.status.toUpperCase()}</span>`;
+    };
+
+    // Generate expense details section
+    const generateExpenseDetails = () => {
+        if (!claim.expenseInfo) return '';
+        
+        const expenses = claim.expenseInfo;
+        return `
+            <div class="expense-details">
+                <h3>Expense Details</h3>
+                <div class="expense-grid">
+                    <div class="expense-item">
+                        <span class="label">Room Charges</span>
+                        <span class="value">${formatCurrency(expenses.roomCharges)}</span>
+                    </div>
+                    <div class="expense-item">
+                        <span class="label">Doctor Fees</span>
+                        <span class="value">${formatCurrency(expenses.doctorFees)}</span>
+                    </div>
+                    <div class="expense-item">
+                        <span class="label">Medicine Cost</span>
+                        <span class="value">${formatCurrency(expenses.medicineCost)}</span>
+                    </div>
+                    <div class="expense-item">
+                        <span class="label">Investigation Cost</span>
+                        <span class="value">${formatCurrency(expenses.investigationCost)}</span>
+                    </div>
+                    <div class="expense-item">
+                        <span class="label">Other Charges</span>
+                        <span class="value">${formatCurrency(expenses.otherCharges)}</span>
+                    </div>
+                    <div class="expense-item total">
+                        <span class="label">Total Amount</span>
+                        <span class="value">${formatCurrency(expenses.totalAmount)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
     };
 
     const claimDetailsHtml = `
         <div class="claim-details">
             <div class="claim-header">
                 <h3>Claim Details</h3>
-                <span class="claim-status" style="background-color: ${getStatusColor(claim.status)}">
-                    ${claim.status.replace('_', ' ').toUpperCase()}
-                </span>
+                ${generateStatusWithNotes()}
             </div>
-            <div class="claim-info">
-                <div class="info-row">
-                    <span class="label">Claim ID:</span>
-                    <span class="value">${claim.claimId}</span>
+            
+            <div class="claim-sections">
+                <div class="section basic-info">
+                    <h3>Basic Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Claim ID</span>
+                            <span class="value">${claim.claimId || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Policy Number</span>
+                            <span class="value">${claim.policyNumber || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Claim Type</span>
+                            <span class="value">${claim.claimType ? claim.claimType.charAt(0).toUpperCase() + claim.claimType.slice(1) : 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Submitted On</span>
+                            <span class="value">${formatDate(claim.createdAt)}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <span class="label">Claim Type:</span>
-                    <span class="value">${claim.claimType.charAt(0).toUpperCase() + claim.claimType.slice(1)}</span>
+
+                <div class="section hospital-info">
+                    <h3>Hospital Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Hospital Name</span>
+                            <span class="value">${claim.hospitalInfo?.name || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Address</span>
+                            <span class="value">${claim.hospitalInfo?.address || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">City</span>
+                            <span class="value">${claim.hospitalInfo?.city || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">State</span>
+                            <span class="value">${claim.hospitalInfo?.state || 'N/A'}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <span class="label">Policy Number:</span>
-                    <span class="value">${claim.policyNumber || 'N/A'}</span>
+
+                <div class="section treatment-info">
+                    <h3>Treatment Information</h3>
+                    <div class="info-grid">
+                        ${claim.claimType === 'reimbursement' ? `
+                            <div class="info-item">
+                                <span class="label">Admission Date</span>
+                                <span class="value">${formatDate(claim.treatmentInfo?.admissionDate)}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Discharge Date</span>
+                                <span class="value">${formatDate(claim.treatmentInfo?.dischargeDate)}</span>
+                            </div>
+                        ` : `
+                            <div class="info-item">
+                                <span class="label">Expected Admission Date</span>
+                                <span class="value">${formatDate(claim.treatmentInfo?.expectedAdmissionDate)}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Expected Stay Duration</span>
+                                <span class="value">${claim.treatmentInfo?.expectedStayDuration || 'N/A'} days</span>
+                            </div>
+                        `}
+                        <div class="info-item full-width">
+                            <span class="label">Diagnosis Details</span>
+                            <span class="value">${claim.treatmentInfo?.diagnosisDetails || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Treatment Type</span>
+                            <span class="value">${claim.treatmentInfo?.treatmentType || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Doctor Name</span>
+                            <span class="value">${claim.treatmentInfo?.doctorName || 'N/A'}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <span class="label">Hospital:</span>
-                    <span class="value">${claim.hospitalInfo.name}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Hospital Address:</span>
-                    <span class="value">${claim.hospitalInfo.address}, ${claim.hospitalInfo.city}, ${claim.hospitalInfo.state}</span>
-                </div>
-                ${claim.claimType === 'cashless' ? `
-                    <div class="info-row">
-                        <span class="label">Request Type:</span>
-                        <span class="value">${claim.requestType ? claim.requestType.charAt(0).toUpperCase() + claim.requestType.slice(1) : 'N/A'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Expected Admission Date:</span>
-                        <span class="value">${formatDate(claim.treatmentInfo.expectedAdmissionDate)}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Expected Stay Duration:</span>
-                        <span class="value">${claim.treatmentInfo.expectedStayDuration ? claim.treatmentInfo.expectedStayDuration + ' days' : 'N/A'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Treatment Type:</span>
-                        <span class="value">${claim.treatmentInfo.treatmentType ? claim.treatmentInfo.treatmentType.charAt(0).toUpperCase() + claim.treatmentInfo.treatmentType.slice(1) : 'N/A'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Doctor Name:</span>
-                        <span class="value">${claim.treatmentInfo.doctorName || 'N/A'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Diagnosis Details:</span>
-                        <span class="value">${claim.treatmentInfo.diagnosisDetails || 'N/A'}</span>
-                    </div>
-                ` : `
-                    <div class="info-row">
-                        <span class="label">Admission Date:</span>
-                        <span class="value">${formatDate(claim.treatmentInfo.admissionDate)}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Discharge Date:</span>
-                        <span class="value">${formatDate(claim.treatmentInfo.dischargeDate)}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Total Amount:</span>
-                        <span class="value">${formatCurrency(claim.expenseInfo?.totalAmount)}</span>
-                    </div>
-                `}
-                <div class="info-row">
-                    <span class="label">Submitted On:</span>
-                    <span class="value">${formatDate(claim.createdAt)}</span>
-                </div>
-                ${claim.updatedAt ? `
-                    <div class="info-row">
-                        <span class="label">Last Updated:</span>
-                        <span class="value">${formatDate(claim.updatedAt)}</span>
-                    </div>
-                ` : ''}
-                ${claim.status === 'rejected' && claim.rejectionReason ? `
-                    <div class="info-row">
-                        <span class="label">Rejection Reason:</span>
-                        <span class="value" style="color: #dc3545;">${claim.rejectionReason}</span>
-                    </div>
-                ` : ''}
+
+                ${claim.expenseInfo ? generateExpenseDetails() : ''}
+                ${generateDocumentsSection()}
             </div>
         </div>
     `;
 
-    // Add styles
+    // Add styles for the claim details
     const style = document.createElement('style');
     style.textContent = `
         .claim-details {
@@ -1050,8 +1256,9 @@ function displayClaimDetails(claim) {
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             padding: 20px;
-            margin-top: 20px;
+            margin: 20px 0;
         }
+
         .claim-header {
             display: flex;
             justify-content: space-between;
@@ -1060,60 +1267,159 @@ function displayClaimDetails(claim) {
             padding-bottom: 15px;
             border-bottom: 1px solid #eee;
         }
+
         .claim-header h3 {
             margin: 0;
             color: #333;
+            font-size: 1.5rem;
         }
+
         .claim-status {
             padding: 6px 12px;
             border-radius: 20px;
-            color: white;
-            font-size: 0.9em;
-            font-weight: 500;
-            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
-        .claim-info {
+
+        .claim-status.pending {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .claim-status.approved {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .claim-status.rejected {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .section h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .info-grid {
             display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
         }
-        .info-row {
+
+        .info-item {
             display: flex;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            flex-direction: column;
+            gap: 5px;
         }
-        .info-row:last-child {
-            border-bottom: none;
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
         }
-        .info-row .label {
-            font-weight: 500;
-            width: 200px;
+
+        .info-item .label {
             color: #666;
+            font-size: 0.9rem;
         }
-        .info-row .value {
-            flex: 1;
+
+        .info-item .value {
             color: #333;
-            line-height: 1.4;
+            font-weight: 500;
         }
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
+
+        .expense-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
         }
-        .error-message {
-            background: #fff3f3;
-            color: #dc3545;
+
+        .expense-item {
+            background: white;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .expense-item.total {
+            grid-column: 1 / -1;
+            background: #e8f5e9;
+            font-weight: 600;
+        }
+
+        .document-group {
+            margin-bottom: 20px;
+        }
+
+        .document-group h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .document-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .document-list li {
+            margin-bottom: 8px;
+        }
+
+        .document-link {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            color: #1976d2;
+            text-decoration: none;
+            padding: 8px;
+            border-radius: 4px;
+            background: #f5f5f5;
+            transition: background-color 0.2s;
         }
-        .error-message i {
-            font-size: 20px;
+
+        .document-link:hover {
+            background: #e3f2fd;
         }
-        .error-message p {
-            margin: 0;
+
+        .no-documents {
+            color: #666;
+            font-style: italic;
+        }
+
+        .rejection-notes {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .rejection-notes h3 {
+            color: #c62828;
+            margin: 0 0 15px 0;
+        }
+
+        .notes-content {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ffcdd2;
+        }
+
+        .notes-content p {
+            margin: 5px 0;
+        }
+
+        .notes-content strong {
+            color: #c62828;
         }
     `;
     document.head.appendChild(style);
@@ -1121,6 +1427,40 @@ function displayClaimDetails(claim) {
     // Update results container
     resultsContainer.innerHTML = claimDetailsHtml;
 }
+
+// Add styles for rejection notes
+const style = document.createElement('style');
+style.textContent = `
+    .rejection-notes {
+        background-color: #fff3f3;
+        border: 1px solid #ffcdd2;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 20px 0;
+    }
+
+    .rejection-notes h3 {
+        color: #d32f2f;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+
+    .notes-content {
+        background-color: white;
+        padding: 15px;
+        border-radius: 4px;
+        border: 1px solid #ffcdd2;
+    }
+
+    .notes-content p {
+        margin: 5px 0;
+    }
+
+    .notes-content strong {
+        color: #d32f2f;
+    }
+`;
+document.head.appendChild(style);
 
 // Add event listeners for claim tracking
 document.addEventListener('DOMContentLoaded', function() {

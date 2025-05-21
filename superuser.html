@@ -419,7 +419,9 @@
                             <td>₹25,000</td>
                             <td><span class="status-badge status-pending">Pending</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123456')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                         <tr>
@@ -430,7 +432,9 @@
                             <td>₹78,500</td>
                             <td><span class="status-badge status-processing">Processing</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123457')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                         <tr>
@@ -441,7 +445,9 @@
                             <td>₹12,300</td>
                             <td><span class="status-badge status-pending">Pending</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123458')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                         <tr>
@@ -452,7 +458,9 @@
                             <td>₹45,800</td>
                             <td><span class="status-badge status-pending">Pending</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123459')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                     </tbody>
@@ -512,7 +520,9 @@
                             <td>₹25,000</td>
                             <td><span class="status-badge status-pending">Pending</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123456')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                         <tr>
@@ -523,7 +533,9 @@
                             <td>₹35,750</td>
                             <td><span class="status-badge status-approved">Approved</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123450')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                         <tr>
@@ -534,7 +546,9 @@
                             <td>₹8,200</td>
                             <td><span class="status-badge status-rejected">Rejected</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123445')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                         <tr>
@@ -545,7 +559,9 @@
                             <td>₹78,500</td>
                             <td><span class="status-badge status-processing">Processing</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123457')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                         <tr>
@@ -556,7 +572,9 @@
                             <td>₹12,300</td>
                             <td><span class="status-badge status-pending">Pending</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123458')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                         <tr>
@@ -567,7 +585,9 @@
                             <td>₹45,800</td>
                             <td><span class="status-badge status-pending">Pending</span></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openClaimReview('CLM00123459')">View</button>
+                                <button class="action-btn view-btn view-details" data-claim-id="${claim._id}">View</button>
+                                <button class="action-btn approve" data-claim-id="${claim._id}">Approve</button>
+                                <button class="action-btn reject" data-claim-id="${claim._id}">Reject</button>
                             </td>
                         </tr>
                     </tbody>
@@ -673,114 +693,248 @@
         </div>
     </div>
     
-    <!-- Claim Review Modal -->
-    <div id="claim-review-modal" class="modal">
+    <!-- Claim Details Modal -->
+    <div id="claim-details-modal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeClaimReview()">&times;</span>
             <div class="modal-header">
-                <h3>Claim Review - <span id="modal-claim-id">CLM00123456</span></h3>
+                <h3>Claim Details</h3>
+                <span class="close" onclick="closeClaimDetails()">&times;</span>
             </div>
             <div class="modal-body">
-                <!-- Claim Basic Information -->
+                <!-- Basic Information -->
                 <div class="claim-detail-section">
                     <h4>Basic Information</h4>
                     <div class="detail-grid">
                         <div class="detail-item">
-                            <div class="detail-label">Patient Name</div>
-                            <div class="detail-value">John Doe</div>
+                            <div class="detail-label">Claim ID</div>
+                            <div id="modal-claim-id"></div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Policy Number</div>
-                            <div class="detail-value">POL0987654321</div>
+                            <div id="modal-policy-number"></div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Claim Type</div>
-                            <div class="detail-value">Reimbursement</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Claim Sub-type</div>
-                            <div class="detail-value">Post Discharge</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Submission Date</div>
-                            <div class="detail-value">19 May 2025</div>
+                            <div id="modal-claim-type"></div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Status</div>
-                            <div class="detail-value"><span class="status-badge status-pending">Pending</span></div>
+                            <div id="modal-claim-status"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Created Date</div>
+                            <div id="modal-claim-date"></div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Patient Information -->
+
+                <!-- User Information -->
                 <div class="claim-detail-section">
-                    <h4>Patient Information</h4>
+                    <h4>User Information</h4>
                     <div class="detail-grid">
                         <div class="detail-item">
                             <div class="detail-label">Full Name</div>
-                            <div class="detail-value">John Doe</div>
+                            <div id="modal-user-name"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div id="modal-user-email"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div id="modal-user-phone"></div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Date of Birth</div>
-                            <div class="detail-value">15 Jan 1985</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Age</div>
-                            <div class="detail-value">40</div>
+                            <div id="modal-user-dob"></div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Gender</div>
-                            <div class="detail-value">Male</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Relationship</div>
-                            <div class="detail-value">Self</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Contact</div>
-                            <div class="detail-value">johndoe@example.com | +91 9876543210</div>
+                            <div id="modal-user-gender"></div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Hospitalization Details -->
+
+                <!-- Hospital Information -->
                 <div class="claim-detail-section">
-                    <h4>Hospitalization Details</h4>
+                    <h4>Hospital Information</h4>
                     <div class="detail-grid">
                         <div class="detail-item">
                             <div class="detail-label">Hospital Name</div>
-                            <div class="detail-value">City General Hospital</div>
+                            <div id="modal-hospital-name"></div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Hospital Address</div>
-                            <div class="detail-value">123 Health St, Medical Area, City - 123456</div>
+                            <div id="modal-hospital-address"></div>
                         </div>
                         <div class="detail-item">
-                            <div class="detail-label">Admission Date</div>
-                            <div class="detail-value">10 May 2025</div>
+                            <div class="detail-label">City</div>
+                            <div id="modal-hospital-city"></div>
                         </div>
                         <div class="detail-item">
-                            <div class="detail-label">Discharge Date</div>
-                            <div class="detail-value">15 May 2025</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Duration</div>
-                            <div class="detail-value">5 days</div>
+                            <div class="detail-label">State</div>
+                            <div id="modal-hospital-state"></div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Diagnosis Information -->
+
+                <!-- Treatment Information -->
                 <div class="claim-detail-section">
-                    <h4>Diagnosis Information</h4>
+                    <h4>Treatment Information</h4>
                     <div class="detail-grid">
                         <div class="detail-item">
                             <div class="detail-label">Diagnosis Details</div>
-                            <div class="detail-value">Acute Appendicitis with complications (ICD-10: K35.3)</div>
+                            <div id="modal-diagnosis"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Treatment Type</div>
+                            <div id="modal-treatment-type"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Admission Date</div>
+                            <div id="modal-admission-date"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Discharge Date</div>
+                            <div id="modal-discharge-date"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Doctor Name</div>
+                            <div id="modal-doctor-name"></div>
                         </div>
                     </div>
                 </div>
-                
-                 <script src="scripts/superuser.js"></script>
-                 </body>
-                 </html>
+
+                <!-- Expense Information -->
+                <div class="claim-detail-section">
+                    <h4>Expense Information</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Room Charges</div>
+                            <div id="modal-room-charges"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Doctor Fees</div>
+                            <div id="modal-doctor-fees"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Medicine Cost</div>
+                            <div id="modal-medicine-cost"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Investigation Cost</div>
+                            <div id="modal-investigation-cost"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Other Charges</div>
+                            <div id="modal-other-charges"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Total Amount</div>
+                            <div id="modal-total-amount"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents -->
+                <div class="claim-detail-section">
+                    <h4>Documents</h4>
+                    <div id="modal-documents" class="documents-grid">
+                        <!-- Documents will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 1000px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 8px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .claim-detail-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-item {
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .document-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .document-item i {
+            font-size: 24px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+    </style>
+
+    <script src="scripts/superuser.js"></script>
+</body>
+</html>

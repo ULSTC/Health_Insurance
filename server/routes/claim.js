@@ -36,6 +36,9 @@ router.use(authMiddleware);
 // Submit a new claim
 router.post('/', claimController.submitClaim);
 
+// Upload claim documents
+router.post('/:claimId/documents', claimController.uploadClaimDocuments);
+
 // Get claim by ID
 router.get('/:id', claimController.getClaimById);
 

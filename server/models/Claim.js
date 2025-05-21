@@ -125,10 +125,64 @@ const claimSchema = new mongoose.Schema({
       }
     }
   },
+  documents: {
+    hospitalBills: [{
+      url: String,
+      filename: String,
+      uploadedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }],
+    medicalReports: [{
+      url: String,
+      filename: String,
+      uploadedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }],
+    dischargeSummary: [{
+      url: String,
+      filename: String,
+      uploadedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }],
+    idProof: [{
+      url: String,
+      filename: String,
+      uploadedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }],
+    preAuthForm: [{
+      url: String,
+      filename: String,
+      uploadedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }],
+    prescription: [{
+      url: String,
+      filename: String,
+      uploadedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }]
+  },
   status: {
     type: String,
     enum: ['pending', 'under_review', 'approved', 'rejected'],
     default: 'pending'
+  },
+  notes: {
+    type: String,
+    default: ''
   },
   createdAt: {
     type: Date,
