@@ -1,62 +1,63 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Handle logout functionality for both buttons
     const logoutButtons = document.querySelectorAll('#logout-btn');
     logoutButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             // Clear user data from localStorage
             if (sessionStorage.getItem('comingFromLogout') === 'true') {
                 // Clear the flag
                 sessionStorage.removeItem('comingFromLogout');
-                
+
                 // Hide dashboard and cards sections
                 document.getElementById('dashboard-section').classList.add('hidden');
                 document.getElementById('cards-section').classList.add('hidden');
-                
+
                 // Show auth section
                 document.getElementById('auth-section').classList.remove('hidden');
-                
+
                 // Reset any active states
                 document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
                     el.classList.remove('active');
                 });
-            }else{
+            } else {
                 // Set the flag to indicate logout
                 sessionStorage.setItem('comingFromLogout', 'true');
                 if (sessionStorage.getItem('comingFromLogout') === 'true') {
                     // Clear the flag
                     sessionStorage.removeItem('comingFromLogout');
-                    
+
                     // Hide dashboard and cards sections
                     document.getElementById('dashboard-section').classList.add('hidden');
                     document.getElementById('cards-section').classList.add('hidden');
-                    
+
                     // Show auth section
                     document.getElementById('auth-section').classList.remove('hidden');
-                    
+
                     // Reset any active states
                     document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
                         el.classList.remove('active');
-                    });}
-                
+                    });
+                }
+
                 // Redirect to index.html
-            //     window.location.href = 'index.html';
-            //     sessionStorage.removeItem('user')
-            //     document.getElementById('dashboard-section').classList.add('hidden');
-            // document.getElementById('cards-section').classList.add('hidden');
-            
-            // // Show auth section
-            // document.getElementById('auth-section').classList.remove('hidden');
-            
-            // // Reset any active states
-            // document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
-            //     el.classList.remove('active');
-            // });
+                //     window.location.href = 'index.html';
+                //     sessionStorage.removeItem('user')
+                //     document.getElementById('dashboard-section').classList.add('hidden');
+                // document.getElementById('cards-section').classList.add('hidden');
+
+                // // Show auth section
+                // document.getElementById('auth-section').classList.remove('hidden');
+
+                // // Reset any active states
+                // document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
+                //     el.classList.remove('active');
+                // });
             }
         });
     });
-    
+
     // Check if we're coming from logout (should be on index.html)
-   
+
 
 
     // Function to handle navigation and form display
@@ -67,11 +68,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.nav-item.active, .application-form.active').forEach(el => {
                 el.classList.remove('active');
             });
-            
+
             // Add active class to first items
             navItems[0].classList.add('active');
             forms[0].classList.add('active');
-            
+
             // If this is the Quick Quote section, trigger a click on the first nav item
             if (navItems[0].closest('#quick-quote')) {
                 navItems[0].click();
@@ -84,18 +85,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         navItems.forEach(item => {
-            item.addEventListener('click', function() {
+            item.addEventListener('click', function () {
                 // Only allow clicking if not disabled
                 if (this.classList.contains('disabled')) {
                     return;
                 }
 
                 const section = this.getAttribute('data-section');
-                
+
                 // Update active state
                 navItems.forEach(nav => nav.classList.remove('active'));
                 this.classList.add('active');
-                
+
                 // Show corresponding form
                 forms.forEach(form => {
                     form.classList.remove('active');
@@ -110,15 +111,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to handle form validation and color change
     function setupFormValidation(formInputs, navItems) {
         formInputs.forEach(input => {
-            input.addEventListener('change', function() {
+            input.addEventListener('change', function () {
                 const formSection = this.closest('.application-form');
                 const sectionId = formSection.id.replace('-form', '');
                 const navItem = document.querySelector(`[data-section="${sectionId}"]`);
-                
+
                 // Check if all required fields in this section are filled
                 const allFilled = Array.from(formSection.querySelectorAll('input[required], select[required]'))
                     .every(field => field.value.trim() !== '');
-                
+
                 if (allFilled) {
                     navItem.classList.add('completed');
                 } else {
@@ -132,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const quickQuoteNavItems = document.querySelectorAll('#quick-quote .nav-item');
     const quickQuoteForms = document.querySelectorAll('#quick-quote .application-form');
     const quickQuoteInputs = document.querySelectorAll('#quote-form input, #quote-form select');
-    
+
     setupNavigation(quickQuoteNavItems, quickQuoteForms);
     setupFormValidation(quickQuoteInputs, quickQuoteNavItems);
 
@@ -140,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const applicationsNavItems = document.querySelectorAll('#applications .nav-item');
     const applicationsForms = document.querySelectorAll('#applications .application-form');
     const applicationsInputs = document.querySelectorAll('#applications input, #applications select');
-    
+
     setupNavigation(applicationsNavItems, applicationsForms);
     setupFormValidation(applicationsInputs, applicationsNavItems);
 
@@ -162,27 +163,27 @@ document.addEventListener('DOMContentLoaded', function() {
     function validateFormSection(formSection) {
         const requiredFields = formSection.querySelectorAll('input[required], select[required]');
         const emptyFields = Array.from(requiredFields).filter(field => !field.value.trim());
-        
+
         if (emptyFields.length > 0) {
             // Show error message
             const errorMessage = document.createElement('div');
             errorMessage.className = 'error-message';
             errorMessage.textContent = 'Please fill in all required fields';
-            
+
             // Remove any existing error message
             const existingError = formSection.querySelector('.error-message');
             if (existingError) {
                 existingError.remove();
             }
-            
+
             // Add error message before form actions
             const formActions = formSection.querySelector('.form-actions');
             formSection.insertBefore(errorMessage, formActions);
-            
+
             // Highlight empty fields
             emptyFields.forEach(field => {
                 field.classList.add('error');
-                field.addEventListener('input', function() {
+                field.addEventListener('input', function () {
                     this.classList.remove('error');
                     if (this.value.trim()) {
                         const errorMessage = formSection.querySelector('.error-message');
@@ -192,31 +193,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             });
-            
+
             return false;
         }
-        
+
         return true;
     }
 
     // Handle Save & Continue buttons in Quick Quote section
     document.querySelectorAll('#quick-quote .save-continue').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const currentForm = this.closest('.application-form');
-            
+
             // Validate the form section
             if (!validateFormSection(currentForm)) {
                 return; // Stop if validation fails
             }
-            
+
             const currentSectionId = currentForm.id.replace('-form', '');
             const currentNavItem = document.querySelector(`[data-section="${currentSectionId}"]`);
             const navItems = Array.from(document.querySelectorAll('#quick-quote .nav-item'));
             const currentIndex = navItems.indexOf(currentNavItem);
-            
+
             // Mark current section as completed
             currentNavItem.classList.add('completed');
-            
+
             // If there's a next nav item, enable and click it
             if (currentIndex < navItems.length - 1) {
                 const nextNavItem = navItems[currentIndex + 1];
@@ -230,43 +231,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const heightInput = document.getElementById('height');
     const weightInput = document.getElementById('weight');
     const bmiInput = document.getElementById('bmi');
-    
+
     if (heightInput && weightInput && bmiInput) {
         function calculateBMI() {
             const height = parseFloat(heightInput.value) / 100; // convert cm to m
             const weight = parseFloat(weightInput.value);
-            
+
             if (height > 0 && weight > 0) {
                 const bmi = (weight / (height * height)).toFixed(1);
                 bmiInput.value = bmi;
             }
         }
-        
+
         heightInput.addEventListener('input', calculateBMI);
         weightInput.addEventListener('input', calculateBMI);
     }
-    
+
     // Calculate age when date of birth changes
     const dobInput = document.getElementById('dateOfBirth');
     const ageInput = document.getElementById('age');
-    
+
     if (dobInput && ageInput) {
-        dobInput.addEventListener('change', function() {
+        dobInput.addEventListener('change', function () {
             const dob = new Date(this.value);
             const today = new Date();
             let age = today.getFullYear() - dob.getFullYear();
             const m = today.getMonth() - dob.getMonth();
-            
+
             if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
                 age--;
             }
-            
+
             ageInput.value = age;
         });
     }
 
     // Add Get Quick Quote button to health info section
-    const healthInfoForm = document.getElementById('health-info-form');
+    const healthInfoForm = document.getElementById('personal-info-form');
     if (healthInfoForm) {
         const existingButtons = healthInfoForm.querySelector('.form-actions');
         if (existingButtons) {
@@ -275,32 +276,54 @@ document.addEventListener('DOMContentLoaded', function() {
             if (resetButton) {
                 resetButton.remove();
             }
-            
+
             // Add Get Quick Quote button
             const quoteButton = document.createElement('button');
             quoteButton.type = 'button';
             quoteButton.className = 'btn-primary';
             quoteButton.textContent = 'Get Easy Quote';
-            quoteButton.addEventListener('click', function() {
+            quoteButton.addEventListener('click', function () {
                 if (!validateFormSection(healthInfoForm)) {
                     return; // Stop if validation fails
                 }
-                
+
                 // Get sum insured and tenure values
                 const sumInsured = parseFloat(document.getElementById('sumInusred').value) || 500000;
                 const tenure = parseFloat(document.getElementById('plicyTenure').value) || 1;
-                
-                // Calculate a dummy monthly premium (simple formula for demo)
-                const basePremium = sumInsured * 0.02 / 12; // 2% of sum insured annually, divided by 12 for monthly
-                const tenureFactor = 1 - (tenure > 1 ? 0.05 * (tenure - 1) : 0); // 5% discount per additional year
-                const premium = Math.round(basePremium * tenureFactor);
-                
+
+                // Calculate annual premium (2% of sum insured)
+                const annualPremium = sumInsured * 0.02;
+
+                // Total premium over the entire tenure
+                const totalPremium = annualPremium * tenure;
+
+                // Apply discount for multi-year policy (5% per additional year)
+                const discount = tenure > 1 ? 0.05 * (tenure - 1) : 0;
+                const discountedPremium = totalPremium * (1 - discount);
+
+                // Interest rate details
+                const annualInterestRate = 12; // 12% annual interest
+                const monthlyInterestRate = annualInterestRate / 12 / 100; // e.g. 1% = 0.01
+
+                const totalMonths = tenure * 12;
+
+                // EMI calculation using standard EMI formula
+                const EMI = (discountedPremium * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalMonths)) /
+                    (Math.pow(1 + monthlyInterestRate, totalMonths) - 1);
+
+                // Round to nearest rupee
+                const monthlyEMI = Math.round(EMI);
+
+                // Output the result
+                console.log("Monthly EMI:", monthlyEMI);
+
+
                 // Display the quote
                 const quoteResult = document.createElement('div');
                 quoteResult.className = 'quote-result';
                 quoteResult.innerHTML = `
                     <h3>Your Premium Quote</h3>
-                    <div class="premium-amount">₹${premium} <span>per month</span></div>
+                    <div class="premium-amount">₹${monthlyEMI} <span>per month</span></div>
                     <div class="premium-details">
                         <p>Based on:</p>
                         <ul>
@@ -309,30 +332,30 @@ document.addEventListener('DOMContentLoaded', function() {
                         </ul>
                     </div>
                 `;
-                
+
                 // Remove existing quote result if any
                 const existingQuote = healthInfoForm.querySelector('.quote-result');
                 if (existingQuote) {
                     existingQuote.remove();
                 }
-                
+
                 // Add quote result before form actions
                 healthInfoForm.insertBefore(quoteResult, existingButtons);
-                
+
                 // Enable next section
-                const currentNavItem = document.querySelector('[data-section="health-info"]');
+                const currentNavItem = document.querySelector('[data-section="personal-info"]');
                 const navItems = Array.from(document.querySelectorAll('#quick-quote .nav-item'));
                 const currentIndex = navItems.indexOf(currentNavItem);
-                
+
                 if (currentIndex < navItems.length - 1) {
                     const nextNavItem = navItems[currentIndex + 1];
                     nextNavItem.classList.remove('disabled');
                 }
-                
+
                 // Mark current section as completed
                 currentNavItem.classList.add('completed');
             });
-            
+
             existingButtons.appendChild(quoteButton);
         }
     }
@@ -347,16 +370,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (resetButton) {
                 resetButton.remove();
             }
-            
+
             // Change Save & Continue to Save and Finalize
             const saveButton = existingButtons.querySelector('.save-continue');
             if (saveButton) {
                 saveButton.textContent = 'Save and Finalize';
-                saveButton.addEventListener('click', function() {
+                saveButton.addEventListener('click', function () {
                     if (!validateFormSection(addressInfoForm)) {
                         return; // Stop if validation fails
                     }
-                    
+
                     // Show success message
                     // const successMessage = document.createElement('div');
                     // successMessage.className = 'success-message';
@@ -365,13 +388,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     //     <p>Your policy ID: QP-${Math.floor(100000 + Math.random() * 900000)}</p>
                     //     <p>Our team will review your application and get back to you shortly.</p>
                     // `;
-                    
+
                     // // Remove existing success message if any
                     const existingMessage = addressInfoForm.querySelector('.success-message');
                     if (existingMessage) {
                         existingMessage.remove();
                     }
-                    
+
                     // // Add success message before form actions
                     // addressInfoForm.insertBefore(successMessage, existingButtons);
                 });
@@ -380,10 +403,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Document Management Functions - keeping the same as provided
-    window.uploadPolicyDocument = function() {
+    window.uploadPolicyDocument = function () {
         const fileInput = document.getElementById('policy-document-upload');
         const files = fileInput.files;
-        
+
         if (files.length === 0) {
             alert('Please select at least one document to upload');
             return;
@@ -398,10 +421,10 @@ document.addEventListener('DOMContentLoaded', function() {
         simulateDocumentUpload(formData, 'policy-documents');
     };
 
-    window.uploadIDDocument = function() {
+    window.uploadIDDocument = function () {
         const fileInput = document.getElementById('id-document-upload');
         const files = fileInput.files;
-        
+
         if (files.length === 0) {
             alert('Please select at least one document to upload');
             return;
@@ -416,10 +439,10 @@ document.addEventListener('DOMContentLoaded', function() {
         simulateDocumentUpload(formData, 'id-documents');
     };
 
-    window.uploadMedicalDocument = function() {
+    window.uploadMedicalDocument = function () {
         const fileInput = document.getElementById('medical-document-upload');
         const files = fileInput.files;
-        
+
         if (files.length === 0) {
             alert('Please select at least one document to upload');
             return;
@@ -486,12 +509,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return types[extension] || 'Document';
     }
 
-    window.downloadDocument = function(filename) {
+    window.downloadDocument = function (filename) {
         // Here you would typically make an API call to download the document
         alert(`Downloading ${filename}...`);
     };
 
-    window.deleteDocument = function(button) {
+    window.deleteDocument = function (button) {
         const documentItem = button.closest('.document-item');
         documentItem.remove();
     };

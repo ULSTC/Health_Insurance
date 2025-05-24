@@ -32,7 +32,7 @@ function populateFormFields(data) {
     populatePersonalInfo(data.personalInfo);
     
     // Populate Health Information
-    populateHealthInfo(data.healthInfo);
+    // populateHealthInfo(data.healthInfo);
     
     // Populate Address Information
     populateAddressInfo(data.addressInfo);

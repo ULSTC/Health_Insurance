@@ -141,29 +141,29 @@ const quoteSchema = new mongoose.Schema({
   },
   
   // Health Information
-  healthInfo: {
-    height: {
-      type: Number,
-      required: true
-    },
-    weight: {
-      type: Number,
-      required: true
-    },
-    bmi: {
-      type: Number,
-      required: true
-    },
-    bloodGroup: {
-      type: String,
-      required: true,
-      enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']
-    },
-    preExistingConditions: [{
-      type: String,
-      enum: ['diabetes', 'hypertension', 'heart-disease', 'asthma', 'other']
-    }]
-  },
+  // healthInfo: {
+  //   height: {
+  //     type: Number,
+  //     required: false
+  //   },
+  //   weight: {
+  //     type: Number,
+  //     required: false
+  //   },
+  //   bmi: {
+  //     type: Number,
+  //     required: false
+  //   },
+  //   bloodGroup: {
+  //     type: String,
+  //     required: false,
+  //     enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']
+  //   },
+  //   preExistingConditions: [{
+  //     type: String,
+  //     enum: ['diabetes', 'hypertension', 'heart-disease', 'asthma', 'other']
+  //   }]
+  // },
   
   // Address Information
   addressInfo: {

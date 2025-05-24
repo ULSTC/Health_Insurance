@@ -154,13 +154,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             email: document.getElementById('email').value,
                             phone: document.getElementById('phone').value
                         },
-                        healthInfo: {
-                            height: parseFloat(document.getElementById('height').value),
-                            weight: parseFloat(document.getElementById('weight').value),
-                            bmi: parseFloat(document.getElementById('bmi').value),
-                            bloodGroup: document.getElementById('bloodGroup').value,
-                            preExistingConditions: Array.from(document.querySelectorAll('input[name="conditions"]:checked')).map(checkbox => checkbox.value)
-                        },
                         addressInfo: {
                             communicationAddress: {
                                 lineOfAddress: document.getElementById('commLineOfAddress').value,
@@ -191,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         status: "draft",
                         premiumAmount: premium // This would normally be calculated from previous step
                     };
-
+                    console.log('Payload:', payload);
                     // Show loading state
                     saveButton.disabled = true;
                     saveButton.textContent = 'Submitting...';
@@ -206,6 +199,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     })
                         .then(response => response.json())
                         .then(data => {
+                            console.log('Response:', data);
+                            console.log("aa raha hai response to bhai");
                             // Reset button state
                             saveButton.disabled = false;
                             saveButton.textContent = 'Save and Finalize';
