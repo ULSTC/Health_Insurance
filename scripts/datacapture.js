@@ -3,11 +3,28 @@ document.getElementById('easyQuote').addEventListener('blur', async function() {
     const quoteCode = this.value.trim();
     if (quoteCode) {
         try {
+            // Show loading state
+            const loadingMessage = document.createElement('div');
+            loadingMessage.className = 'loading-message';
+            loadingMessage.textContent = 'Loading quote details...';
+            this.parentNode.appendChild(loadingMessage);
+
             const response = await fetch(`http://localhost:5000/api/quote/code/${quoteCode}`);
             const result = await response.json();
             
             if (result.success && result.data) {
+                // Store the quote data in session storage for later use
+                sessionStorage.setItem('quoteData', JSON.stringify(result.data));
+                
+                // Populate all form sections
                 populateFormFields(result.data);
+                
+                // Enable the health info section in navigation
+                const healthInfoNav = document.querySelector('[data-section="health-info"]');
+                if (healthInfoNav) {
+                    healthInfoNav.classList.remove('disabled');
+                }
+                
                 console.log('Form populated successfully');
             } else {
                 console.error('Failed to fetch quote data:', result);
@@ -16,12 +33,21 @@ document.getElementById('easyQuote').addEventListener('blur', async function() {
         } catch (error) {
             console.error('Error fetching quote data:', error);
             alert('Error fetching quote data. Please try again.');
+        } finally {
+            // Remove loading message
+            const loadingMessage = this.parentNode.querySelector('.loading-message');
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
         }
     }
 });
 
 // Function to populate all form fields from API response
 function populateFormFields(data) {
+    // Store the data in session storage for later use
+    sessionStorage.setItem('quoteData', JSON.stringify(data));
+    
     // Populate Business Information
     populateBusinessInfo(data.businessInfo);
     
@@ -32,7 +58,7 @@ function populateFormFields(data) {
     populatePersonalInfo(data.personalInfo);
     
     // Populate Health Information
-    // populateHealthInfo(data.healthInfo);
+    populateHealthInfo(data.healthInfo);
     
     // Populate Address Information
     populateAddressInfo(data.addressInfo);
@@ -76,11 +102,9 @@ function populatePolicyInfo(policyInfo) {
 }
 
 // Populate Personal Information section
-// Populate Personal Information section
 function populatePersonalInfo(personalInfo) {
-    // Clear existing personal info section
-    const personalInfoContainer = document.getElementById('personal-info-container') || document.querySelector('.personal-info-section');
-    
+    // Get the personal info container
+    const personalInfoContainer = document.getElementById('personal-info-app-form');
     if (!personalInfoContainer) {
         console.error('Personal info container not found');
         return;
@@ -94,11 +118,18 @@ function populatePersonalInfo(personalInfo) {
     header.textContent = 'Personal Information';
     header.className = 'section-header';
     personalInfoContainer.appendChild(header);
+
+    // Create container for all members
+    const membersContainer = document.createElement('div');
+    membersContainer.className = 'members-container';
+    membersContainer.style.cssText = 'margin-top: 20px;';
+    personalInfoContainer.appendChild(membersContainer);
     
     // Loop through each person in personalInfo array
     personalInfo.forEach((person, index) => {
         const memberDiv = document.createElement('div');
         memberDiv.className = 'family-member-section';
+        memberDiv.dataset.memberIndex = index; // Add data attribute for member index
         memberDiv.style.cssText = `
             border: 1px solid #e0e0e0;
             border-radius: 8px;
@@ -109,7 +140,7 @@ function populatePersonalInfo(personalInfo) {
         `;
         
         // Determine member title
-        const memberTitle = index === 0 ? 'Personal Information - Primary Member' : `Family Member ${index + 1}`;
+        const memberTitle = index === 0 ? 'Primary Member' : `Family Member ${index + 1}`;
         
         // Create member HTML structure
         memberDiv.innerHTML = `
@@ -121,20 +152,20 @@ function populatePersonalInfo(personalInfo) {
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                 <div>
                     <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Full Name</label>
-                    <input type="text" value="${person.fullName || ''}" 
-                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
-                           readonly>
+                    <input type="text" id="app-fullName-${index}" value="${person.fullName || ''}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
+                           required>
                 </div>
                 <div>
                     <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Date of Birth</label>
-                    <input type="date" value="${formatDateForInput(person.dateOfBirth)}" 
-                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
-                           readonly>
+                    <input type="date" id="app-dateOfBirth-${index}" value="${formatDateForInput(person.dateOfBirth)}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
+                           required>
                 </div>
                 <div>
                     <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Age</label>
-                    <input type="number" value="${person.age || ''}" 
-                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
+                    <input type="number" id="app-age-${index}" value="${person.age || ''}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
                            readonly>
                 </div>
             </div>
@@ -142,7 +173,9 @@ function populatePersonalInfo(personalInfo) {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                 <div>
                     <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Gender</label>
-                    <select style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;" disabled>
+                    <select id="app-gender-${index}" 
+                            style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
+                            required>
                         <option value="">Select Gender</option>
                         <option value="male" ${person.gender === 'male' ? 'selected' : ''}>Male</option>
                         <option value="female" ${person.gender === 'female' ? 'selected' : ''}>Female</option>
@@ -151,7 +184,9 @@ function populatePersonalInfo(personalInfo) {
                 </div>
                 <div>
                     <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Relationship</label>
-                    <select style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;" disabled>
+                    <select id="app-relationship-${index}" 
+                            style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
+                            required>
                         <option value="">Select Relationship</option>
                         <option value="self" ${person.relationship === 'self' ? 'selected' : ''}>Self</option>
                         <option value="spouse" ${person.relationship === 'spouse' ? 'selected' : ''}>Spouse</option>
@@ -165,176 +200,349 @@ function populatePersonalInfo(personalInfo) {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div>
                     <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Email</label>
-                    <input type="email" value="${person.email || ''}" 
-                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
-                           readonly>
+                    <input type="email" id="app-email-${index}" value="${person.email || ''}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
+                           required>
                 </div>
                 <div>
                     <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Phone Number</label>
-                    <input type="tel" value="${person.phone || ''}" 
-                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
-                           readonly>
+                    <input type="tel" id="app-phone-${index}" value="${person.phone || ''}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
+                           required>
                 </div>
             </div>
         `;
         
-        personalInfoContainer.appendChild(memberDiv);
+        membersContainer.appendChild(memberDiv);
+        
+        // Add event listeners for age calculation
+        const dobInput = memberDiv.querySelector(`#app-dateOfBirth-${index}`);
+        const ageInput = memberDiv.querySelector(`#app-age-${index}`);
+        
+        if (dobInput && ageInput) {
+            dobInput.addEventListener('change', function() {
+                const dob = new Date(this.value);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const m = today.getMonth() - dob.getMonth();
+                
+                if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                
+                ageInput.value = age;
+            });
+        }
         
         // Add event listener for remove button (if it exists)
         if (index > 0) {
             const removeBtn = memberDiv.querySelector('.remove-member-btn');
             if (removeBtn) {
                 removeBtn.addEventListener('click', function() {
+                    // Get the member index from the data attribute
+                    const memberIndex = parseInt(memberDiv.dataset.memberIndex);
+                    
+                    // Remove the member section
                     memberDiv.remove();
+                    
+                    // Update the quote data in session storage
+                    const quoteData = JSON.parse(sessionStorage.getItem('quoteData') || '{}');
+                    
+                    // Remove from personal info
+                    if (quoteData.personalInfo) {
+                        quoteData.personalInfo.splice(memberIndex, 1);
+                    }
+                    
+                    // Remove from health info
+                    if (quoteData.healthInfo) {
+                        quoteData.healthInfo.splice(memberIndex, 1);
+                    }
+                    
+                    // Update session storage
+                    sessionStorage.setItem('quoteData', JSON.stringify(quoteData));
+                    
+                    // Update member indices for remaining members
+                    const remainingMembers = membersContainer.querySelectorAll('.family-member-section');
+                    remainingMembers.forEach((member, newIndex) => {
+                        member.dataset.memberIndex = newIndex;
+                        // Update all input IDs to match new index
+                        member.querySelectorAll('input, select').forEach(input => {
+                            const oldId = input.id;
+                            if (oldId) {
+                                const newId = oldId.replace(/-\d+$/, `-${newIndex}`);
+                                input.id = newId;
+                            }
+                        });
+                    });
+                    
+                    // Refresh health info section
+                    populateHealthInfo(quoteData.healthInfo || []);
                 });
             }
         }
     });
-}
 
-// Alternative version if you want to populate existing form fields instead of creating new ones
-function populatePersonalInfoAlternative(personalInfo) {
-    // Find the primary member (relationship === 'self' or first member)
-    const primaryMember = personalInfo.find(person => person.relationship === 'self') || personalInfo[0];
-    
-    if (primaryMember) {
-        // Populate existing form fields for primary member
-        if (document.getElementById('app-fullName')) {
-            document.getElementById('app-fullName').value = primaryMember.fullName || '';
-        }
-        
-        if (document.getElementById('app-dateOfBirth') && primaryMember.dateOfBirth) {
-            document.getElementById('app-dateOfBirth').value = formatDateForInput(primaryMember.dateOfBirth);
-        }
-        
-        if (document.getElementById('app-age')) {
-            document.getElementById('app-age').value = primaryMember.age || '';
-        }
-        
-        if (document.getElementById('app-gender')) {
-            document.getElementById('app-gender').value = primaryMember.gender || '';
-        }
-        
-        if (document.getElementById('app-relationship')) {
-            document.getElementById('app-relationship').value = primaryMember.relationship || '';
-        }
-        
-        if (document.getElementById('app-email')) {
-            document.getElementById('app-email').value = primaryMember.email || '';
-        }
-        
-        if (document.getElementById('app-phone')) {
-            document.getElementById('app-phone').value = primaryMember.phone || '';
-        }
-    }
-    
-    // Display all family members including primary
-    displayAllFamilyMembers(personalInfo);
-}
+    // Add form actions with Save and Continue button
+    const formActions = document.createElement('div');
+    formActions.className = 'form-actions';
+    formActions.innerHTML = `
+        <button type="button" class="btn-primary app-save-continue">Save & Continue</button>
+    `;
+    personalInfoContainer.appendChild(formActions);
 
-function displayAllFamilyMembers(personalInfo) {
-    // Find or create a container for all family members
-    let familyMembersContainer = document.getElementById('family-members-display');
-    
-    if (!familyMembersContainer) {
-        // Create container after the existing personal info form
-        const personalInfoSection = document.querySelector('.personal-info-form') || document.querySelector('[data-section="personal"]');
-        if (personalInfoSection) {
-            familyMembersContainer = document.createElement('div');
-            familyMembersContainer.id = 'family-members-display';
-            familyMembersContainer.style.cssText = 'margin-top: 30px; padding: 20px; border-top: 2px solid #e0e0e0;';
-            personalInfoSection.appendChild(familyMembersContainer);
-        } else {
-            console.error('Could not find personal info section to append family members');
-            return;
-        }
+    // Add event listener for Save and Continue button
+    const saveButton = formActions.querySelector('.app-save-continue');
+    if (saveButton) {
+        saveButton.addEventListener('click', function() {
+            // Save the current form data
+            const formData = {
+                personalInfo: []
+            };
+
+            // Get all member sections
+            const memberSections = membersContainer.querySelectorAll('.family-member-section');
+            memberSections.forEach((section, index) => {
+                const memberData = {
+                    fullName: section.querySelector(`#app-fullName-${index}`).value,
+                    dateOfBirth: section.querySelector(`#app-dateOfBirth-${index}`).value,
+                    age: section.querySelector(`#app-age-${index}`).value,
+                    gender: section.querySelector(`#app-gender-${index}`).value,
+                    relationship: section.querySelector(`#app-relationship-${index}`).value,
+                    email: section.querySelector(`#app-email-${index}`).value,
+                    phone: section.querySelector(`#app-phone-${index}`).value
+                };
+                formData.personalInfo.push(memberData);
+            });
+
+            // Update session storage
+            const quoteData = JSON.parse(sessionStorage.getItem('quoteData') || '{}');
+            quoteData.personalInfo = formData.personalInfo;
+            sessionStorage.setItem('quoteData', JSON.stringify(quoteData));
+
+            // Update section status in navigation
+            const personalInfoNav = document.querySelector('[data-section="personal-info-app"]');
+            if (personalInfoNav) {
+                personalInfoNav.classList.remove('active');
+                personalInfoNav.classList.add('completed');
+            }
+
+            // Navigate to next section
+            const currentSection = document.querySelector('.application-form.active');
+            if (currentSection) {
+                currentSection.classList.remove('active');
+                const nextSection = currentSection.nextElementSibling;
+                if (nextSection && nextSection.classList.contains('application-form')) {
+                    nextSection.classList.add('active');
+                    // Update next section's nav item
+                    const nextSectionId = nextSection.id;
+                    const nextNavItem = document.querySelector(`[data-section="${nextSectionId.replace('-app-form', '')}"]`);
+                    if (nextNavItem) {
+                        nextNavItem.classList.add('active');
+                    }
+                }
+            }
+        });
     }
-    
-    // Clear existing content
-    familyMembersContainer.innerHTML = '';
-    
-    // Add header
-    const header = document.createElement('h3');
-    header.textContent = 'Family Members Overview';
-    header.style.cssText = 'margin-bottom: 20px; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;';
-    familyMembersContainer.appendChild(header);
-    
-    // Display each family member
-    personalInfo.forEach((person, index) => {
-        const memberCard = document.createElement('div');
-        memberCard.style.cssText = `
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            background: linear-gradient(145deg, #ffffff, #f8f9fa);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        `;
-        
-        const memberTitle = person.relationship === 'self' ? 'Primary Member' : `Family Member ${index}`;
-        
-        memberCard.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="margin: 0; color: #007bff; font-size: 16px;">${memberTitle}</h4>
-                <span style="background-color: #007bff; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; text-transform: capitalize;">
-                    ${person.relationship}
-                </span>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                <div>
-                    <strong style="color: #555;">Name:</strong><br>
-                    <span style="color: #333;">${person.fullName || 'N/A'}</span>
-                </div>
-                <div>
-                    <strong style="color: #555;">Date of Birth:</strong><br>
-                    <span style="color: #333;">${formatDate(person.dateOfBirth) || 'N/A'}</span>
-                </div>
-                <div>
-                    <strong style="color: #555;">Age:</strong><br>
-                    <span style="color: #333;">${person.age || 'N/A'}</span>
-                </div>
-                <div>
-                    <strong style="color: #555;">Gender:</strong><br>
-                    <span style="color: #333; text-transform: capitalize;">${person.gender || 'N/A'}</span>
-                </div>
-                <div>
-                    <strong style="color: #555;">Email:</strong><br>
-                    <span style="color: #333;">${person.email || 'N/A'}</span>
-                </div>
-                <div>
-                    <strong style="color: #555;">Phone:</strong><br>
-                    <span style="color: #333;">${person.phone || 'N/A'}</span>
-                </div>
-            </div>
-        `;
-        
-        familyMembersContainer.appendChild(memberCard);
-    });
 }
 
 // Populate Health Information section
 function populateHealthInfo(healthInfo) {
-    document.getElementById('app-height').value = healthInfo.height || '';
-    document.getElementById('app-weight').value = healthInfo.weight || '';
-    document.getElementById('app-bmi').value = healthInfo.bmi || '';
-    document.getElementById('app-bloodGroup').value = healthInfo.bloodGroup || '';
+    // Get the health info container
+    const healthInfoContainer = document.getElementById('health-info-app-form');
+    if (!healthInfoContainer) {
+        console.error('Health info container not found');
+            return;
+    }
     
-    // Reset all checkboxes first
-    const conditionCheckboxes = document.querySelectorAll('input[name="app-conditions"]');
-    conditionCheckboxes.forEach(checkbox => {
-        checkbox.checked = false;
+    // Clear existing content
+    healthInfoContainer.innerHTML = '';
+    
+    // Create header
+    const header = document.createElement('h3');
+    header.textContent = 'Health Information';
+    header.className = 'section-header';
+    healthInfoContainer.appendChild(header);
+
+    // Get personal info from session storage
+    const quoteData = JSON.parse(sessionStorage.getItem('quoteData'));
+    if (!quoteData || !quoteData.personalInfo) {
+        console.error('No personal info found in session storage');
+        return;
+    }
+
+    // Create health section for each family member
+    quoteData.personalInfo.forEach((person, index) => {
+        const memberHealthInfo = healthInfo?.[index] || {};
+        const memberSection = createMemberHealthSection(index + 1, person, memberHealthInfo);
+        healthInfoContainer.appendChild(memberSection);
     });
-    
-    // Check the appropriate checkboxes based on preExistingConditions
-    if (healthInfo.preExistingConditions && healthInfo.preExistingConditions.length > 0) {
-        healthInfo.preExistingConditions.forEach(condition => {
-            const checkbox = document.querySelector(`input[name="app-conditions"][value="${condition}"]`);
-            if (checkbox) {
-                checkbox.checked = true;
+
+    // Add form actions with Save and Continue button
+    const formActions = document.createElement('div');
+    formActions.className = 'form-actions';
+    formActions.innerHTML = `
+        <button type="button" class="btn-primary app-save-continue">Save & Continue</button>
+    `;
+    healthInfoContainer.appendChild(formActions);
+
+    // Add event listener for Save and Continue button
+    const saveButton = formActions.querySelector('.app-save-continue');
+    if (saveButton) {
+        saveButton.addEventListener('click', function() {
+            // Save the current form data
+            const formData = {
+                healthInfo: []
+            };
+
+            // Get all member sections
+            const memberSections = healthInfoContainer.querySelectorAll('.member-health-section');
+            memberSections.forEach((section, index) => {
+                const memberData = {
+                    height: section.querySelector(`#height-${index + 1}`).value,
+                    weight: section.querySelector(`#weight-${index + 1}`).value,
+                    bmi: section.querySelector(`#bmi-${index + 1}`).value,
+                    bloodGroup: section.querySelector(`#bloodGroup-${index + 1}`).value,
+                    preExistingConditions: Array.from(section.querySelectorAll(`input[name="conditions-${index + 1}"]:checked`))
+                        .map(checkbox => checkbox.value)
+                };
+                formData.healthInfo.push(memberData);
+            });
+
+            // Update session storage
+            const quoteData = JSON.parse(sessionStorage.getItem('quoteData') || '{}');
+            quoteData.healthInfo = formData.healthInfo;
+            sessionStorage.setItem('quoteData', JSON.stringify(quoteData));
+
+            // Update section status in navigation
+            const healthInfoNav = document.querySelector('[data-section="health-info-app"]');
+            if (healthInfoNav) {
+                healthInfoNav.classList.remove('active');
+                healthInfoNav.classList.add('completed');
+            }
+
+            // Navigate to next section
+            const currentSection = document.querySelector('.application-form.active');
+            if (currentSection) {
+                currentSection.classList.remove('active');
+                const nextSection = currentSection.nextElementSibling;
+                if (nextSection && nextSection.classList.contains('application-form')) {
+                    nextSection.classList.add('active');
+                    // Update next section's nav item
+                    const nextSectionId = nextSection.id;
+                    const nextNavItem = document.querySelector(`[data-section="${nextSectionId.replace('-app-form', '')}"]`);
+                    if (nextNavItem) {
+                        nextNavItem.classList.add('active');
+                    }
+                }
             }
         });
     }
+}
+
+function createMemberHealthSection(memberIndex, person, healthInfo) {
+    const section = document.createElement('div');
+    section.className = 'member-health-section';
+    section.style.cssText = `
+        border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        margin-bottom: 20px;
+        background-color: #f9f9f9;
+    `;
+
+    // Create member title
+    const memberTitle = memberIndex === 1 ? 'Primary Member' : `Family Member ${memberIndex}`;
+    
+    section.innerHTML = `
+        <h4 style="margin: 0 0 20px 0; color: #333; font-size: 18px; font-weight: 600;">
+            Health Information - ${person.fullName} (${memberTitle})
+        </h4>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Height (cm)</label>
+                <input type="number" id="height-${memberIndex}" value="${healthInfo.height || ''}" 
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
+                       required>
+            </div>
+                <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Weight (kg)</label>
+                <input type="number" id="weight-${memberIndex}" value="${healthInfo.weight || ''}" 
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
+                       required>
+                </div>
+                <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">BMI</label>
+                <input type="text" id="bmi-${memberIndex}" value="${healthInfo.bmi || ''}" 
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
+                       readonly>
+                </div>
+                </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Blood Group</label>
+                <select id="bloodGroup-${memberIndex}" 
+                        style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;"
+                        required>
+                    <option value="">Select Blood Group</option>
+                    <option value="A+" ${healthInfo.bloodGroup === 'A+' ? 'selected' : ''}>A+</option>
+                    <option value="A-" ${healthInfo.bloodGroup === 'A-' ? 'selected' : ''}>A-</option>
+                    <option value="B+" ${healthInfo.bloodGroup === 'B+' ? 'selected' : ''}>B+</option>
+                    <option value="B-" ${healthInfo.bloodGroup === 'B-' ? 'selected' : ''}>B-</option>
+                    <option value="O+" ${healthInfo.bloodGroup === 'O+' ? 'selected' : ''}>O+</option>
+                    <option value="O-" ${healthInfo.bloodGroup === 'O-' ? 'selected' : ''}>O-</option>
+                    <option value="AB+" ${healthInfo.bloodGroup === 'AB+' ? 'selected' : ''}>AB+</option>
+                    <option value="AB-" ${healthInfo.bloodGroup === 'AB-' ? 'selected' : ''}>AB-</option>
+                </select>
+                </div>
+                <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Pre-existing Conditions</label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" name="conditions-${memberIndex}" value="diabetes" 
+                               ${(healthInfo.preExistingConditions || []).includes('diabetes') ? 'checked' : ''}>
+                        Diabetes
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" name="conditions-${memberIndex}" value="hypertension"
+                               ${(healthInfo.preExistingConditions || []).includes('hypertension') ? 'checked' : ''}>
+                        Hypertension
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" name="conditions-${memberIndex}" value="heart-disease"
+                               ${(healthInfo.preExistingConditions || []).includes('heart-disease') ? 'checked' : ''}>
+                        Heart Disease
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" name="conditions-${memberIndex}" value="asthma"
+                               ${(healthInfo.preExistingConditions || []).includes('asthma') ? 'checked' : ''}>
+                        Asthma
+                    </label>
+                </div>
+                </div>
+            </div>
+        `;
+        
+    // Add event listeners for BMI calculation
+    const heightInput = section.querySelector(`#height-${memberIndex}`);
+    const weightInput = section.querySelector(`#weight-${memberIndex}`);
+    const bmiInput = section.querySelector(`#bmi-${memberIndex}`);
+
+    function calculateBMI() {
+        const height = parseFloat(heightInput.value) / 100; // Convert cm to m
+        const weight = parseFloat(weightInput.value);
+        
+        if (height && weight) {
+            const bmi = weight / (height * height);
+            bmiInput.value = bmi.toFixed(2);
+        }
+    }
+
+    heightInput.addEventListener('input', calculateBMI);
+    weightInput.addEventListener('input', calculateBMI);
+
+    return section;
 }
 
 // Populate Address Information section
@@ -368,7 +576,7 @@ function populateAddressInfo(addressInfo) {
             document.getElementById('app-presentCountry').value = commAddress.country || '';
             
             // Need to populate state dropdown first
-            populateStateDropdown('app-presentCountry', 'app-presentState', commAddress.state);
+            populateStateDropdown('app-commCountry', 'app-presentState', commAddress.state);
             document.getElementById('app-presentCity').value = commAddress.city || '';
         } else {
             document.getElementById('app-presentLineOfAddress').value = permAddress.lineOfAddress || '';
@@ -454,11 +662,11 @@ function formatDate(dateString) {
     if (!dateString) return '';
     
     const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    
-    return `${day}/${month}/${year}`;
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
 }
 
 // Helper function to format dates for input fields (YYYY-MM-DD)
@@ -537,21 +745,94 @@ function calculateAge() {
 }
 
 // Initialize form navigation
-initializeFormNavigation();
-
 function initializeFormNavigation() {
-    const saveButtons = document.querySelectorAll('.app-save-continue');
     const formSections = document.querySelectorAll('.application-form');
     
-    saveButtons.forEach((button, index) => {
+    // Remove any existing event listeners
+    const existingButtons = document.querySelectorAll('.app-save-continue');
+    existingButtons.forEach(button => {
+        button.replaceWith(button.cloneNode(true));
+    });
+    
+    // Add event listeners to all Save and Continue buttons
+    document.querySelectorAll('.app-save-continue').forEach(button => {
         button.addEventListener('click', function() {
-            // Hide current form
-            formSections[index].classList.remove('active');
+            const currentSection = this.closest('.application-form');
+            if (!currentSection) return;
             
-            // Show next form (if not the last one)
-            if (index < formSections.length - 1) {
-                formSections[index + 1].classList.add('active');
+            // Save the current section's data
+            const sectionId = currentSection.id;
+            if (sectionId === 'personal-info-app-form') {
+                savePersonalInfo();
+            } else if (sectionId === 'health-info-app-form') {
+                saveHealthInfo();
+            }
+            
+            // Update navigation
+            const currentNav = document.querySelector(`[data-section="${sectionId.replace('-app-form', '')}"]`);
+            if (currentNav) {
+                currentNav.classList.remove('active');
+                currentNav.classList.add('completed');
+            }
+            
+            // Move to next section
+            currentSection.classList.remove('active');
+            const nextSection = currentSection.nextElementSibling;
+            if (nextSection && nextSection.classList.contains('application-form')) {
+                nextSection.classList.add('active');
+                const nextSectionId = nextSection.id;
+                const nextNavItem = document.querySelector(`[data-section="${nextSectionId.replace('-app-form', '')}"]`);
+                if (nextNavItem) {
+                    nextNavItem.classList.add('active');
+                }
             }
         });
     });
+}
+
+function savePersonalInfo() {
+    const formData = {
+        personalInfo: []
+    };
+
+    const memberSections = document.querySelectorAll('.family-member-section');
+    memberSections.forEach((section, index) => {
+        const memberData = {
+            fullName: section.querySelector(`#app-fullName-${index}`).value,
+            dateOfBirth: section.querySelector(`#app-dateOfBirth-${index}`).value,
+            age: section.querySelector(`#app-age-${index}`).value,
+            gender: section.querySelector(`#app-gender-${index}`).value,
+            relationship: section.querySelector(`#app-relationship-${index}`).value,
+            email: section.querySelector(`#app-email-${index}`).value,
+            phone: section.querySelector(`#app-phone-${index}`).value
+        };
+        formData.personalInfo.push(memberData);
+    });
+
+    const quoteData = JSON.parse(sessionStorage.getItem('quoteData') || '{}');
+    quoteData.personalInfo = formData.personalInfo;
+    sessionStorage.setItem('quoteData', JSON.stringify(quoteData));
+}
+
+function saveHealthInfo() {
+    const formData = {
+        healthInfo: []
+    };
+
+    const memberSections = document.querySelectorAll('.member-health-section');
+    memberSections.forEach((section, index) => {
+        const memberData = {
+            height: section.querySelector(`#height-${index + 1}`).value,
+            weight: section.querySelector(`#weight-${index + 1}`).value,
+            bmi: section.querySelector(`#bmi-${index + 1}`).value,
+            bloodGroup: section.querySelector(`#bloodGroup-${index + 1}`).value,
+            preExistingConditions: Array.from(section.querySelectorAll(`input[name="conditions-${index + 1}"]:checked`))
+                .map(checkbox => checkbox.value)
+        };
+        formData.healthInfo.push(memberData);
+    });
+
+    const quoteData = JSON.parse(sessionStorage.getItem('quoteData') || '{}');
+    quoteData.healthInfo = formData.healthInfo;
+    sessionStorage.setItem('quoteData', JSON.stringify(quoteData));
 }

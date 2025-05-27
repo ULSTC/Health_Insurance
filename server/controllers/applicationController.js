@@ -4,32 +4,63 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const Quote = require('../models/Quote');
 
 /**
  * Create a new application
  */
 exports.createApplication = async (req, res) => {
   try {
-    const applicationData = req.body;
-    
-    // Create new application with the data
-    const application = new Application(applicationData);
-    
-    // Save the application to database
+    const { quoteReference, personalInfo, healthInfo } = req.body;
+
+    // Validate quote reference
+    const quote = await Quote.findOne({ quoteCode: quoteReference });
+    if (!quote) {
+      return res.status(404).json({
+        success: false,
+        message: 'Quote reference not found'
+      });
+    }
+
+    // Generate application code
+    const applicationCode = 'APP-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+
+    // Create new application
+    const application = new Application({
+      applicationCode,
+      quoteReference,
+      personalInfo,
+      healthInfo,
+      businessInfo: quote.businessInfo,
+      policyInfo: quote.policyInfo,
+      addressInfo: {
+        communicationAddress: quote.addressInfo.communicationAddress,
+        permanentAddress: {
+          sameAsCommunication: true,
+          lineOfAddress: quote.addressInfo.communicationAddress.lineOfAddress,
+          pinCode: quote.addressInfo.communicationAddress.pinCode,
+          country: quote.addressInfo.communicationAddress.country,
+          state: quote.addressInfo.communicationAddress.state,
+          city: quote.addressInfo.communicationAddress.city
+        }
+      },
+      status: 'draft'
+    });
+
     await application.save();
-    
+
     res.status(201).json({
       success: true,
-      message: 'Application created successfully',
       data: {
         applicationCode: application.applicationCode,
-        id: application._id
+        status: application.status
       }
     });
   } catch (error) {
-    res.status(400).json({
+    console.error('Error creating application:', error);
+    res.status(500).json({
       success: false,
-      message: 'Failed to create application',
+      message: 'Error creating application',
       error: error.message
     });
   }
@@ -49,14 +80,14 @@ exports.getApplicationById = async (req, res) => {
       });
     }
     
-    res.status(200).json({
+    res.json({
       success: true,
       data: application
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch application',
+      message: 'Error fetching application',
       error: error.message
     });
   }
@@ -76,14 +107,14 @@ exports.getApplicationByCode = async (req, res) => {
       });
     }
     
-    res.status(200).json({
+    res.json({
       success: true,
       data: application
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch application',
+      message: 'Error fetching application',
       error: error.message
     });
   }
@@ -94,30 +125,30 @@ exports.getApplicationByCode = async (req, res) => {
  */
 exports.updateApplication = async (req, res) => {
   try {
-    const applicationData = req.body;
+    const { personalInfo, healthInfo } = req.body;
     
-    const application = await Application.findByIdAndUpdate(
-      req.params.id,
-      applicationData,
-      { new: true, runValidators: true }
-    );
-    
+    const application = await Application.findById(req.params.id);
     if (!application) {
       return res.status(404).json({
         success: false,
         message: 'Application not found'
       });
     }
-    
-    res.status(200).json({
+
+    // Update only allowed fields
+    if (personalInfo) application.personalInfo = personalInfo;
+    if (healthInfo) application.healthInfo = healthInfo;
+
+    await application.save();
+
+    res.json({
       success: true,
-      message: 'Application updated successfully',
       data: application
     });
   } catch (error) {
-    res.status(400).json({
+    res.status(500).json({
       success: false,
-      message: 'Failed to update application',
+      message: 'Error updating application',
       error: error.message
     });
   }
@@ -137,25 +168,70 @@ exports.calculatePremium = async (req, res) => {
       });
     }
     
-    // Calculate premium
-    const premiumDetails = application.calculatePremium();
-    
-    // Save application with updated premium details
+    // Calculate premium based on health info and policy details
+    const basePremium = calculateBasePremium(application);
+    const taxAmount = basePremium * 0.18; // 18% GST
+    const totalPremium = basePremium + taxAmount;
+
+    application.premiumDetails = {
+      basePremium,
+      taxAmount,
+      totalPremium
+    };
+
     await application.save();
-    
-    res.status(200).json({
+
+    res.json({
       success: true,
-      message: 'Premium calculated successfully',
-      data: premiumDetails
+      data: application.premiumDetails
     });
   } catch (error) {
-    res.status(400).json({
+    res.status(500).json({
       success: false,
-      message: 'Failed to calculate premium',
+      message: 'Error calculating premium',
       error: error.message
     });
   }
 };
+
+/**
+ * Helper function to calculate base premium
+ */
+function calculateBasePremium(application) {
+  let basePremium = 0;
+  
+  // Calculate premium for each member based on their health info
+  application.healthInfo.forEach((health, index) => {
+    let memberPremium = 0;
+    
+    // Base premium based on age
+    const age = application.personalInfo[index].age;
+    if (age < 18) memberPremium = 1000;
+    else if (age < 30) memberPremium = 2000;
+    else if (age < 45) memberPremium = 3000;
+    else if (age < 60) memberPremium = 4000;
+    else memberPremium = 5000;
+
+    // Adjust for pre-existing conditions
+    if (health.preExistingConditions && health.preExistingConditions.length > 0) {
+      memberPremium *= 1.5; // 50% increase for pre-existing conditions
+    }
+
+    // Adjust for BMI
+    if (health.bmi > 30) {
+      memberPremium *= 1.2; // 20% increase for high BMI
+    }
+
+    basePremium += memberPremium;
+  });
+
+  // Adjust for policy type
+  if (application.policyInfo.coverType === 'family') {
+    basePremium *= 0.9; // 10% discount for family coverage
+  }
+
+  return basePremium;
+}
 
 /**
  * Generate PDF document for an application
@@ -416,23 +492,26 @@ exports.getAllApplications = async (req, res) => {
     const skip = (page - 1) * limit;
     
     const applications = await Application.find()
-      .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ createdAt: -1 });
     
-    const totalCount = await Application.countDocuments();
+    const total = await Application.countDocuments();
     
-    res.status(200).json({
+    res.json({
       success: true,
-      count: applications.length,
-      totalPages: Math.ceil(totalCount / limit),
-      currentPage: page,
-      data: applications
+      data: applications,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch applications',
+      message: 'Error fetching applications',
       error: error.message
     });
   }
@@ -452,14 +531,14 @@ exports.deleteApplication = async (req, res) => {
       });
     }
     
-    res.status(200).json({
+    res.json({
       success: true,
       message: 'Application deleted successfully'
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Failed to delete application',
+      message: 'Error deleting application',
       error: error.message
     });
   }

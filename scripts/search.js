@@ -419,7 +419,7 @@ function createEndorsementSection() {
 function populateEndorsementData(data) {
     // Application code and quote
     document.getElementById('end-application-code').value = data.applicationCode || '';
-    document.getElementById('end-easy-quote').value = data.easyQuote || '';
+    document.getElementById('end-easy-quote').value = data.quoteReference || '';
 
     // Business Info
     const business = data.businessInfo || {};
@@ -439,26 +439,110 @@ function populateEndorsementData(data) {
     document.getElementById('end-premium-type').value = policy.premiumType || '';
     document.getElementById('end-cover-type').value = policy.coverType || '';
     document.getElementById('end-policy-plan').value = policy.policyPlan || '';
-    document.getElementById('end-sum-insured').value = policy.sumInsured || '';
-    document.getElementById('end-policy-tenure').value = policy.policyTenure || '';
+    document.getElementById('end-sum-insured').value = policy.sumInsured ? `₹${policy.sumInsured.toLocaleString()}` : '';
+    document.getElementById('end-policy-tenure').value = policy.policyTenure ? `${policy.policyTenure} years` : '';
 
-    // Personal Info
-    const personal = data.personalInfo || {};
-    document.getElementById('end-full-name').value = personal.fullName || '';
-    document.getElementById('end-dob').value = formatDate(personal.dateOfBirth) || '';
-    document.getElementById('end-age').value = personal.age || '';
-    document.getElementById('end-gender').value = personal.gender || '';
-    document.getElementById('end-relationship').value = personal.relationship || '';
-    document.getElementById('end-email').value = personal.email || '';
-    document.getElementById('end-phone').value = personal.phone || '';
+    // Personal Info - Handle multiple members
+    const personalInfoContainer = document.getElementById('end-personal-info-form');
+    if (personalInfoContainer) {
+        // Clear existing content except the header and form actions
+        const header = personalInfoContainer.querySelector('h3');
+        const formActions = personalInfoContainer.querySelector('.form-actions');
+        personalInfoContainer.innerHTML = '';
+        if (header) personalInfoContainer.appendChild(header);
 
-    // Health Info
-    const health = data.healthInfo || {};
-    document.getElementById('end-height').value = health.height || '';
-    document.getElementById('end-weight').value = health.weight || '';
-    document.getElementById('end-bmi').value = health.bmi || '';
-    document.getElementById('end-blood-group').value = health.bloodGroup || '';
-    document.getElementById('end-conditions').value = (health.preExistingConditions || []).join(', ') || 'None';
+        // Create sections for each family member
+        data.personalInfo.forEach((personal, index) => {
+            const memberSection = document.createElement('div');
+            memberSection.className = 'member-section';
+            memberSection.innerHTML = `
+                <h4>Family Member ${index + 1}</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" value="${personal.fullName || ''}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="text" value="${formatDate(personal.dateOfBirth) || ''}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="text" value="${personal.age || ''}" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <input type="text" value="${personal.gender || ''}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Relationship</label>
+                        <input type="text" value="${personal.relationship || ''}" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" value="${personal.email || ''}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" value="${personal.phone || ''}" readonly>
+                    </div>
+                </div>
+            `;
+            personalInfoContainer.appendChild(memberSection);
+        });
+
+        if (formActions) personalInfoContainer.appendChild(formActions);
+    }
+
+    // Health Info - Handle multiple members
+    const healthInfoContainer = document.getElementById('end-health-info-form');
+    if (healthInfoContainer) {
+        // Clear existing content except the header and form actions
+        const header = healthInfoContainer.querySelector('h3');
+        const formActions = healthInfoContainer.querySelector('.form-actions');
+        healthInfoContainer.innerHTML = '';
+        if (header) healthInfoContainer.appendChild(header);
+
+        // Create sections for each family member
+        data.healthInfo.forEach((health, index) => {
+            const memberSection = document.createElement('div');
+            memberSection.className = 'member-section';
+            memberSection.innerHTML = `
+                <h4>Family Member ${index + 1}</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Height (cm)</label>
+                        <input type="text" value="${health.height || ''}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="text" value="${health.weight || ''}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>BMI</label>
+                        <input type="text" value="${health.bmi || ''}" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Blood Group</label>
+                        <input type="text" value="${health.bloodGroup || 'Not specified'}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Pre-existing Conditions</label>
+                        <input type="text" value="${(health.preExistingConditions || []).join(', ') || 'None'}" readonly>
+                    </div>
+                </div>
+            `;
+            healthInfoContainer.appendChild(memberSection);
+        });
+
+        if (formActions) healthInfoContainer.appendChild(formActions);
+    }
 
     // Address Info
     const address = data.addressInfo || {};
@@ -486,16 +570,11 @@ function populateEndorsementData(data) {
         document.getElementById('end-perm-city').value = perm.city || '';
     }
 
-    // Questionnaire
-    const questionnaire = data.questionnaire || {};
-    document.getElementById('end-health-conditions').value = (questionnaire.healthConditions || []).join(', ') || 'None';
-    document.getElementById('end-medical-history').value = questionnaire.medicalHistory || '';
-
-    // Premium
-    const premium = data.premium || {};
-    document.getElementById('end-base-premium').textContent = premium.basePremium || '₹0.00';
-    document.getElementById('end-premium-tax').textContent = premium.tax || '₹0.00';
-    document.getElementById('end-total-premium').textContent = premium.totalPremium || '₹0.00';
+    // Premium Details
+    const premium = data.premiumDetails || {};
+    document.getElementById('end-base-premium').textContent = premium.basePremium ? `₹${premium.basePremium.toLocaleString()}` : '₹0.00';
+    document.getElementById('end-premium-tax').textContent = premium.taxAmount ? `₹${premium.taxAmount.toLocaleString()}` : '₹0.00';
+    document.getElementById('end-total-premium').textContent = premium.totalPremium ? `₹${premium.totalPremium.toLocaleString()}` : '₹0.00';
 
     // Setup navigation between sections
     setupEndorsementNavigation();

@@ -303,84 +303,49 @@ function formatDate(dateString) {
     }
 }
 function submitApplication() {
+    // Get the quote reference from session storage
+    const quoteData = JSON.parse(sessionStorage.getItem('quoteData') || '{}');
+    
     // Gather all form data
     const applicationData = {
-        easyQuote: document.getElementById('easyQuote')?.value || '',
-        businessInfo: {
-            country: document.getElementById('app-polCountry')?.value || '',
-            state: document.getElementById('app-polState')?.value || '',
-            city: document.getElementById('app-polCity')?.value || '',
-            lineOfBusiness: document.getElementById('app-lineOfBusiness')?.value || '',
-            typeOfBusiness: document.getElementById('app-typeOfBusiness')?.value || '',
-            policyStartDate: document.getElementById('app-policystartDate')?.value || '',
-            policyEndDate: document.getElementById('app-policyEndDate')?.value || '',
-            intermediaryCode: document.getElementById('app-IntermediaryCode')?.value || '',
-            intermediaryName: document.getElementById('app-IntermediaryName')?.value || '',
-            intermediaryEmail: document.getElementById('app-Intermediaryemail')?.value || ''
-        },
-        policyInfo: {
-            premiumType: document.getElementById('app-premiumType')?.value || '',
-            coverType: document.getElementById('app-coverType')?.value || '',
-            policyPlan: document.getElementById('app-ploicyPlan')?.value || '', 
-            sumInsured: Number(document.getElementById('app-sumInusred')?.value || 0),
-            policyTenure: Number(document.getElementById('app-plicyTenure')?.value || 0)
-        },
-        personalInfo: {
-            fullName: document.getElementById('app-fullName')?.value || '',
-            dateOfBirth: document.getElementById('app-dateOfBirth')?.value || '',
-            age: Number(document.getElementById('app-age')?.value || 0),
-            gender: document.getElementById('app-gender')?.value || '',
-            relationship: document.getElementById('app-relationship')?.value || '',
-            email: document.getElementById('app-email')?.value || '',
-            phone: document.getElementById('app-phone')?.value || ''
-        },
-        healthInfo: {
-            height: Number(document.getElementById('app-height')?.value || 0),
-            weight: Number(document.getElementById('app-weight')?.value || 0),
-            bmi: Number(document.getElementById('app-bmi')?.value || 0),
-            bloodGroup: document.getElementById('app-bloodGroup')?.value || '',
-            preExistingConditions: Array.from(document.querySelectorAll('input[name="app-conditions"]:checked')).map(cb => cb.value)
-        },
-        addressInfo: {
-            communicationAddress: {
-                lineOfAddress: document.getElementById('app-commLineOfAddress')?.value || '',
-                pinCode: document.getElementById('app-commPinCode')?.value || '',
-                country: document.getElementById('app-commCountry')?.value || '',
-                state: document.getElementById('app-commState')?.value || '',
-                city: document.getElementById('app-commCity')?.value || ''
-            },
-            permanentAddress: {
-                sameAsCommunication: document.getElementById('app-sameAsComm')?.checked || false
-            }
-        },
-        questionnaire: {
-            healthConditions: Array.from(document.querySelectorAll('input[name="app-health-conditions"]:checked')).map(cb => cb.value),
-            medicalHistory: document.getElementById('app-medical-history')?.value || ''
-        },
-        premium:{
-            basePremium:document.getElementById('base-premium')?.innerHTML || 0,
-            tax:document.getElementById('premium-tax')?.innerHTML || 0,
-            totalPremium:document.getElementById('total-premium')?.innerHTML || 0,
-        },
-        policyDocument:document.getElementById('final-summary')?.innerHTML || ''
-
+        quoteReference: document.getElementById('easyQuote')?.value || '',
+        personalInfo: [],
+        healthInfo: []
     };
 
-    // Add permanent address details if not same as communication address
-    if (!applicationData.addressInfo.permanentAddress.sameAsCommunication) {
-        applicationData.addressInfo.permanentAddress = {
-            ...applicationData.addressInfo.permanentAddress,
-            lineOfAddress: document.getElementById('app-presentLineOfAddress')?.value || '',
-            pinCode: document.getElementById('app-presentPinCode')?.value || '',
-            country: document.getElementById('app-presentCountry')?.value || '',
-            state: document.getElementById('app-presentState')?.value || '',
-            city: document.getElementById('app-presentCity')?.value || ''
-        };
-    }
+    // Get all member sections
+    const memberSections = document.querySelectorAll('.family-member-section');
+    memberSections.forEach((section, index) => {
+        // Add personal info
+        applicationData.personalInfo.push({
+            fullName: section.querySelector(`#app-fullName-${index}`)?.value || '',
+            dateOfBirth: section.querySelector(`#app-dateOfBirth-${index}`)?.value || '',
+            age: Number(section.querySelector(`#app-age-${index}`)?.value || 0),
+            gender: section.querySelector(`#app-gender-${index}`)?.value || '',
+            relationship: section.querySelector(`#app-relationship-${index}`)?.value || '',
+            email: section.querySelector(`#app-email-${index}`)?.value || '',
+            phone: section.querySelector(`#app-phone-${index}`)?.value || ''
+        });
 
-    // Generate the summary HTML for PDF
-    generateApplicationSummary();
-    const summaryHTML = document.getElementById('application-summary').innerHTML;
+        // Get blood group value if available
+        const bloodGroupSelect = section.querySelector(`#bloodGroup-${index + 1}`);
+        let bloodGroup = null;
+        if (bloodGroupSelect && bloodGroupSelect.value) {
+            const validBloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+            if (validBloodGroups.includes(bloodGroupSelect.value)) {
+                bloodGroup = bloodGroupSelect.value;
+            }
+        }
+
+        // Add health info
+        applicationData.healthInfo.push({
+            height: Number(section.querySelector(`#height-${index + 1}`)?.value || 0),
+            weight: Number(section.querySelector(`#weight-${index + 1}`)?.value || 0),
+            bmi: Number(section.querySelector(`#bmi-${index + 1}`)?.value || 0),
+            bloodGroup: bloodGroup,
+            preExistingConditions: Array.from(section.querySelectorAll(`input[name="conditions-${index + 1}"]:checked`)).map(cb => cb.value)
+        });
+    });
 
     // Submit the application
     fetch('http://localhost:5000/api/application/', {
@@ -392,22 +357,28 @@ function submitApplication() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            return response.json().then(data => {
+                throw new Error(data.message || 'Network response was not ok');
+            });
         }
         return response.json();
     })
     .then(data => {
-        console.log(data)
-        console.log(data.data.applicationCode)
-        // Show success message with application code
-        showSuccessMessage(`Application submitted successfully! Application Code: ${data.data.applicationCode}`);
-        console.log("yahi hai bhai",applicationData)
-        // Handle PDF storage by converting the summary to PDF format
-        storePDF(data.applicationCode, summaryHTML);
+        if (data.success) {
+            // Show success message with application code
+            showSuccessMessage(`Application submitted successfully! Application Code: ${data.data.applicationCode}`);
+            
+            // Generate and store PDF
+            generateApplicationSummary();
+            const summaryHTML = document.getElementById('application-summary').innerHTML;
+            storePDF(data.data.applicationCode, summaryHTML);
+        } else {
+            throw new Error(data.message || 'Failed to submit application');
+        }
     })
     .catch(error => {
         console.error('Error submitting application:', error);
-        showErrorMessage('Error submitting application. Please try again.');
+        showErrorMessage(error.message || 'Error submitting application. Please try again.');
     });
 }
 function showSuccessMessage(message) {

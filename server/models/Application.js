@@ -15,112 +15,22 @@ const applicationSchema = new mongoose.Schema({
   // Application identification
   applicationCode: {
     type: String,
-    unique: true,
-    default: () => generateApplicationCode(),
-    uppercase: true,
-    index: true
-  },
-  easyQuote: {
-    type: String,
     required: true,
-    trim: true
+    unique: true
   },
-  
-  // User reference
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+  quoteReference: {
+    type: String,
     required: true
   },
-  
-  // Business Information
-  businessInfo: {
-    country: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    state: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    city: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    lineOfBusiness: {
-      type: String,
-      required: true,
-      enum: ['accident', 'health', 'fire']
-    },
-    typeOfBusiness: {
-      type: String,
-      required: true,
-      enum: ['new', 'renewal', 'portability']
-    },
-    policyStartDate: {
-      type: Date,
-      required: true
-    },
-    policyEndDate: {
-      type: Date,
-      required: true
-    },
-    intermediaryCode: {
-      type: String,
-      required: true
-    },
-    intermediaryName: {
-      type: String,
-      required: true
-    },
-    intermediaryEmail: {
-      type: String,
-      required: true,
-      validate: {
-        validator: function(v) {
-          return /^\S+@\S+\.\S+$/.test(v);
-        },
-        message: props => `${props.value} is not a valid email address!`
-      }
-    }
+  status: {
+    type: String,
+    enum: ['draft', 'submitted', 'approved', 'rejected', 'active'],
+    default: 'draft'
   },
-  
-  // Policy Information
-  policyInfo: {
-    premiumType: {
-      type: String,
-      required: true,
-      enum: ['annual', 'single', 'monthly']
-    },
-    coverType: {
-      type: String,
-      required: true,
-      enum: ['single', 'family']
-    },
-    policyPlan: {
-      type: String,
-      required: true,
-      enum: ['gold', 'silver', 'platinum']
-    },
-    sumInsured: {
-      type: Number,
-      required: true
-    },
-    policyTenure: {
-      type: Number,
-      required: true
-    }
-  },
-  
-  // Personal Information
-  personalInfo: {
+  personalInfo: [{
     fullName: {
       type: String,
-      required: true,
-      trim: true
+      required: true
     },
     dateOfBirth: {
       type: Date,
@@ -132,35 +42,24 @@ const applicationSchema = new mongoose.Schema({
     },
     gender: {
       type: String,
-      required: true,
-      enum: ['male', 'female', 'other']
+      enum: ['male', 'female', 'other'],
+      required: true
     },
     relationship: {
       type: String,
-      required: true,
-      enum: ['self', 'spouse', 'child', 'parent']
+      enum: ['self', 'spouse', 'parent', 'child', 'sibling'],
+      required: true
     },
     email: {
       type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-      validate: {
-        validator: function(v) {
-          return /^\S+@\S+\.\S+$/.test(v);
-        },
-        message: props => `${props.value} is not a valid email address!`
-      }
+      required: true
     },
     phone: {
       type: String,
-      required: true,
-      trim: true
+      required: true
     }
-  },
-  
-  // Health Information
-  healthInfo: {
+  }],
+  healthInfo: [{
     height: {
       type: Number,
       required: true
@@ -175,112 +74,59 @@ const applicationSchema = new mongoose.Schema({
     },
     bloodGroup: {
       type: String,
-      required: true,
-      enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']
+      enum: {
+        values: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-', null],
+        message: 'Invalid blood group value'
+      },
+      required: false,
+      default: null
     },
     preExistingConditions: [{
       type: String,
-      enum: ['diabetes', 'hypertension', 'heart-disease', 'asthma', 'other']
+      enum: ['diabetes', 'hypertension', 'heart-disease', 'asthma']
     }]
+  }],
+  businessInfo: {
+    country: String,
+    state: String,
+    city: String,
+    lineOfBusiness: String,
+    typeOfBusiness: String,
+    policyStartDate: Date,
+    policyEndDate: Date,
+    intermediaryCode: String,
+    intermediaryName: String,
+    intermediaryEmail: String
   },
-  
-  // Address Information
+  policyInfo: {
+    premiumType: String,
+    coverType: String,
+    policyPlan: String,
+    sumInsured: Number,
+    policyTenure: Number
+  },
   addressInfo: {
     communicationAddress: {
-      lineOfAddress: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      pinCode: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      country: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      state: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      city: {
-        type: String,
-        required: true,
-        trim: true
-      }
+      lineOfAddress: String,
+      pinCode: String,
+      country: String,
+      state: String,
+      city: String
     },
     permanentAddress: {
-      sameAsCommunication: {
-        type: Boolean,
-        default: false
-      },
-      lineOfAddress: {
-        type: String,
-        trim: true
-      },
-      pinCode: {
-        type: String,
-        trim: true
-      },
-      country: {
-        type: String,
-        trim: true
-      },
-      state: {
-        type: String,
-        trim: true
-      },
-      city: {
-        type: String,
-        trim: true
-      }
+      sameAsCommunication: Boolean,
+      lineOfAddress: String,
+      pinCode: String,
+      country: String,
+      state: String,
+      city: String
     }
   },
-  
-  // Questionnaire
-  questionnaire: {
-    healthConditions: [{
-      type: String,
-      enum: ['heart', 'diabetes', 'cancer', 'respiratory']
-    }],
-    medicalHistory: {
-      type: String,
-      trim: true
-    }
+  premiumDetails: {
+    basePremium: Number,
+    taxAmount: Number,
+    totalPremium: Number
   },
-  
-  // Premium Calculation
-  premium: {
-    basePremium: {
-      type: String,
-      
-    },
-    tax: {
-      type: String,
-      
-    },
-    totalPremium: {
-      type: String,
-      
-    }
-  },
-  
-  // PDF Document
-  policyDocument: {
-    contentType: String,
-  },
-  
-  // Application status
-  status: {
-    type: String,
-    enum: ['draft', 'pending', 'approved', 'rejected', 'active'],
-    default: 'draft'
-  },
-  
   createdAt: {
     type: Date,
     default: Date.now
@@ -320,6 +166,7 @@ applicationSchema.pre('save', async function(next) {
       return next(new Error('Could not generate a unique application code after multiple attempts'));
     }
   }
+  this.updatedAt = Date.now();
   next();
 });
 
