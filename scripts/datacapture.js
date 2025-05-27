@@ -76,18 +76,241 @@ function populatePolicyInfo(policyInfo) {
 }
 
 // Populate Personal Information section
+// Populate Personal Information section
 function populatePersonalInfo(personalInfo) {
-    document.getElementById('app-fullName').value = personalInfo.fullName || '';
+    // Clear existing personal info section
+    const personalInfoContainer = document.getElementById('personal-info-container') || document.querySelector('.personal-info-section');
     
-    if (personalInfo.dateOfBirth) {
-        document.getElementById('app-dateOfBirth').value = formatDateForInput(personalInfo.dateOfBirth);
+    if (!personalInfoContainer) {
+        console.error('Personal info container not found');
+        return;
     }
     
-    document.getElementById('app-age').value = personalInfo.age || '';
-    document.getElementById('app-gender').value = personalInfo.gender || '';
-    document.getElementById('app-relationship').value = personalInfo.relationship || '';
-    document.getElementById('app-email').value = personalInfo.email || '';
-    document.getElementById('app-phone').value = personalInfo.phone || '';
+    // Clear existing content
+    personalInfoContainer.innerHTML = '';
+    
+    // Create header
+    const header = document.createElement('h3');
+    header.textContent = 'Personal Information';
+    header.className = 'section-header';
+    personalInfoContainer.appendChild(header);
+    
+    // Loop through each person in personalInfo array
+    personalInfo.forEach((person, index) => {
+        const memberDiv = document.createElement('div');
+        memberDiv.className = 'family-member-section';
+        memberDiv.style.cssText = `
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            position: relative;
+        `;
+        
+        // Determine member title
+        const memberTitle = index === 0 ? 'Personal Information - Primary Member' : `Family Member ${index + 1}`;
+        
+        // Create member HTML structure
+        memberDiv.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h4 style="margin: 0; color: #333; font-size: 18px; font-weight: 600;">${memberTitle}</h4>
+                ${index > 0 ? '<button type="button" class="remove-member-btn" style="background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">Remove Member</button>' : ''}
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Full Name</label>
+                    <input type="text" value="${person.fullName || ''}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
+                           readonly>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Date of Birth</label>
+                    <input type="date" value="${formatDateForInput(person.dateOfBirth)}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
+                           readonly>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Age</label>
+                    <input type="number" value="${person.age || ''}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
+                           readonly>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Gender</label>
+                    <select style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;" disabled>
+                        <option value="">Select Gender</option>
+                        <option value="male" ${person.gender === 'male' ? 'selected' : ''}>Male</option>
+                        <option value="female" ${person.gender === 'female' ? 'selected' : ''}>Female</option>
+                        <option value="other" ${person.gender === 'other' ? 'selected' : ''}>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Relationship</label>
+                    <select style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;" disabled>
+                        <option value="">Select Relationship</option>
+                        <option value="self" ${person.relationship === 'self' ? 'selected' : ''}>Self</option>
+                        <option value="spouse" ${person.relationship === 'spouse' ? 'selected' : ''}>Spouse</option>
+                        <option value="parent" ${person.relationship === 'parent' ? 'selected' : ''}>Parent</option>
+                        <option value="child" ${person.relationship === 'child' ? 'selected' : ''}>Child</option>
+                        <option value="sibling" ${person.relationship === 'sibling' ? 'selected' : ''}>Sibling</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Email</label>
+                    <input type="email" value="${person.email || ''}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
+                           readonly>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Phone Number</label>
+                    <input type="tel" value="${person.phone || ''}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa;"
+                           readonly>
+                </div>
+            </div>
+        `;
+        
+        personalInfoContainer.appendChild(memberDiv);
+        
+        // Add event listener for remove button (if it exists)
+        if (index > 0) {
+            const removeBtn = memberDiv.querySelector('.remove-member-btn');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function() {
+                    memberDiv.remove();
+                });
+            }
+        }
+    });
+}
+
+// Alternative version if you want to populate existing form fields instead of creating new ones
+function populatePersonalInfoAlternative(personalInfo) {
+    // Find the primary member (relationship === 'self' or first member)
+    const primaryMember = personalInfo.find(person => person.relationship === 'self') || personalInfo[0];
+    
+    if (primaryMember) {
+        // Populate existing form fields for primary member
+        if (document.getElementById('app-fullName')) {
+            document.getElementById('app-fullName').value = primaryMember.fullName || '';
+        }
+        
+        if (document.getElementById('app-dateOfBirth') && primaryMember.dateOfBirth) {
+            document.getElementById('app-dateOfBirth').value = formatDateForInput(primaryMember.dateOfBirth);
+        }
+        
+        if (document.getElementById('app-age')) {
+            document.getElementById('app-age').value = primaryMember.age || '';
+        }
+        
+        if (document.getElementById('app-gender')) {
+            document.getElementById('app-gender').value = primaryMember.gender || '';
+        }
+        
+        if (document.getElementById('app-relationship')) {
+            document.getElementById('app-relationship').value = primaryMember.relationship || '';
+        }
+        
+        if (document.getElementById('app-email')) {
+            document.getElementById('app-email').value = primaryMember.email || '';
+        }
+        
+        if (document.getElementById('app-phone')) {
+            document.getElementById('app-phone').value = primaryMember.phone || '';
+        }
+    }
+    
+    // Display all family members including primary
+    displayAllFamilyMembers(personalInfo);
+}
+
+function displayAllFamilyMembers(personalInfo) {
+    // Find or create a container for all family members
+    let familyMembersContainer = document.getElementById('family-members-display');
+    
+    if (!familyMembersContainer) {
+        // Create container after the existing personal info form
+        const personalInfoSection = document.querySelector('.personal-info-form') || document.querySelector('[data-section="personal"]');
+        if (personalInfoSection) {
+            familyMembersContainer = document.createElement('div');
+            familyMembersContainer.id = 'family-members-display';
+            familyMembersContainer.style.cssText = 'margin-top: 30px; padding: 20px; border-top: 2px solid #e0e0e0;';
+            personalInfoSection.appendChild(familyMembersContainer);
+        } else {
+            console.error('Could not find personal info section to append family members');
+            return;
+        }
+    }
+    
+    // Clear existing content
+    familyMembersContainer.innerHTML = '';
+    
+    // Add header
+    const header = document.createElement('h3');
+    header.textContent = 'Family Members Overview';
+    header.style.cssText = 'margin-bottom: 20px; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;';
+    familyMembersContainer.appendChild(header);
+    
+    // Display each family member
+    personalInfo.forEach((person, index) => {
+        const memberCard = document.createElement('div');
+        memberCard.style.cssText = `
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        `;
+        
+        const memberTitle = person.relationship === 'self' ? 'Primary Member' : `Family Member ${index}`;
+        
+        memberCard.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h4 style="margin: 0; color: #007bff; font-size: 16px;">${memberTitle}</h4>
+                <span style="background-color: #007bff; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; text-transform: capitalize;">
+                    ${person.relationship}
+                </span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div>
+                    <strong style="color: #555;">Name:</strong><br>
+                    <span style="color: #333;">${person.fullName || 'N/A'}</span>
+                </div>
+                <div>
+                    <strong style="color: #555;">Date of Birth:</strong><br>
+                    <span style="color: #333;">${formatDate(person.dateOfBirth) || 'N/A'}</span>
+                </div>
+                <div>
+                    <strong style="color: #555;">Age:</strong><br>
+                    <span style="color: #333;">${person.age || 'N/A'}</span>
+                </div>
+                <div>
+                    <strong style="color: #555;">Gender:</strong><br>
+                    <span style="color: #333; text-transform: capitalize;">${person.gender || 'N/A'}</span>
+                </div>
+                <div>
+                    <strong style="color: #555;">Email:</strong><br>
+                    <span style="color: #333;">${person.email || 'N/A'}</span>
+                </div>
+                <div>
+                    <strong style="color: #555;">Phone:</strong><br>
+                    <span style="color: #333;">${person.phone || 'N/A'}</span>
+                </div>
+            </div>
+        `;
+        
+        familyMembersContainer.appendChild(memberCard);
+    });
 }
 
 // Populate Health Information section

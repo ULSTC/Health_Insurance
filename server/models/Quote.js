@@ -103,7 +103,7 @@ const quoteSchema = new mongoose.Schema({
   },
   
   // Personal Information
-  personalInfo: {
+  personalInfo: [{
     fullName: {
       type: String,
       required: true,
@@ -125,7 +125,7 @@ const quoteSchema = new mongoose.Schema({
     relationship: {
       type: String,
       required: true,
-      enum: ['self', 'spouse', 'child', 'parent']
+      enum: ['self', 'spouse', 'child', 'mother','father','other']
     },
     email: {
       type: String,
@@ -138,7 +138,7 @@ const quoteSchema = new mongoose.Schema({
       required: true,
       trim: true
     }
-  },
+  }],
   
   // Health Information
   // healthInfo: {

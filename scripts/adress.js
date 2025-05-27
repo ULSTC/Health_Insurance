@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!validateFormSection(addressInfoForm)) {
                         return; // Stop if validation fails
                     }
+
                     var token = function generateUniqueToken(length = 16) {
                         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                         let token = '';
@@ -115,14 +116,113 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                         return token;
                     }
+
                     const sumInsured = parseFloat(document.getElementById('sumInusred').value);
-                const tenure = parseFloat(document.getElementById('plicyTenure').value) || 1;
-                
-                // Calculate a dummy monthly premium (simple formula for demo)
-                const basePremium = sumInsured * 0.02 / 12; // 2% of sum insured annually, divided by 12 for monthly
-                const tenureFactor = 1 - (tenure > 1 ? 0.05 * (tenure - 1) : 0); // 5% discount per additional year
-                const premium = Math.round(basePremium * tenureFactor);
-                console.log('Calculated Premium:', premium," tenureFactor",tenureFactor, "basePremium", basePremium, "sumInsured", sumInsured, "tenure", tenure);
+                    const tenure = parseFloat(document.getElementById('plicyTenure').value) || 1;
+                    const coverType = document.getElementById('coverType').value;
+
+                    // Calculate a dummy monthly premium (simple formula for demo)
+                    const basePremium = sumInsured * 0.02 / 12; // 2% of sum insured annually, divided by 12 for monthly
+                    const tenureFactor = 1 - (tenure > 1 ? 0.05 * (tenure - 1) : 0); // 5% discount per additional year
+
+                    // For family floater, add additional premium based on number of members
+                    let memberCount = 1; // Primary member
+                    if (coverType === 'family') {
+                        const familyMembers = document.querySelectorAll('.member-form');
+                        memberCount += familyMembers.length;
+                    }
+
+                    const memberFactor = coverType === 'family' ? (1 + (memberCount - 1) * 0.15) : 1; // 15% additional premium per extra member
+                    const premium = Math.round(basePremium * tenureFactor * memberFactor);
+
+                    console.log('Calculated Premium:', premium, "tenureFactor", tenureFactor, "basePremium", basePremium, "sumInsured", sumInsured, "tenure", tenure, "memberCount", memberCount);
+
+                    // Function to get personal info based on cover type
+                    function getPersonalInfo() {
+                        if (coverType === 'family') {
+                            // For family floater, get all members data using the function from family floater script
+                            if (typeof getPersonalInfoArray === 'function') {
+                                return getPersonalInfoArray();
+                            } else {
+                                // Fallback: manually collect family member data
+                                const personalInfoArray = [];
+
+                                // Add primary member
+                                personalInfoArray.push({
+                                    fullName: document.getElementById('fullName').value,
+                                    dateOfBirth: document.getElementById('dateOfBirth').value + "T00:00:00.000Z",
+                                    age: parseInt(document.getElementById('age').value),
+                                    gender: document.getElementById('gender').value,
+                                    relationship: 'self',
+                                    email: document.getElementById('email').value,
+                                    phone: document.getElementById('phone').value,
+                                    memberType: 'primary'
+                                });
+
+                                // Add family members
+                                const memberForms = document.querySelectorAll('.member-form');
+                                memberForms.forEach((form, index) => {
+                                    const memberNumber = index + 2;
+                                    personalInfoArray.push({
+                                        fullName: document.getElementById(`fullName_${memberNumber}`)?.value || '',
+                                        dateOfBirth: document.getElementById(`dateOfBirth_${memberNumber}`)?.value + "T00:00:00.000Z",
+                                        age: parseInt(document.getElementById(`age_${memberNumber}`)?.value) || 0,
+                                        gender: document.getElementById(`gender_${memberNumber}`)?.value || '',
+                                        relationship: document.getElementById(`relationship_${memberNumber}`)?.value || '',
+                                        email: document.getElementById(`email_${memberNumber}`)?.value || '',
+                                        phone: document.getElementById(`phone_${memberNumber}`)?.value || '',
+                                        memberType: 'family'
+                                    });
+                                });
+
+                                return personalInfoArray;
+                            }
+                        } else {
+                            // For individual cover, return single object in array format
+                            return [{
+                                fullName: document.getElementById('fullName').value,
+                                dateOfBirth: document.getElementById('dateOfBirth').value + "T00:00:00.000Z",
+                                age: parseInt(document.getElementById('age').value),
+                                gender: document.getElementById('gender').value,
+                                relationship: 'self',
+                                email: document.getElementById('email').value,
+                                phone: document.getElementById('phone').value,
+                                memberType: 'primary'
+                            }];
+                        }
+                    }
+
+                    // Validate personal info before proceeding
+                    const personalInfoData = getPersonalInfo();
+                    let hasValidationErrors = false;
+
+                    // Basic validation for personal info
+                    personalInfoData.forEach((member, index) => {
+                        if (!member.fullName || !member.dateOfBirth || !member.gender || !member.email || !member.phone) {
+                            console.error(`Missing required fields for member ${index + 1}`);
+                            hasValidationErrors = true;
+                        }
+
+                        // Validate email format
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (member.email && !emailRegex.test(member.email)) {
+                            console.error(`Invalid email format for member ${index + 1}: ${member.email}`);
+                            hasValidationErrors = true;
+                        }
+                    });
+
+                    // Check for primary member (self relationship)
+                    const primaryMembers = personalInfoData.filter(member => member.relationship === 'self');
+                    if (primaryMembers.length !== 1) {
+                        console.error('Exactly one primary member (self) is required');
+                        hasValidationErrors = true;
+                    }
+
+                    if (hasValidationErrors) {
+                        alert('Please fill in all required fields correctly for all members.');
+                        return;
+                    }
+
                     // Create payload for API
                     const payload = {
                         token: token(),
@@ -140,20 +240,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         },
                         policyInfo: {
                             premiumType: document.getElementById('premiumType').value,
-                            coverType: document.getElementById('coverType').value,
+                            coverType: coverType,
                             policyPlan: document.getElementById('ploicyPlan').value,
-                            sumInsured: parseFloat(document.getElementById('sumInusred').value),
-                            policyTenure: parseFloat(document.getElementById('plicyTenure').value)
+                            sumInsured: sumInsured,
+                            policyTenure: tenure
                         },
-                        personalInfo: {
-                            fullName: document.getElementById('fullName').value,
-                            dateOfBirth: document.getElementById('dateOfBirth').value + "T00:00:00.000Z",
-                            age: parseInt(document.getElementById('age').value),
-                            gender: document.getElementById('gender').value,
-                            relationship: document.getElementById('relationship').value,
-                            email: document.getElementById('email').value,
-                            phone: document.getElementById('phone').value
-                        },
+                        personalInfo: personalInfoData, // Now this is always an array
                         addressInfo: {
                             communicationAddress: {
                                 lineOfAddress: document.getElementById('commLineOfAddress').value,
@@ -182,9 +274,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         },
                         status: "draft",
-                        premiumAmount: premium // This would normally be calculated from previous step
+                        premiumAmount: premium,
+                        memberCount: memberCount // Adding member count for reference
                     };
+
                     console.log('Payload:', payload);
+                    console.log('Personal Info Array:', personalInfoData);
+
                     // Show loading state
                     saveButton.disabled = true;
                     saveButton.textContent = 'Submitting...';
@@ -210,16 +306,18 @@ document.addEventListener('DOMContentLoaded', function () {
                                 sessionStorage.setItem('quoteCode', data.data.quoteCode);
                                 sessionStorage.setItem('premiumAmount', data.data.premiumAmount);
                                 sessionStorage.setItem('quoteData', JSON.stringify(data.data));
+                                sessionStorage.setItem('memberCount', memberCount.toString());
                                 const quoteCode = data.data.quoteCode;
 
                                 // Show brief success message before redirecting
                                 const successMessage = document.createElement('div');
                                 successMessage.className = 'success-message';
                                 successMessage.innerHTML = `
-                                                            <h3>Your application has been submitted successfully!</h3>
-                                                            <p>reference number: <strong>${quoteCode}</strong></p>
-                                                        `;
-
+                    <h3>Your application has been submitted successfully!</h3>
+                    <p>Reference number: <strong>${quoteCode}</strong></p>
+                    <p>Members covered: <strong>${memberCount}</strong></p>
+                    <p>Premium amount: <strong>₹${premium.toLocaleString()}</strong></p>
+                `;
 
                                 // Remove existing success message if any
                                 const existingMessage = addressInfoForm.querySelector('.success-message');
@@ -664,3 +762,109 @@ function autofillAddressDetails(prefix) {
         cityInput.value = addressData.city;
     }
 }
+
+//business info
+
+
+// State/Province data for different countries
+const stateData = {
+    'India': [
+        'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+        'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
+        'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+        'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
+        'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
+        'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+        'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu',
+        'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'
+    ],
+    'United States': [
+        'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+        'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
+        'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+        'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+        'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada',
+        'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
+        'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon',
+        'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+        'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
+        'West Virginia', 'Wisconsin', 'Wyoming', 'District of Columbia'
+    ],
+    'United Kingdom': [
+        'England', 'Scotland', 'Wales', 'Northern Ireland'
+    ],
+    'Canada': [
+        'Alberta', 'British Columbia', 'Manitoba', 'New Brunswick',
+        'Newfoundland and Labrador', 'Northwest Territories', 'Nova Scotia',
+        'Nunavut', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan', 'Yukon'
+    ],
+    'Australia': [
+        'Australian Capital Territory', 'New South Wales', 'Northern Territory',
+        'Queensland', 'South Australia', 'Tasmania', 'Victoria', 'Western Australia'
+    ]
+};
+
+const countrySelect = document.getElementById('polCountry');
+const stateSelect = document.getElementById('polState');
+const appc = document.getElementById('app-polCountry')
+const apps = document.getElementById('app-polState')
+
+// Function to populate states based on country
+function populateStates1(country) {
+    // Clear state dropdown
+    stateSelect.innerHTML = '';
+    apps.innerHTML = '';
+
+    if (country === '') {
+        // No country selected
+        stateSelect.disabled = true;
+        stateSelect.innerHTML = '<option value="">First select a country</option>';
+        // No country selected
+        apps.disabled = true;
+        apps.innerHTML = '<option value="">First select a country</option>';
+    } else {
+        // Country selected, populate states
+        stateSelect.disabled = false;
+        stateSelect.innerHTML = '<option value="">Select State/Province</option>';
+        apps.disabled = false;
+        apps.innerHTML = '<option value="">Select State/Province</option>';
+
+        // Get states for selected country
+        const states = stateData[country] || [];
+
+        // Add state options
+        states.forEach(state => {
+            const option = document.createElement('option');
+            option.value = state;
+            option.textContent = state;
+            stateSelect.appendChild(option);
+            const option1 = document.createElement('option');
+            option1.value = state;
+            option1.textContent = state;
+            apps.appendChild(option1);
+        });
+    }
+}
+
+// Set India as default and populate Indian states on page load
+document.addEventListener('DOMContentLoaded', function () {
+    countrySelect.value = 'India';
+    populateStates1('India');
+    appc.value = 'India';
+    populateStates1('India');
+});
+
+// Handle country selection change
+countrySelect.addEventListener('change', function () {
+    const selectedCountry = this.value;
+    populateStates1(selectedCountry);
+});
+appc.addEventListener('change', function () {
+    const selectedCountry = this.value;
+    populateStates1(selectedCountry);
+});
+
+
+
+
+
