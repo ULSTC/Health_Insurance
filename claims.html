@@ -201,6 +201,14 @@
             <div id="personal-info-form" class="application-form">
               <h3>Personal Information</h3>
               <div class="form-row">
+                <div class="form-group full-width">
+                  <label for="memberSelect">Select Member</label>
+                  <select id="memberSelect" class="form-control">
+                    <option value="">Select a member</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
                 <div class="form-group">
                   <label for="fullName">Full Name</label>
                   <input type="text" id="fullName" required />
@@ -307,9 +315,9 @@
                   <label for="claimSubType">Claim Sub-type</label>
                   <select id="claimSubType" required>
                     <option value="">Select Claim Type</option>
-                    <option value="preAuthorization">Pre Authorization</option>
-                    <option value="interim">Interim</option>
-                    <option value="postDischarge">Post Discharge</option>
+                    <option value="planned">Planned Hospitalization</option>
+                    <option value="emergency">Emergency Hospitalization</option>
+                   
                   </select>
                 </div>
               </div>
@@ -361,8 +369,9 @@
                   <label for="cashlessRequestType">Request Type</label>
                   <select id="cashlessRequestType" required>
                     <option value="">Select Request Type</option>
-                    <option value="planned">Planned Hospitalization</option>
-                    <option value="emergency">Emergency Hospitalization</option>
+                    <option value="preAuthorization">Pre Authorization</option>
+                    <option value="interim">Interim</option>
+                    <option value="postDischarge">Post Discharge</option>
                   </select>
                 </div>
               </div>
@@ -660,7 +669,6 @@
       </div>
     </section>
 
-    <script src="scripts/quote.js"></script>
     <script src="scripts/claims.js"></script>
     <script src="scripts/hospital-form-enhancement.js"></script>
 </body>

@@ -36,7 +36,16 @@ const upload = multer({
 // Submit a new claim
 exports.submitClaim = async (req, res) => {
     try {
-        const { applicationId, claimType, claimSubType, requestType, hospitalInfo, treatmentInfo, expenseInfo } = req.body;
+        const { 
+            applicationId, 
+            claimType, 
+            claimSubType, 
+            requestType, 
+            personalInfo,
+            hospitalInfo, 
+            treatmentInfo, 
+            expenseInfo 
+        } = req.body;
 
         // Check if application exists
         const application = await Application.findById(applicationId);
@@ -53,6 +62,7 @@ exports.submitClaim = async (req, res) => {
             claimType,
             claimSubType,
             requestType,
+            personalInfo,
             hospitalInfo,
             treatmentInfo,
             expenseInfo
@@ -65,7 +75,10 @@ exports.submitClaim = async (req, res) => {
         console.log('Claim created:', {
             claimId: claim.claimId,
             status: claim.status,
-            applicationId: claim.applicationId
+            applicationId: claim.applicationId,
+            personalInfo: claim.personalInfo,
+            hospitalInfo: claim.hospitalInfo,
+            treatmentInfo: claim.treatmentInfo
         });
 
         res.status(201).json({
@@ -74,7 +87,10 @@ exports.submitClaim = async (req, res) => {
             data: {
                 claimId: claim.claimId,
                 status: claim.status,
-                applicationId: claim.applicationId
+                applicationId: claim.applicationId,
+                personalInfo: claim.personalInfo,
+                hospitalInfo: claim.hospitalInfo,
+                treatmentInfo: claim.treatmentInfo
             }
         });
     } catch (error) {
@@ -146,7 +162,15 @@ exports.uploadClaimDocuments = [
 exports.getClaimById = async (req, res) => {
     try {
         const claim = await Claim.findOne({ claimId: req.params.id })
-            .populate('applicationId', 'applicationCode');
+            .populate({
+                path: 'applicationId',
+                select: 'applicationCode policyNumber status personalInfo businessInfo policyInfo user',
+                populate: {
+                    path: 'user',
+                    select: 'fullName email phone'
+                }
+            })
+            .exec();
 
         if (!claim) {
             return res.status(404).json({
@@ -155,14 +179,15 @@ exports.getClaimById = async (req, res) => {
             });
         }
 
-        res.status(200).json({
+        res.json({
             success: true,
             data: claim
         });
     } catch (error) {
+        console.error('Error fetching claim:', error);
         res.status(500).json({
             success: false,
-            message: error.message || 'Error retrieving claim'
+            message: error.message || 'Error fetching claim'
         });
     }
 };

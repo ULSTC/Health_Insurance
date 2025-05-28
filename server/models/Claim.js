@@ -18,16 +18,48 @@ const claimSchema = new mongoose.Schema({
   },
   claimSubType: {
     type: String,
-    enum: ['preAuthorization', 'interim', 'postDischarge'],
+    enum: ['planned', 'emergency'],
     required: function() {
       return this.claimType === 'reimbursement';
     }
   },
   requestType: {
     type: String,
-    enum: ['planned', 'emergency'],
+    enum: ['preAuthorization', 'interim', 'postDischarge'],
     required: function() {
       return this.claimType === 'cashless';
+    }
+  },
+  personalInfo: {
+    fullName: {
+      type: String,
+      required: true
+    },
+    dateOfBirth: {
+      type: Date,
+      required: true
+    },
+    age: {
+      type: Number,
+      required: true
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other'],
+      required: true
+    },
+    relationship: {
+      type: String,
+      enum: ['self', 'spouse', 'father', 'mother', 'child', 'sibling'],
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
+    phone: {
+      type: String,
+      required: true
     }
   },
   hospitalInfo: {

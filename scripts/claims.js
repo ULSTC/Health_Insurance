@@ -512,11 +512,11 @@ async function fetchPolicyInfo(policyNumber) {
         policyInput.parentNode.appendChild(loadingIndicator);
     }
     
-    // Build the URL
-    const apiUrl = `http://localhost:5000/api/application/code/${policyNumber}`;
-    console.log('API URL:', apiUrl);
-
     try {
+        // Build the URL
+        const apiUrl = `http://localhost:5000/api/application/code/${policyNumber}`;
+        console.log('API URL:', apiUrl);
+
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: {
@@ -537,17 +537,42 @@ async function fetchPolicyInfo(policyNumber) {
         // Handle successful response
         if (data.success) {
             // Check if data.data is an object or array
+            let policy;
             if (Array.isArray(data.data) && data.data.length > 0) {
                 // If it's an array, use the first policy
-                const policy = data.data[0];
-                processPolicy(policy);
+                policy = data.data[0];
             } else if (data.data && typeof data.data === 'object') {
                 // If it's an object, use it directly
-                const policy = data.data;
-                processPolicy(policy);
+                policy = data.data;
             } else {
                 throw new Error('No policy data found in response');
             }
+
+            // Store the application ID in session storage
+            if (policy._id) {
+                sessionStorage.setItem('currentApplicationId', policy._id);
+                console.log('Stored application ID:', policy._id);
+            }
+
+            // Store policy status
+            sessionStorage.setItem('policyStatus', policy.status);
+
+            // Store personal info globally
+            window.personalInfo = policy.personalInfo;
+            console.log('Stored personal info:', window.personalInfo);
+
+            // Populate the personal information fields based on claim type
+            if (window.selectedClaimType === 'reimbursement') {
+                populatePersonalInfo(policy.personalInfo);
+            } else {
+                populateCashlessInfo(policy);
+            }
+
+            // Show success notification
+            showNotification('Policy information loaded successfully', 'success');
+
+            // Navigate to the appropriate section
+            navigateToSection('personal-info');
         } else {
             throw new Error(data.message || 'Failed to retrieve policy information');
         }
@@ -566,78 +591,158 @@ async function fetchPolicyInfo(policyNumber) {
     }
 }
 
-// Helper function to process policy data
-function processPolicy(policy) {
-    console.log('Processing policy:', policy);
-    
-    // Ensure personalInfo exists
-    if (!policy.personalInfo) {
-        throw new Error('Policy found but missing personal information');
+// Function to populate personal information fields
+function populatePersonalInfo(personalInfo) {
+    if (!personalInfo) {
+        console.warn('No personal info data provided');
+        return;
     }
     
-    // Store the application ID in session storage
-    if (policy._id) {
-        sessionStorage.setItem('currentApplicationId', policy._id);
-        console.log('Stored application ID:', policy._id);
+    console.log('Populating personal info:', personalInfo);
+
+    // Create member selection dropdown if it doesn't exist
+    let memberSelect = document.getElementById('memberSelect');
+    if (!memberSelect) {
+        memberSelect = document.createElement('select');
+        memberSelect.id = 'memberSelect';
+        memberSelect.className = 'form-control';
+        
+        // Add it before the fullName field
+        const fullNameField = document.getElementById('fullName');
+        if (fullNameField) {
+            fullNameField.parentNode.insertBefore(memberSelect, fullNameField);
+        }
+    }
+
+    // Clear existing options
+    memberSelect.innerHTML = '<option value="">Select a member</option>';
+
+    // Add options for each member
+    if (Array.isArray(personalInfo)) {
+        personalInfo.forEach((member, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `${member.fullName} (${member.relationship})`;
+            memberSelect.appendChild(option);
+        });
+
+        // Add change event listener
+        memberSelect.addEventListener('change', function() {
+            const selectedMember = personalInfo[this.value];
+            populateMemberFields(selectedMember);
+        });
+
+        // Populate fields with first member's data
+        if (personalInfo.length > 0) {
+            populateMemberFields(personalInfo[0]);
+        }
     } else {
-        console.error('No application ID found in policy data');
-        throw new Error('Invalid policy data: missing application ID');
+        // If single member, just populate the fields
+        populateMemberFields(personalInfo);
+    }
+}
+
+// Helper function to populate member fields
+function populateMemberFields(member) {
+    const fullNameField = document.getElementById('fullName');
+    if (fullNameField) {
+        fullNameField.value = member.fullName || '';
+    }
+
+    // Format date properly for date input (YYYY-MM-DD)
+    const dobField = document.getElementById('dateOfBirth');
+    if (dobField && member.dateOfBirth) {
+        const dob = new Date(member.dateOfBirth);
+        const formattedDate = dob.toISOString().split('T')[0];
+        dobField.value = formattedDate;
+        
+        // Trigger the change event to update age
+        const changeEvent = new Event('change');
+        dobField.dispatchEvent(changeEvent);
+    }
+
+    const ageField = document.getElementById('age');
+    if (ageField) {
+        ageField.value = member.age || '';
+    }
+
+    // Set gender dropdown
+    const genderSelect = document.getElementById('gender');
+    if (genderSelect && member.gender) {
+        Array.from(genderSelect.options).forEach(option => {
+            if (option.value === member.gender.toLowerCase()) {
+                option.selected = true;
+            }
+        });
+    }
+
+    // Set relationship dropdown
+    const relationshipSelect = document.getElementById('relationship');
+    if (relationshipSelect && member.relationship) {
+        Array.from(relationshipSelect.options).forEach(option => {
+            if (option.value === member.relationship.toLowerCase()) {
+                option.selected = true;
+            }
+        });
+    }
+
+    const emailField = document.getElementById('email');
+    if (emailField) {
+        emailField.value = member.email || '';
     }
     
-    // Store policy status
-    sessionStorage.setItem('policyStatus', policy.status);
-    
-    // Populate the personal information fields based on claim type
-    if (window.selectedClaimType === 'reimbursement') {
-        populatePersonalInfo(policy.personalInfo);
-    } else {
-        populateCashlessInfo(policy);
-    }
-    
-    // Show success notification
-    showNotification('Policy information loaded successfully', 'success');
-    
-    // Navigate to the appropriate section
-    if (window.selectedClaimType === 'reimbursement') {
-        navigateToSection('personal-info');
-    } else {
-        navigateToSection('personal-info');
+    const phoneField = document.getElementById('phone');
+    if (phoneField) {
+        phoneField.value = member.phone || '';
     }
 }
 
 // Function to populate cashless claim information
 function populateCashlessInfo(policy) {
     try {
-        // Safely get personal info, default to empty object if not exists
-        const personalInfo = policy.personalInfo || {};
+        // Safely get personal info, default to empty array if not exists
+        const personalInfo = policy.personalInfo || [];
         
-        // Populate personal information with fallbacks
-        document.getElementById('fullName').value = personalInfo.fullName || '';
-        
-        // Handle date of birth
-        if (personalInfo.dateOfBirth) {
-            const dob = new Date(personalInfo.dateOfBirth);
-            document.getElementById('dateOfBirth').value = dob.toISOString().split('T')[0];
-            document.getElementById('dateOfBirth').dispatchEvent(new Event('change'));
+        // Create member selection dropdown if it doesn't exist
+        let memberSelect = document.getElementById('memberSelect');
+        if (!memberSelect) {
+            memberSelect = document.createElement('select');
+            memberSelect.id = 'memberSelect';
+            memberSelect.className = 'form-control';
+            
+            // Add it before the fullName field
+            const fullNameField = document.getElementById('fullName');
+            if (fullNameField) {
+                fullNameField.parentNode.insertBefore(memberSelect, fullNameField);
+            }
+        }
+
+        // Clear existing options
+        memberSelect.innerHTML = '<option value="">Select a member</option>';
+
+        // Add options for each member
+        if (Array.isArray(personalInfo)) {
+            personalInfo.forEach((member, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${member.fullName} (${member.relationship})`;
+                memberSelect.appendChild(option);
+            });
+
+            // Add change event listener
+            memberSelect.addEventListener('change', function() {
+                const selectedMember = personalInfo[this.value];
+                populateMemberFields(selectedMember);
+            });
+
+            // Populate fields with first member's data
+            if (personalInfo.length > 0) {
+                populateMemberFields(personalInfo[0]);
+            }
         } else {
-            document.getElementById('dateOfBirth').value = '';
+            // If single member, just populate the fields
+            populateMemberFields(personalInfo);
         }
-        
-        // Handle gender with fallback
-        const genderSelect = document.getElementById('gender');
-        if (genderSelect) {
-            genderSelect.value = (personalInfo.gender || '').toLowerCase();
-        }
-        
-        // Handle relationship with fallback
-        const relationshipSelect = document.getElementById('relationship');
-        if (relationshipSelect) {
-            relationshipSelect.value = (personalInfo.relationship || '').toLowerCase();
-        }
-        
-        // Handle contact information
-        document.getElementById('email').value = personalInfo.email || '';
-        document.getElementById('phone').value = personalInfo.phone || '';
 
         // Handle business info
         const businessInfo = policy.businessInfo || {};
@@ -701,71 +806,6 @@ function populateCashlessInfo(policy) {
     }
 }
 
-// Function to populate personal information fields
-function populatePersonalInfo(personalInfo) {
-  if (!personalInfo) {
-    console.warn('No personal info data provided');
-    return;
-  }
-  
-  console.log('Populating personal info:', personalInfo);
-
-  // Map personal info to form fields
-  const fullNameField = document.getElementById('fullName');
-  if (fullNameField) {
-    fullNameField.value = personalInfo.fullName || '';
-  }
-
-  // Format date properly for date input (YYYY-MM-DD)
-  const dobField = document.getElementById('dateOfBirth');
-  if (dobField && personalInfo.dateOfBirth) {
-    const dob = new Date(personalInfo.dateOfBirth);
-    const formattedDate = dob.toISOString().split('T')[0];
-    dobField.value = formattedDate;
-    
-    // Trigger the change event to update age
-    const changeEvent = new Event('change');
-    dobField.dispatchEvent(changeEvent);
-  }
-
-  const ageField = document.getElementById('age');
-  if (ageField) {
-    ageField.value = personalInfo.age || '';
-  }
-
-  // Set gender dropdown
-  const genderSelect = document.getElementById('gender');
-  if (genderSelect && personalInfo.gender) {
-    Array.from(genderSelect.options).forEach(option => {
-      if (option.value === personalInfo.gender.toLowerCase()) {
-        option.selected = true;
-      }
-    });
-  }
-
-  // Set relationship dropdown
-  const relationshipSelect = document.getElementById('relationship');
-  if (relationshipSelect && personalInfo.relationship) {
-    Array.from(relationshipSelect.options).forEach(option => {
-      if (option.value === personalInfo.relationship.toLowerCase()) {
-        option.selected = true;
-      }
-    });
-  }
-
-  const emailField = document.getElementById('email');
-  if (emailField) {
-    emailField.value = personalInfo.email || '';
-  }
-  
-  const phoneField = document.getElementById('phone');
-  if (phoneField) {
-    phoneField.value = personalInfo.phone || '';
-  }
-  
-  console.log('Personal info population complete');
-}
-  
 // Function to navigate to a section
 function navigateToSection(sectionId) {
   console.log('Navigating to section:', sectionId);
@@ -847,6 +887,24 @@ function collectFormData() {
     applicationId: sessionStorage.getItem('currentApplicationId')
   };
 
+  // Get the selected member's info
+  const memberSelect = document.getElementById('memberSelect');
+  if (memberSelect && memberSelect.value !== '') {
+    const selectedIndex = parseInt(memberSelect.value);
+    if (window.personalInfo && window.personalInfo[selectedIndex]) {
+      const selectedMember = window.personalInfo[selectedIndex];
+      formData.personalInfo = {
+        fullName: selectedMember.fullName,
+        dateOfBirth: selectedMember.dateOfBirth,
+        age: selectedMember.age,
+        gender: selectedMember.gender,
+        relationship: selectedMember.relationship,
+        email: selectedMember.email,
+        phone: selectedMember.phone
+      };
+    }
+  }
+
   if (claimType === 'reimbursement') {
     // Collect reimbursement claim data
     formData.claimSubType = document.getElementById('claimSubType').value;
@@ -898,6 +956,12 @@ function collectFormData() {
 // Function to submit claim
 async function submitClaim(claimData) {
     try {
+        // Check if token exists
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+            throw new Error('You are not logged in. Please login again.');
+        }
+
         // Check if server is reachable first
         try {
             await fetch('http://localhost:5000/api/health', { method: 'GET' });
@@ -905,17 +969,25 @@ async function submitClaim(claimData) {
             throw new Error('Server is not reachable. Please make sure the server is running.');
         }
 
+        console.log('Submitting claim with token:', token); // Debug log
+
         const response = await fetch('http://localhost:5000/api/claims', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(claimData)
         });
 
         if (!response.ok) {
             const errorData = await response.json();
+            if (response.status === 401) {
+                // Token is invalid or expired
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('user');
+                throw new Error('Your session has expired. Please login again.');
+            }
             throw new Error(errorData.message || 'Failed to submit claim');
         }
 
@@ -1179,6 +1251,40 @@ function displayClaimDetails(claim) {
                         <div class="info-item">
                             <span class="label">Submitted On</span>
                             <span class="value">${formatDate(claim.createdAt)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section personal-info">
+                    <h3>Personal Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Full Name</span>
+                            <span class="value">${claim.personalInfo?.fullName || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Date of Birth</span>
+                            <span class="value">${formatDate(claim.personalInfo?.dateOfBirth)}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Age</span>
+                            <span class="value">${claim.personalInfo?.age || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Gender</span>
+                            <span class="value">${claim.personalInfo?.gender ? claim.personalInfo.gender.charAt(0).toUpperCase() + claim.personalInfo.gender.slice(1) : 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Relationship</span>
+                            <span class="value">${claim.personalInfo?.relationship ? claim.personalInfo.relationship.charAt(0).toUpperCase() + claim.personalInfo.relationship.slice(1) : 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Email</span>
+                            <span class="value">${claim.personalInfo?.email || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Phone</span>
+                            <span class="value">${claim.personalInfo?.phone || 'N/A'}</span>
                         </div>
                     </div>
                 </div>

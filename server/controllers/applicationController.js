@@ -12,7 +12,7 @@ const Quote = require('../models/Quote');
 exports.createApplication = async (req, res) => {
   try {
     const { quoteReference, personalInfo, healthInfo } = req.body;
-
+    
     // Validate quote reference
     const quote = await Quote.findOne({ quoteCode: quoteReference });
     if (!quote) {
@@ -48,7 +48,7 @@ exports.createApplication = async (req, res) => {
     });
 
     await application.save();
-
+    
     res.status(201).json({
       success: true,
       data: {
@@ -134,7 +134,7 @@ exports.updateApplication = async (req, res) => {
         message: 'Application not found'
       });
     }
-
+    
     // Update only allowed fields
     if (personalInfo) application.personalInfo = personalInfo;
     if (healthInfo) application.healthInfo = healthInfo;
@@ -180,7 +180,7 @@ exports.calculatePremium = async (req, res) => {
     };
 
     await application.save();
-
+    
     res.json({
       success: true,
       data: application.premiumDetails

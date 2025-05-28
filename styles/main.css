@@ -1204,3 +1204,29 @@ textarea:focus {
     font-size: 0.9rem;
     color: #4b5563;
   }
+
+/* Member Selection Styles */
+.form-group.full-width {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#memberSelect {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+    cursor: pointer;
+}
+
+#memberSelect:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+#memberSelect option {
+    padding: 10px;
+}
