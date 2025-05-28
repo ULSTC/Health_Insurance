@@ -312,6 +312,7 @@ function submitApplication() {
         personalInfo: [],
         healthInfo: []
     };
+    console.log(document.querySelector(`#height-1`).value," height dekhe aa rha hai kya");
 
     // Get all member sections
     const memberSections = document.querySelectorAll('.family-member-section');
@@ -328,7 +329,7 @@ function submitApplication() {
         });
 
         // Get blood group value if available
-        const bloodGroupSelect = section.querySelector(`#bloodGroup-${index + 1}`);
+        const bloodGroupSelect = document.querySelector(`#bloodGroup-${index + 1}`);
         let bloodGroup = null;
         if (bloodGroupSelect && bloodGroupSelect.value) {
             const validBloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
@@ -336,14 +337,14 @@ function submitApplication() {
                 bloodGroup = bloodGroupSelect.value;
             }
         }
-
+        
         // Add health info
         applicationData.healthInfo.push({
-            height: Number(section.querySelector(`#height-${index + 1}`)?.value || 0),
-            weight: Number(section.querySelector(`#weight-${index + 1}`)?.value || 0),
-            bmi: Number(section.querySelector(`#bmi-${index + 1}`)?.value || 0),
+            height: Number(document.querySelector(`#height-${index + 1}`)?.value || 0),
+            weight: Number(document.querySelector(`#weight-${index + 1}`)?.value || 0),
+            bmi: Number(document.querySelector(`#bmi-${index + 1}`)?.value || 0),
             bloodGroup: bloodGroup,
-            preExistingConditions: Array.from(section.querySelectorAll(`input[name="conditions-${index + 1}"]:checked`)).map(cb => cb.value)
+            preExistingConditions: Array.from(document.querySelectorAll(`input[name="conditions-${index + 1}"]:checked`)).map(cb => cb.value)
         });
     });
 
@@ -367,7 +368,7 @@ function submitApplication() {
         if (data.success) {
             // Show success message with application code
             showSuccessMessage(`Application submitted successfully! Application Code: ${data.data.applicationCode}`);
-            
+            console.log(data," dekhe bmi aya ya nahi");
             // Generate and store PDF
             generateApplicationSummary();
             const summaryHTML = document.getElementById('application-summary').innerHTML;

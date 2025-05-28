@@ -190,7 +190,8 @@ function populatePersonalInfo(personalInfo) {
                         <option value="">Select Relationship</option>
                         <option value="self" ${person.relationship === 'self' ? 'selected' : ''}>Self</option>
                         <option value="spouse" ${person.relationship === 'spouse' ? 'selected' : ''}>Spouse</option>
-                        <option value="parent" ${person.relationship === 'parent' ? 'selected' : ''}>Parent</option>
+                        <option value="mother" ${person.relationship === 'mother' ? 'selected' : ''}>Mother</option>
+                        <option value="father" ${person.relationship === 'father' ? 'selected' : ''}>Father</option>
                         <option value="child" ${person.relationship === 'child' ? 'selected' : ''}>Child</option>
                         <option value="sibling" ${person.relationship === 'sibling' ? 'selected' : ''}>Sibling</option>
                     </select>

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+let currentApplicationId = null;
 
 function searchApplication() {
     const codeInput = document.getElementById('code-search');
@@ -417,6 +418,7 @@ function createEndorsementSection() {
 }
 
 function populateEndorsementData(data) {
+    currentApplicationId = data._id;
     // Application code and quote
     document.getElementById('end-application-code').value = data.applicationCode || '';
     document.getElementById('end-easy-quote').value = data.quoteReference || '';
@@ -755,22 +757,8 @@ function getCategoryFields(category) {
             { id: 'end-sum-insured', label: 'Sum Insured INR' },
             { id: 'end-policy-tenure', label: 'Policy Tenure (Yrs)' }
         ],
-        'end-personal-info': [
-            { id: 'end-full-name', label: 'Full Name' },
-            { id: 'end-dob', label: 'Date of Birth' },
-            { id: 'end-age', label: 'Age' },
-            { id: 'end-gender', label: 'Gender' },
-            { id: 'end-relationship', label: 'Relationship' },
-            { id: 'end-email', label: 'Email' },
-            { id: 'end-phone', label: 'Phone Number' }
-        ],
-        'end-health-info': [
-            { id: 'end-height', label: 'Height (cm)' },
-            { id: 'end-weight', label: 'Weight (kg)' },
-            { id: 'end-bmi', label: 'BMI' },
-            { id: 'end-blood-group', label: 'Blood Group' },
-            { id: 'end-conditions', label: 'Pre-existing Conditions' }
-        ],
+        'end-personal-info': getMemberFields('personal'),
+        'end-health-info': getMemberFields('health'),
         'end-address-info': [
             { id: 'end-comm-address', label: 'Communication - Line Of Address' },
             { id: 'end-comm-pincode', label: 'Communication - PIN Code' },
@@ -792,6 +780,46 @@ function getCategoryFields(category) {
     return categoryFields[category] || [];
 }
 
+function getMemberFields(type) {
+    const fields = [];
+    const container = document.getElementById(`end-${type}-info-form`);
+    
+    if (container) {
+        const memberSections = container.querySelectorAll('.member-section');
+        memberSections.forEach((section, index) => {
+            const memberName = section.querySelector('input[readonly]').value || `Member ${index + 1}`;
+            
+            if (type === 'personal') {
+                const personalFields = [
+                    'Full Name', 'Date of Birth', 'Age', 'Gender', 'Relationship', 'Email', 'Phone Number'
+                ];
+                personalFields.forEach(fieldLabel => {
+                    fields.push({
+                        id: `member-${index}-${fieldLabel.toLowerCase().replace(/\s+/g, '-')}`,
+                        label: `${memberName} - ${fieldLabel}`,
+                        memberIndex: index,
+                        fieldType: fieldLabel.toLowerCase().replace(/\s+/g, '-')
+                    });
+                });
+            } else if (type === 'health') {
+                const healthFields = [
+                    'Height (cm)', 'Weight (kg)', 'BMI', 'Blood Group', 'Pre-existing Conditions'
+                ];
+                healthFields.forEach(fieldLabel => {
+                    fields.push({
+                        id: `member-${index}-${fieldLabel.toLowerCase().replace(/[^a-z]/g, '-')}`,
+                        label: `${memberName} - ${fieldLabel}`,
+                        memberIndex: index,
+                        fieldType: fieldLabel.toLowerCase().replace(/[^a-z]/g, '-')
+                    });
+                });
+            }
+        });
+    }
+    
+    return fields;
+}
+
 function navigateToSection(sectionId) {
     // Find the nav item for this section and click it
     const navItem = document.querySelector(`.nav-item[data-section="${sectionId}"]`);
@@ -801,8 +829,44 @@ function navigateToSection(sectionId) {
 }
 
 function makeFieldEditable(fieldId) {
-    // Get the field element
-    const field = document.getElementById(fieldId);
+    let field = null;
+    
+    // Check if it's a member-specific field
+    if (fieldId.startsWith('member-')) {
+        const parts = fieldId.split('-');
+        const memberIndex = parseInt(parts[1]);
+        const fieldType = parts.slice(2).join('-');
+        
+        // Find the actual input field in the member section
+        const memberSections = document.querySelectorAll('.member-section');
+        if (memberSections[memberIndex]) {
+            const inputs = memberSections[memberIndex].querySelectorAll('input[readonly]');
+            
+            // Map field types to input positions
+            const fieldMap = {
+                'full-name': 0,
+                'date-of-birth': 1,
+                'age': 2,
+                'gender': 3,
+                'relationship': 4,
+                'email': 5,
+                'phone-number': 6,
+                'height--cm-': 0, // health fields
+                'weight--kg-': 1,
+                'bmi': 2,
+                'blood-group': 3,
+                'pre-existing-conditions': 4
+            };
+            
+            const inputIndex = fieldMap[fieldType];
+            if (inputIndex !== undefined && inputs[inputIndex]) {
+                field = inputs[inputIndex];
+            }
+        }
+    } else {
+        // Regular field
+        field = document.getElementById(fieldId);
+    }
     
     if (field) {
         // Remove readonly attribute
@@ -834,18 +898,193 @@ function addSaveButton(field, fieldId) {
         
         // Add click handler for save button
         saveBtn.addEventListener('click', function() {
-            // Here you'll implement the save functionality later
-            alert(`Changes saved for field: ${fieldId}`);
+            saveFieldChanges(field, fieldId);
+        });
+        
+        // Add to container
+        container.appendChild(saveBtn);
+    }
+}
+function saveFieldChanges(field, fieldId) {
+    if (!currentApplicationId) {
+        alert('Application ID not found');
+        return;
+    }
+    
+    const newValue = field.value.trim();
+    if (!newValue) {
+        alert('Please enter a value');
+        return;
+    }
+    
+    // Show loading state
+    const saveBtn = field.parentElement.querySelector('.save-field-btn');
+    const originalText = saveBtn.textContent;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    saveBtn.disabled = true;
+    
+    // Prepare the update body based on field type
+    const updateBody = prepareUpdateBody(fieldId, newValue);
+    
+    // Make PUT request
+    fetch(`http://localhost:5000/api/application/${currentApplicationId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updateBody)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to save changes');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert('Changes saved successfully!');
             
             // Make the field readonly again
             field.setAttribute('readonly', true);
             field.classList.remove('editable-field');
             
             // Remove the save button
-            this.remove();
-        });
+            saveBtn.remove();
+        } else {
+            throw new Error(data.message || 'Failed to save changes');
+        }
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
         
-        // Add to container
-        container.appendChild(saveBtn);
+        // Reset button state on error
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
+    });
+}
+
+function prepareUpdateBody(fieldId, newValue) {
+    const updateBody = {};
+    
+    // Handle member-specific fields
+    if (fieldId.startsWith('member-')) {
+        const parts = fieldId.split('-');
+        const memberIndex = parseInt(parts[1]);
+        const fieldType = parts.slice(2).join('-');
+        
+        // Determine if it's personal or health info
+        const activeForm = document.querySelector('.application-form.active');
+        const isPersonalInfo = activeForm && activeForm.id === 'end-personal-info-form';
+        const isHealthInfo = activeForm && activeForm.id === 'end-health-info-form';
+        
+        if (isPersonalInfo) {
+            updateBody.personalInfo = {
+                memberIndex: memberIndex,
+                field: getPersonalInfoFieldName(fieldType),
+                value: processFieldValue(fieldType, newValue)
+            };
+        } else if (isHealthInfo) {
+            updateBody.healthInfo = {
+                memberIndex: memberIndex,
+                field: getHealthInfoFieldName(fieldType),
+                value: processFieldValue(fieldType, newValue)
+            };
+        }
+    } else {
+        // Handle regular fields
+        const fieldPath = getFieldPath(fieldId);
+        if (fieldPath) {
+            setNestedValue(updateBody, fieldPath, processFieldValue(fieldId, newValue));
+        }
     }
+    
+    return updateBody;
+}
+
+function getPersonalInfoFieldName(fieldType) {
+    const fieldMap = {
+        'full-name': 'fullName',
+        'date-of-birth': 'dateOfBirth',
+        'age': 'age',
+        'gender': 'gender',
+        'relationship': 'relationship',
+        'email': 'email',
+        'phone-number': 'phone'
+    };
+    return fieldMap[fieldType];
+}
+
+function getHealthInfoFieldName(fieldType) {
+    const fieldMap = {
+        'height--cm-': 'height',
+        'weight--kg-': 'weight',
+        'bmi': 'bmi',
+        'blood-group': 'bloodGroup',
+        'pre-existing-conditions': 'preExistingConditions'
+    };
+    return fieldMap[fieldType];
+}
+
+function getFieldPath(fieldId) {
+    const fieldPaths = {
+        // Business Info
+        'end-country': 'businessInfo.country',
+        'end-state': 'businessInfo.state',
+        'end-city': 'businessInfo.city',
+        'end-lob': 'businessInfo.lineOfBusiness',
+        'end-business-type': 'businessInfo.typeOfBusiness',
+        'end-start-date': 'businessInfo.policyStartDate',
+        'end-end-date': 'businessInfo.policyEndDate',
+        'end-intermediary-code': 'businessInfo.intermediaryCode',
+        'end-intermediary-name': 'businessInfo.intermediaryName',
+        'end-intermediary-email': 'businessInfo.intermediaryEmail',
+        
+        // Policy Info
+        'end-premium-type': 'policyInfo.premiumType',
+        'end-cover-type': 'policyInfo.coverType',
+        'end-policy-plan': 'policyInfo.policyPlan',
+        'end-sum-insured': 'policyInfo.sumInsured',
+        'end-policy-tenure': 'policyInfo.policyTenure',
+        
+        // Address Info
+        'end-comm-address': 'addressInfo.communicationAddress.lineOfAddress',
+        'end-comm-pincode': 'addressInfo.communicationAddress.pinCode',
+        'end-comm-country': 'addressInfo.communicationAddress.country',
+        'end-comm-state': 'addressInfo.communicationAddress.state',
+        'end-comm-city': 'addressInfo.communicationAddress.city',
+        'end-perm-address': 'addressInfo.permanentAddress.lineOfAddress',
+        'end-perm-pincode': 'addressInfo.permanentAddress.pinCode',
+        'end-perm-country': 'addressInfo.permanentAddress.country',
+        'end-perm-state': 'addressInfo.permanentAddress.state',
+        'end-perm-city': 'addressInfo.permanentAddress.city'
+    };
+    
+    return fieldPaths[fieldId];
+}
+
+function processFieldValue(fieldType, value) {
+    // Handle different field types
+    if (fieldType.includes('date') || fieldType === 'end-start-date' || fieldType === 'end-end-date') {
+        return new Date(value).toISOString();
+    } else if (fieldType.includes('age') || fieldType.includes('height') || fieldType.includes('weight') || 
+               fieldType.includes('bmi') || fieldType === 'end-sum-insured' || fieldType === 'end-policy-tenure') {
+        return parseFloat(value) || 0;
+    } else if (fieldType === 'pre-existing-conditions') {
+        return value.split(',').map(condition => condition.trim()).filter(condition => condition);
+    }
+    return value;
+}
+
+function setNestedValue(obj, path, value) {
+    const keys = path.split('.');
+    let current = obj;
+    
+    for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+            current[keys[i]] = {};
+        }
+        current = current[keys[i]];
+    }
+    
+    current[keys[keys.length - 1]] = value;
 }

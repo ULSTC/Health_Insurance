@@ -204,7 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <option value="self">Self</option>
                                 <option value="spouse">Spouse</option>
                                 <option value="child">Child</option>
-                                <option value="parent">Parent</option>
+                                <option value="mother">Mother</option>
+                                <option value="father">Father</option>
                             </select>
                         </div>
                         <div class="form-group">

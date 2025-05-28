@@ -127,7 +127,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <option value="">Select Relationship</option>
                         <option value="spouse">Spouse</option>
                         <option value="child">Child</option>
-                        <option value="parent">Parent</option>
+                        <option value="mother">Mother</option>
+                        <option value="father">Father</option>
                         <option value="sibling">Sibling</option>
                         <option value="other">Other</option>
                     </select>
