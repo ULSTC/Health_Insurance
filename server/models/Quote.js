@@ -125,7 +125,7 @@ const quoteSchema = new mongoose.Schema({
     relationship: {
       type: String,
       required: true,
-      enum: ['self', 'spouse', 'child', 'mother','father','other']
+      enum: ['self', 'spouse', 'child', 'mother','father','other','parent']
     },
     email: {
       type: String,

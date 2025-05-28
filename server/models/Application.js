@@ -47,7 +47,7 @@ const applicationSchema = new mongoose.Schema({
     },
     relationship: {
       type: String,
-      enum: ['self', 'spouse', 'parent', 'child', 'sibling'],
+      enum: ['self', 'spouse', 'father', 'mother', 'child', 'sibling'],
       required: true
     },
     email: {
